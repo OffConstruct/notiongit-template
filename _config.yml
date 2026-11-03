@@ -1,0 +1,60 @@
+# Neutral template defaults. Provisioning patches url/baseurl; the Notion sync
+# may replace title and author.name from the published home page.
+title: "NotionGit"
+description: "A Notion-powered Jekyll site."
+url: ""
+baseurl: ""
+
+author:
+  name: ""
+  email: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: /:year/:month/:day/:slug/
+timezone: UTC
+
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: "highlight"
+
+# The sync process writes pages into this collection.
+collections:
+  pages:
+    output: true
+    permalink: /:slug/
+
+defaults:
+  - scope:
+      path: "_pages"
+      type: "pages"
+    values:
+      layout: "page"
+
+# GitHub Pages safe-mode plugins only.
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+feed:
+  posts_limit: 20
+
+twitter:
+  username: ""
+
+exclude:
+  - scripts/
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - "*.sh"
+  - Gemfile
+  - Gemfile.lock
+  - .env
+  - .env.*
+  - vendor/

@@ -1,0 +1,41 @@
+---
+layout: default
+title: Tags
+permalink: /tags/
+---
+<div class="container">
+  <header class="tags-header">
+    <h1>Tags</h1>
+  </header>
+
+  {% assign tags_list = site.tags | sort %}
+
+  {% if tags_list.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION TAGS"
+    title="Your tags will appear here"
+    copy="Tags from your published posts will be collected here automatically."
+  %}
+  {% else %}
+  {% for tag in tags_list %}
+  {% assign tag_name = tag[0] %}
+  {% assign tag_posts = tag[1] %}
+
+  <div class="tag-group" id="{{ tag_name | slugify }}">
+    <h2 class="tag-group-name">
+      {{ tag_name }}
+      <span class="tag-count">{{ tag_posts.size }} post{% if tag_posts.size != 1 %}s{% endif %}</span>
+    </h2>
+    <div class="tag-posts">
+      {% assign sorted_posts = tag_posts | sort: 'date' | reverse %}
+      {% for post in sorted_posts %}
+      <a href="{{ post.url | relative_url }}" class="tag-post-link">
+        <span class="tag-post-date">{{ post.date | date: "%b %-d, %Y" }}</span>
+        <span>{{ post.title }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>

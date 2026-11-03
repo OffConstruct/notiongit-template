@@ -1,0 +1,17 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{%- comment -%}
+  jekyll-seo-tag titles the home page "<site title> | <site description>", because a page
+  with no front-matter title falls through to its site_title + site_description branch.
+  We want the bare name there, so its <title> is switched off with title=false and built
+  below instead. Everything else the plugin emits — og:title included — is untouched.
+{%- endcomment -%}
+{%- assign site_name = site.title | strip_html | normalize_whitespace | escape_once -%}
+{%- assign page_name = page.title | default: site.title | strip_html | normalize_whitespace | escape_once -%}
+<title>{% if page_name != site_name %}{{ page_name }} | {% endif %}{{ site_name }}</title>
+{% seo title=false %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+{% feed_meta %}

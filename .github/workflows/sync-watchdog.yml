@@ -1,0 +1,62 @@
+name: Sync watchdog
+
+# GitHub documents that schedule events can queue up and be delayed for
+# hours or dropped outright under load. The sync workflow's offset cron
+# mitigates that; this workflow covers the rest. When the newest attempt of
+# Sync Notion → Jekyll — from any trigger — is older than the staleness
+# threshold, it requests a fresh sync. The dispatch lane is an ordinary
+# queued event rather than a scheduled one, and a GITHUB_TOKEN-triggered
+# workflow_dispatch always creates a run (the documented exception to the
+# token-recursion rule), so this needs no PAT, no App, and no new secrets.
+#
+# The heartbeat is the newest run regardless of status: a queued or
+# in-progress run keeps it fresh while it waits, and a failing sync is
+# already being retried by the schedule itself, so dispatching into one
+# would add nothing.
+#
+# This is not a second sync workflow: it reads no Notion data, holds no
+# secrets, and changes no files. It only re-runs the one sync workflow
+# when that workflow has gone silent.
+
+on:
+  schedule:
+    # Offset from both the top of the hour and the sync slots (:4).
+    - cron: "9,29,49 * * * *"
+
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+concurrency:
+  group: sync-watchdog
+  cancel-in-progress: true
+
+jobs:
+  watchdog:
+    name: Re-run the sync if the last attempt is stale
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      STALE_AFTER_MINUTES: "90"
+    steps:
+      - name: Check sync freshness and dispatch if stale
+        run: |
+          set -euo pipefail
+          last_run_at="$(gh api \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/sync-notion.yml/runs?per_page=1" \
+            --jq '.workflow_runs[0].created_at // empty')"
+          if [ -z "$last_run_at" ]; then
+            echo "No sync run exists yet; requesting the first sync."
+            gh workflow run sync-notion.yml
+            exit 0
+          fi
+          age_minutes=$(( ($(date -u +%s) - $(date -u -d "$last_run_at" +%s)) / 60 ))
+          echo "Last sync attempt: ${last_run_at} (${age_minutes} min ago)."
+          if [ "$age_minutes" -ge "$STALE_AFTER_MINUTES" ]; then
+            echo "Sync is stale (>= ${STALE_AFTER_MINUTES} min); requesting a sync run."
+            gh workflow run sync-notion.yml
+          else
+            echo "Sync is fresh; nothing to do."
+          fi

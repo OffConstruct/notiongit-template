@@ -1,0 +1,43 @@
+---
+layout: default
+---
+{% assign home = site.data.home %}
+{% assign has_home_content = false %}
+{% if home and home.name != blank %}
+{% assign has_home_content = true %}
+{% endif %}
+
+<div class="home-page">
+
+  {% if has_home_content %}
+  {% if home.profile_picture and home.profile_picture != "" %}
+  <img
+    src="{{ home.profile_picture }}"
+    alt="{{ home.name }}"
+    class="home-avatar"
+    loading="eager"
+  >
+  {% else %}
+  <div class="home-avatar-placeholder" aria-hidden="true">
+    {{ home.name | slice: 0 | upcase }}
+  </div>
+  {% endif %}
+
+  <h1 class="home-name">{{ home.name | default: site.author.name | default: site.title }}</h1>
+
+  {% if home.tagline and home.tagline != "" %}
+  <p class="home-tagline">{{ home.tagline }}</p>
+  {% endif %}
+  {% else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {% endif %}
+
+
+</div>

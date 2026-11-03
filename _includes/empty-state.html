@@ -1,0 +1,23 @@
+<div class="empty-state{% if include.variant %} {{ include.variant }}{% endif %}" role="status">
+  <div class="empty-state-mark" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  {% if include.kicker %}
+  <p class="empty-state-kicker">{{ include.kicker }}</p>
+  {% endif %}
+  {% if include.title %}
+  {% if include.heading == "h1" %}
+  <h1 class="empty-state-title">{{ include.title }}</h1>
+  {% else %}
+  <h2 class="empty-state-title">{{ include.title }}</h2>
+  {% endif %}
+  {% endif %}
+  {% if include.copy %}
+  <p class="empty-state-copy">{{ include.copy }}</p>
+  {% endif %}
+  {% if include.note %}
+  <p class="empty-state-note">{{ include.note }}</p>
+  {% endif %}
+</div>

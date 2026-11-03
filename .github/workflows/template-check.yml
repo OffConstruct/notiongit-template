@@ -1,0 +1,48 @@
+name: Template checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Run hygiene fixture tests
+        run: ./scripts/test-hygiene.sh
+
+      # check-hygiene.sh and check-neutral-config.sh assert invariants that
+      # only hold for this template repository itself: sync-managed
+      # directories must be empty, and _config.yml's title/description/url/
+      # baseurl/author fields must stay literally neutral. A real generated
+      # site legitimately violates both once provisioning patches url/
+      # baseurl and the Notion sync writes _pages/_posts/_data content and
+      # replaces title/author.name -- that's the whole point of sync. Scope
+      # these two checks to the template repository so a provisioned site's
+      # Actions tab doesn't go permanently red for behaving as designed; the
+      # Jekyll build below still runs everywhere, since a real build failure
+      # is a real signal regardless of which repo it's in.
+      - name: Check template hygiene
+        if: github.repository == 'OffConstruct/notiongit-template'
+        run: ./scripts/check-hygiene.sh
+
+      - name: Check neutral configuration
+        if: github.repository == 'OffConstruct/notiongit-template'
+        run: ./scripts/check-neutral-config.sh
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+
+      - name: Build site
+        run: bundle exec jekyll build

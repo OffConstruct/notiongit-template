@@ -1,0 +1,39 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Jekyll build output
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+
+# Ruby / Bundler
+*.gem
+.bundle/
+vendor/bundle/
+vendor/cache/
+Gemfile.lock
+
+# Environment variables — NEVER commit tokens
+.env
+.env.local
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Private AI-assistant files — never commit these (see scripts/check-hygiene.sh)
+CLAUDE.md
+.claude/
+AGENTS.md
+.cursor/
+.cursorrules
+.codex/
+.windsurfrules
+.aider.conf.yml
+.aider.chat.history.md
+.aider.input.history
+.github/copilot-instructions.md

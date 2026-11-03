@@ -1,0 +1,71 @@
+name: Sync Notion → Jekyll
+
+on:
+  schedule:
+    # Offset from the top of the hour: GitHub documents that schedule events
+    # queue up and can be delayed or dropped under load, and recommends
+    # avoiding :00. The sync-watchdog workflow re-runs this workflow if it
+    # ever goes stale; see "Check sync status or run it again" in the README.
+    - cron: "4,14,24,34,44,54 * * * *"
+
+  workflow_dispatch:
+    inputs:
+      allow_bulk_delete:
+        description: >-
+          Let this run delete most of _pages/ and _posts/. Only enable this when
+          those rows were intentionally unpublished in Notion.
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+# Scheduled and watchdog- or manually-dispatched runs must never push
+# concurrently. Later runs queue behind the running one; at most one run is
+# pending per group, which also collapses a burst of dispatches into one.
+concurrency:
+  group: sync-notion
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Fetch and publish posts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Sync from Notion
+        id: sync
+        uses: OffConstruct/notiongit-sync@d87bb7c034bcd770ad2c39bef59542a41588b448 # v2.0.1
+        with:
+          notion_token: ${{ secrets.NOTION_TOKEN }}
+          pages_database_id: ${{ secrets.NOTION_PAGES_DATABASE_ID }}
+          posts_database_id: ${{ secrets.NOTION_POSTS_DATABASE_ID }}
+          allow_bulk_delete: ${{ inputs.allow_bulk_delete }}
+
+      # The sync Action writes its run summary JSON to run-summary.json under
+      # runner.temp on every terminal run (success, no-op, or failure).
+      # Uploading it here makes that summary readable after the run through
+      # the Actions artifacts API — see docs/run-summary-schema.md in
+      # OffConstruct/notiongit-sync. always() covers the runs that exit 1; the
+      # channel is observational, so a missing file must never fail this job.
+      - name: Upload run summary
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: notiongit-run-summary
+          path: ${{ runner.temp }}/run-summary.json
+          if-no-files-found: ignore
+          overwrite: true
+          retention-days: 30
+
+      - name: Commit synced content
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          git config user.name "notiongit-sync"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A _pages _posts _data _config.yml
+          git commit -m "chore: sync from Notion" || exit 0
+          git push
