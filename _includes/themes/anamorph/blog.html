@@ -1,0 +1,9 @@
+<div class="ink-post-list an-list">
+  <header class="an-page-head">
+    <h1 class="an-page-title">{{ page.title | default: "Reel" }}</h1>
+    {%- if page.description %}<p class="an-page-lede">{{ page.description }}</p>{% endif %}
+  </header>
+  <div class="an-reel-wrap">
+    {% include themes/anamorph/_reel.html %}
+  </div>
+</div>

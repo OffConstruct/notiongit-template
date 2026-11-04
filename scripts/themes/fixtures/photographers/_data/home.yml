@@ -1,0 +1,27 @@
+name: "Rowan Vale"
+tagline: "Photographer and filmmaker working on the north coast."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "Instagram"
+    url: "https://instagram.example/rowanvale"
+  - name: "Vimeo"
+    url: "https://vimeo.example/rowanvale"
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "Newsletter"
+    url: "https://letters.example.net/rowan"
+bio: |
+  I photograph harbours, weather and the people who work the water. Most projects
+  run for years and end as a book or a short film. Commissions for editorial and
+  documentary clients are welcome; see [information]({{BASEURL}}/about/).
+
+  ## Representation
+
+  - Prints: Low Water Gallery, Harbour Street
+  - Film: Tidewater Pictures
+
+  ## Recent
+
+  - *Low Tide*, a book of 48 plates, 2026
+  - *Night Ferry*, short film, 14 minutes, 2025
+notion_id: "fixture-home"

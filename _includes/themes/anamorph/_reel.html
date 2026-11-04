@@ -1,0 +1,24 @@
+{%- if site.posts.size > 0 %}
+<ol class="an-reel">
+  {%- for post in site.posts %}
+  <li class="an-band{% unless post.cover_image %} an-band--text{% endunless %}{% if post.title.size > 40 %} an-band--long{% endif %}">
+    <a href="{{ post.url | relative_url }}">
+      {%- if post.cover_image %}
+      <span class="an-band-frame"><img src="{{ post.cover_image }}" alt="" loading="lazy"></span>
+      {%- endif %}
+      <span class="an-band-no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+      <span class="an-band-title">{{ post.title }}</span>
+      <time class="an-band-year" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time>
+      {%- if post.tags.size > 0 %}
+      <span class="an-band-tags">{{ post.tags | slice: 0, 2 | join: ", " }}</span>
+      {%- endif %}
+      {%- if post.excerpt %}
+      <span class="an-band-excerpt">{{ post.excerpt | strip_html | truncate: 160 }}</span>
+      {%- endif %}
+    </a>
+  </li>
+  {%- endfor %}
+</ol>
+{%- else %}
+<p class="an-empty" role="status">No work is published yet. Each post becomes a band here after the first sync from Notion; give it a cover image to fill the frame.</p>
+{%- endif %}

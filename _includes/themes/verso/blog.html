@@ -1,0 +1,4 @@
+{%- assign covered = site.posts | where_exp: "p", "p.cover_image" -%}
+<div class="ink-post-list verso-blog">
+  {% include themes/verso/_spread.html lead=covered.first title=page.title description=page.description %}
+</div>

@@ -1,0 +1,60 @@
+{%- assign home = site.data.home -%}
+{%- assign home_bio = home.bio | strip -%}
+{%- assign home_name = home.name | strip -%}
+{%- assign home_tagline = home.tagline | strip -%}
+{%- assign owner = home.name | default: site.author.name | default: site.title -%}
+{%- assign covered = site.posts | where_exp: "p", "p.cover_image" -%}
+{%- assign featured = covered | where: "featured", true | first | default: covered.first -%}
+{%- assign latest = covered.first -%}
+{%- assign words = owner | split: " " -%}
+{%- assign longest = 0 -%}{%- for w in words -%}{%- if w.size > longest -%}{%- assign longest = w.size -%}{%- endif -%}{%- endfor -%}
+<div class="ink-home an-home">
+  <section class="an-hero{% unless latest %} an-hero--card{% endunless %}" aria-labelledby="an-name">
+    {%- if latest %}
+    <div class="ink-variant" data-variant="hero:featured">{% include themes/anamorph/_frame.html post=featured %}</div>
+    <div class="ink-variant" data-variant="hero:latest">{% include themes/anamorph/_frame.html post=latest %}</div>
+    {%- endif %}
+    <div class="an-title-block">
+      <h1 class="an-name{% if longest > 12 %} an-name--long{% endif %}" id="an-name"><span class="an-name-first">{{ words.first }}</span>{% if words.size > 1 %} <span class="an-name-rest">{{ words | shift | join: " " }}</span>{% endif %}</h1>
+      {%- if home_tagline != "" %}
+      <p class="an-credit">{{ home.tagline }}</p>
+      {%- endif %}
+    </div>
+  </section>
+
+  {%- if home_name == "" and site.posts.size == 0 %}
+  <section class="an-lede-wrap">
+    <div class="an-setup" role="status">
+      <p class="an-lede">Your site is almost ready.</p>
+      <p>Your Notion content will appear here after the first sync completes. The first build can take a minute or two; if it stays empty, run the sync from the repository's Actions tab.</p>
+    </div>
+  </section>
+  {%- else %}
+  {%- if home_bio != "" or home.social_links.size > 0 %}
+  <section class="an-lede-wrap" aria-label="About">
+    {%- if home_bio != "" %}
+    {%- assign bio_html = home.bio | markdownify -%}
+    {%- assign parts = bio_html | split: "<h2" -%}
+    <div class="an-lede">{{ parts[0] }}</div>
+    {%- if parts.size > 1 %}
+    <div class="an-bio-rest">{% for part in parts offset: 1 %}<div class="an-bio-part"><h2{{ part }}</div>{% endfor %}</div>
+    {%- endif %}
+    {%- endif %}
+    {%- if home.social_links.size > 0 %}
+    <ul class="an-social" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </section>
+  {%- endif %}
+  <section class="an-reel-wrap" aria-labelledby="an-reel-title">
+    <div class="an-reel-head">
+      <h2 class="an-reel-title" id="an-reel-title">Reel</h2>
+      {%- if site.posts.size > 0 %}<p class="an-reel-count">{{ site.posts.size }} {% if site.posts.size == 1 %}title{% else %}titles{% endif %}</p>{% endif %}
+    </div>
+    {% include themes/anamorph/_reel.html %}
+  </section>
+  {%- endif %}
+</div>

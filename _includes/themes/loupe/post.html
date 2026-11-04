@@ -1,0 +1,36 @@
+{%- assign n = 0 -%}
+{%- for p in site.posts %}{% if p.url == page.url %}{% assign n = site.posts.size | minus: forloop.index0 %}{% endif %}{% endfor -%}
+{%- assign n_prev = n | minus: 1 -%}{%- assign n_next = n | plus: 1 -%}
+<article class="ink-post lp-post">
+  <header class="lp-post-head">
+    <p class="lp-edge"><span class="lp-no">#{% include themes/loupe/_no.html n=n %}</span> <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m" }}</time></p>
+    <h1 class="lp-post-title">{{ page.title }}</h1>
+  </header>
+  {%- if page.cover_image %}
+  <figure class="lp-post-cover"><img src="{{ page.cover_image }}" alt="{{ page.title | escape }}" fetchpriority="high"></figure>
+  {%- endif %}
+  <div class="lp-body">
+    {{ content }}
+  </div>
+  <aside class="lp-panel" aria-label="Frame data">
+    <dl>
+      <div><dt>Frame</dt><dd class="lp-mono">#{% include themes/loupe/_no.html n=n %}</dd></div>
+      <div><dt>Date</dt><dd><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time></dd></div>
+      {%- if page.tags.size > 0 %}
+      <div><dt>Tags</dt><dd class="lp-panel-tags">{% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% endfor %}</dd></div>
+      {%- endif %}
+      {%- if page.canonical_url %}
+      <div><dt>Originally published</dt><dd><a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a></dd></div>
+      {%- endif %}
+    </dl>
+    <nav class="lp-adjacent" aria-label="Adjacent frames">
+      {%- if page.previous %}
+      <a href="{{ page.previous.url | relative_url }}"><span class="lp-adjacent-label">Previous <span class="lp-mono">#{% include themes/loupe/_no.html n=n_prev %}</span></span> <span class="lp-adjacent-title">{{ page.previous.title }}</span></a>
+      {%- endif %}
+      {%- if page.next %}
+      <a href="{{ page.next.url | relative_url }}"><span class="lp-adjacent-label">Next <span class="lp-mono">#{% include themes/loupe/_no.html n=n_next %}</span></span> <span class="lp-adjacent-title">{{ page.next.title }}</span></a>
+      {%- endif %}
+      <a href="{{ '/blog/' | relative_url }}"><span class="lp-adjacent-label">Back to</span> <span class="lp-adjacent-title">the whole sheet</span></a>
+    </nav>
+  </aside>
+</article>

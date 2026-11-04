@@ -1,0 +1,9 @@
+<article class="ink-page verso-page">
+  <h1 class="verso-page-title">{{ page.title }}</h1>
+  {%- if page.description %}
+  <p class="verso-page-lede">{{ page.description }}</p>
+  {%- endif %}
+  <div class="verso-body">
+    {{ content }}
+  </div>
+</article>

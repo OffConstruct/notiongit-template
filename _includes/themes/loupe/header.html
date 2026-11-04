@@ -1,0 +1,45 @@
+{%- assign home = site.data.home -%}
+{%- assign home_profile_picture = home.profile_picture | strip -%}
+{%- assign home_tagline = home.tagline | strip -%}
+{%- assign owner = home.name | default: site.author.name | default: site.title -%}
+{%- assign words = owner | split: " " -%}
+<header class="ink-header lp-header">
+  <div class="lp-id">
+    <span class="lp-mark{% if home_profile_picture == "" %} lp-mark--initials{% endif %}" aria-hidden="true">
+      {%- if home_profile_picture != "" %}<img class="lp-avatar" src="{{ home.profile_picture }}" alt="" width="44" height="44">{% endif -%}
+      <span class="lp-initials">{% for w in words limit: 2 %}{{ w | slice: 0 | upcase }}{% endfor %}</span>
+    </span>
+    <div class="lp-id-text">
+      {%- if page.layout == "home" %}
+      <h1 class="lp-name"><a href="{{ '/' | relative_url }}" aria-current="page">{{ owner }}</a></h1>
+      {%- else %}
+      <p class="lp-name"><a href="{{ '/' | relative_url }}">{{ owner }}</a></p>
+      {%- endif %}
+      {%- if home_tagline != "" %}
+      <p class="lp-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+    </div>
+  </div>
+  <nav class="lp-nav" aria-label="Main navigation">
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <ul>
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      {%- assign is_active = false %}
+      {%- if page.url == item_url %}{% assign is_active = true %}{% endif %}
+      {%- if item.url != "/" and page.url contains item.url %}{% assign is_active = true %}{% endif %}
+      <li><a href="{{ item_url }}"{% if is_active %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- else %}
+    <p class="lp-nav-empty" role="status">Navigation appears after the first sync.</p>
+    {%- endif %}
+  </nav>
+  {%- if home.social_links.size > 0 %}
+  <ul class="lp-social" aria-label="Elsewhere">
+    {%- for link in home.social_links %}
+    <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+</header>

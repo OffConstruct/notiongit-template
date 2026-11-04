@@ -1,0 +1,41 @@
+{%- assign home = site.data.home -%}
+{%- assign home_bio = home.bio | strip -%}
+{%- assign home_name = home.name | strip -%}
+{%- assign featured = site.posts | where: "featured", true -%}
+<div class="ink-home lp-home">
+  {%- if home_name == "" and site.posts.size == 0 %}
+  <div class="lp-setup" role="status">
+    <p class="lp-setup-title">Your site is almost ready.</p>
+    <p>Your Notion content will appear here after the first sync completes. The first build can take a minute or two; if it stays empty, run the sync from the repository's Actions tab.</p>
+  </div>
+  {%- else %}
+  {%- if home_bio != "" %}
+  {%- assign bio_html = home.bio | markdownify -%}
+  {%- assign parts = bio_html | split: "<h2" %}
+  <section class="lp-profile" aria-label="About">
+    <div class="lp-bio">{{ parts[0] }}</div>
+    {%- if parts.size > 1 %}
+    <details class="lp-more">
+      <summary>More about me</summary>
+      <div class="lp-more-body">{% for part in parts offset: 1 %}<div><h2{{ part }}</div>{% endfor %}</div>
+    </details>
+    {%- endif %}
+  </section>
+  {%- endif %}
+  {%- if featured.size > 0 %}
+  <section class="lp-featured" aria-labelledby="lp-featured-title">
+    <h2 class="lp-section-title" id="lp-featured-title">Featured</h2>
+    <ol class="lp-feature-grid">
+      {%- for post in featured limit: 3 %}
+      {%- assign n = 0 %}
+      {%- for p in site.posts %}{% if p.url == post.url %}{% assign n = site.posts.size | minus: forloop.index0 %}{% endif %}{% endfor %}
+      {% include themes/loupe/_cell.html post=post n=n cls=" lp-cell--feature" %}
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endif %}
+  <section class="lp-index" aria-labelledby="lp-sheet-title">
+    {% include themes/loupe/_sheet.html title="Sheet" level=2 %}
+  </section>
+  {%- endif %}
+</div>

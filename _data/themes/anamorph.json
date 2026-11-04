@@ -1,0 +1,86 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "anamorph",
+  "name": "Anamorph",
+  "version": "1.0.0",
+  "summary": "The title card: one letterboxed frame, your name split across it, and the work as a reel of wide bands.",
+  "description": "A cinematic home on warm print-black. The first screen is one frame in a 2.39:1 letterbox with your name split to the edges in condensed capitals; below it, a short lede and every post as a numbered full-width band with its title over the frame. For directors, cinematographers and adventure shooters.",
+  "categories": ["photographers", "musicians"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "antonio",
+      "label": "Antonio and Archivo",
+      "google": "family=Antonio:wght@700&family=Archivo:ital,wdth,wght@0,75..100,400..600;1,100,400",
+      "stacks": {
+        "body": "Archivo, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "display": "Antonio, \"Arial Narrow\", \"Roboto Condensed\", \"Liberation Sans Narrow\", sans-serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "teko",
+      "label": "Teko and Archivo",
+      "google": "family=Teko:wght@500&family=Archivo:ital,wdth,wght@0,75..100,400..600;1,100,400",
+      "stacks": {
+        "body": "Archivo, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "display": "Teko, \"Arial Narrow\", \"Roboto Condensed\", \"Liberation Sans Narrow\", sans-serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "expanded",
+      "label": "Archivo Expanded",
+      "google": "family=Archivo:ital,wdth,wght@0,75..125,400..800;1,100,400",
+      "stacks": {
+        "body": "Archivo, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "display": "Archivo, \"Arial Black\", system-ui, sans-serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#efede7", "text": "#0f0e0c", "muted": "#5e5a52" },
+    "dark": { "bg": "#0f0e0c", "text": "#efede7", "muted": "#9b978e" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "dark",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent", "role": "text", "default": "safelight", "custom": true,
+      "presets": [
+        { "value": "safelight", "label": "Safelight red", "light": "#c2321e", "dark": "#f0442c" },
+        { "value": "tungsten", "label": "Tungsten", "light": "#8f520f", "dark": "#f2a93b" },
+        { "value": "daylight", "label": "Daylight", "light": "#16707b", "dark": "#46c3d1" },
+        { "value": "bone", "label": "Bone", "light": "#6a5f4b", "dark": "#d9d2c3" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Title face", "default": "antonio" },
+    { "key": "aspect", "type": "select", "label": "Frame", "default": "scope",
+      "options": [
+        { "value": "scope", "label": "Scope 2.39:1" },
+        { "value": "wide", "label": "Widescreen 16:9" },
+        { "value": "academy", "label": "Academy 4:3" },
+        { "value": "natural", "label": "Uncropped" } ] },
+    { "key": "name_layout", "type": "select", "label": "Name on the frame", "default": "split",
+      "options": [
+        { "value": "split", "label": "Split to the edges" },
+        { "value": "stacked", "label": "Stacked, bottom left" },
+        { "value": "centered", "label": "Centered" } ] },
+    { "key": "hero", "type": "select", "label": "First screen", "default": "featured",
+      "options": [
+        { "value": "featured", "label": "Featured cover" },
+        { "value": "latest", "label": "Latest cover" },
+        { "value": "card", "label": "Title card, no image" } ] },
+    { "key": "reel", "type": "select", "label": "Work list", "default": "bands",
+      "options": [
+        { "value": "bands", "label": "Full-width bands" },
+        { "value": "caption", "label": "Caption beside the frame" },
+        { "value": "grid", "label": "Two across" } ] },
+    { "key": "grain", "type": "boolean", "label": "Film grain on plain panels", "default": false }
+  ]
+}

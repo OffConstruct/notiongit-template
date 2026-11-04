@@ -1,0 +1,19 @@
+{%- assign home = site.data.home -%}
+{%- assign home_bio = home.bio | strip -%}
+{%- assign home_name = home.name | strip -%}
+{%- assign covered = site.posts | where_exp: "p", "p.cover_image" -%}
+{%- assign featured = covered | where: "featured", true -%}
+{%- assign lead = featured | first | default: covered.first -%}
+<div class="ink-home verso-home">
+  {%- if home_name == "" and site.posts.size == 0 %}
+  <div class="verso-setup" role="status">
+    <p class="verso-setup-title">Your site is almost ready.</p>
+    <p>Your Notion content will appear here after the first sync completes. The first build can take a minute or two; if it stays empty, run the sync from the repository's Actions tab.</p>
+  </div>
+  {%- else %}
+  {% include themes/verso/_spread.html lead=lead %}
+  {%- if home_bio != "" %}
+  <section class="verso-home-bio" aria-label="About">{{ home.bio | markdownify }}</section>
+  {%- endif %}
+  {%- endif %}
+</div>

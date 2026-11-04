@@ -1,0 +1,46 @@
+{%- comment -%} Top six tags by post count, as "1004|name" keys sorted descending. {%- endcomment -%}
+{%- capture tag_keys -%}{%- for t in site.tags -%}{{ t[1].size | plus: 1000 }}|{{ t[0] }}{% unless forloop.last %}^{% endunless %}{%- endfor -%}{%- endcapture -%}
+{%- assign tag_keys = tag_keys | split: "^" | sort | reverse -%}
+{%- assign top = "" | split: "" -%}
+{%- for key in tag_keys limit: 6 -%}{%- assign top = top | push: key -%}{%- endfor -%}
+<div class="lp-sheet-wrap">
+  <div class="lp-sheet-bar">
+    {%- if include.level == 1 %}
+    <h1 class="lp-sheet-title" id="lp-sheet-title">{{ include.title }}</h1>
+    {%- else %}
+    <h2 class="lp-sheet-title" id="lp-sheet-title">{{ include.title }}</h2>
+    {%- endif %}
+    {%- if site.posts.size > 0 %}
+    <p class="lp-count">{{ site.posts.size }} {% if site.posts.size == 1 %}frame{% else %}frames{% endif %}</p>
+    {%- endif %}
+  </div>
+  {%- if include.lede %}<p class="lp-blog-lede">{{ include.lede }}</p>{% endif %}
+  {%- if site.posts.size > 0 %}
+  <div class="lp-controls">
+    {%- if top.size > 0 %}
+    <fieldset class="lp-filter">
+      <legend class="lp-visually-hidden">Show frames tagged</legend>
+      <input type="radio" name="lp-filter" id="lp-f0" checked><label for="lp-f0">All <span class="lp-n">{{ site.posts.size }}</span></label>
+      {%- for key in top %}
+      {%- assign parts = key | split: "|" %}
+      <input type="radio" name="lp-filter" id="lp-f{{ forloop.index }}"><label for="lp-f{{ forloop.index }}">{{ parts[1] }} <span class="lp-n">{{ parts[0] | minus: 1000 }}</span></label>
+      {%- endfor %}
+    </fieldset>
+    {%- endif %}
+    <fieldset class="lp-view">
+      <legend class="lp-visually-hidden">View</legend>
+      <input type="radio" name="lp-view" id="lp-vg"><label for="lp-vg">Sheet</label>
+      <input type="radio" name="lp-view" id="lp-vl"><label for="lp-vl">List</label>
+    </fieldset>
+  </div>
+  <ol class="lp-sheet">
+    {%- for post in site.posts %}
+    {%- capture cls %}{% for key in top %}{% assign tag_name = key | split: "|" | last %}{% if post.tags contains tag_name %} lp-t{{ forloop.index }}{% endif %}{% endfor %}{% endcapture %}
+    {%- assign n = site.posts.size | minus: forloop.index0 %}
+    {% include themes/loupe/_cell.html post=post n=n cls=cls %}
+    {%- endfor %}
+  </ol>
+  {%- else %}
+  <p class="lp-empty" role="status">The sheet is empty. Posts appear here as numbered frames after the first sync from Notion; a cover image becomes the frame.</p>
+  {%- endif %}
+</div>

@@ -1,0 +1,42 @@
+{%- assign home = site.data.home -%}
+{%- assign home_bio = home.bio | strip -%}
+{%- assign home_tagline = home.tagline | strip -%}
+{%- assign owner = home.name | default: site.author.name | default: site.title -%}
+<header class="ink-header verso-column">
+  {%- if page.layout == "home" %}
+  <h1 class="verso-name"><a href="{{ '/' | relative_url }}" aria-current="page">{{ owner }}</a></h1>
+  {%- else %}
+  <p class="verso-name"><a href="{{ '/' | relative_url }}">{{ owner }}</a></p>
+  {%- endif %}
+  {%- if home_tagline != "" %}
+  <p class="verso-tagline">{{ home.tagline }}</p>
+  {%- endif %}
+  {%- if site.data.nav and site.data.nav.size > 0 %}
+  <nav class="verso-nav" aria-label="Main navigation">
+    <ul>
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      {%- assign is_active = false %}
+      {%- if page.url == item_url %}{% assign is_active = true %}{% endif %}
+      {%- if item.url != "/" and page.url contains item.url %}{% assign is_active = true %}{% endif %}
+      <li><a href="{{ item_url }}"{% if is_active %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+      {%- endfor %}
+    </ul>
+  </nav>
+  {%- else %}
+  <nav class="verso-nav" aria-label="Main navigation">
+    <p class="verso-nav-empty" role="status">Navigation appears after the first sync.</p>
+  </nav>
+  {%- endif %}
+  {%- if home.social_links.size > 0 %}
+  <ul class="verso-social" aria-label="Elsewhere">
+    {%- for link in home.social_links %}
+    <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+  {%- if page.layout == "home" and home_bio != "" %}
+  {%- assign bio_lead = home.bio | markdownify | split: "</p>" | first | append: "</p>" %}
+  <div class="verso-column-bio">{{ bio_lead }}</div>
+  {%- endif %}
+</header>

@@ -1,0 +1,12 @@
+{%- assign owner = site.data.home.name | default: site.author.name | default: site.title -%}
+<footer class="ink-footer an-footer">
+  <p class="an-footer-name">{{ owner }}</p>
+  {%- if site.data.nav and site.data.nav.size > 0 %}
+  <ul class="an-footer-nav" aria-label="Site">
+    {%- for item in site.data.nav %}
+    <li><a href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+  <p class="an-footer-line">&copy; {{ 'now' | date: '%Y' }} {{ owner }}. <a href="{{ '/feed.xml' | relative_url }}">Feed</a></p>
+</footer>

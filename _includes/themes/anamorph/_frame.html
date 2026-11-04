@@ -1,0 +1,4 @@
+<figure class="an-frame">
+  <img src="{{ include.post.cover_image }}" alt="{{ include.post.title | escape }}" fetchpriority="high">
+</figure>
+<p class="an-caption"><a href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a> <time datetime="{{ include.post.date | date_to_xmlschema }}">{{ include.post.date | date: "%Y" }}</time></p>

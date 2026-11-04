@@ -1,0 +1,28 @@
+<article class="ink-post an-post">
+  {%- if page.cover_image %}
+  <figure class="an-post-frame"><img src="{{ page.cover_image }}" alt="{{ page.title | escape }}" fetchpriority="high"></figure>
+  {%- endif %}
+  <header class="an-page-head an-post-head">
+    <h1 class="an-page-title">{{ page.title }}</h1>
+    <p class="an-post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time>
+      {%- if page.tags.size > 0 %}
+      <span>{% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</span>
+      {%- endif %}
+    </p>
+  </header>
+  <div class="an-body">
+    {{ content }}
+  </div>
+  {%- if page.canonical_url %}
+  <p class="an-canonical">First published in <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+  {%- endif %}
+  <nav class="an-post-nav" aria-label="More work">
+    {%- if page.previous %}
+    <a class="an-post-nav-prev" href="{{ page.previous.url | relative_url }}"><span>Earlier</span> <span class="an-post-nav-title">{{ page.previous.title }}</span></a>
+    {%- endif %}
+    {%- if page.next %}
+    <a class="an-post-nav-next" href="{{ page.next.url | relative_url }}"><span>Later</span> <span class="an-post-nav-title">{{ page.next.title }}</span></a>
+    {%- endif %}
+  </nav>
+</article>

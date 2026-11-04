@@ -1,0 +1,31 @@
+{%- comment -%} The plate (include.lead) facing the index of every post. {%- endcomment -%}
+<div class="verso-spread">
+  {%- if include.lead %}
+  <figure class="verso-plate">
+    <img src="{{ include.lead.cover_image }}" alt="{{ include.lead.title | escape }}" fetchpriority="high">
+    <figcaption><a href="{{ include.lead.url | relative_url }}"><i>{{ include.lead.title }}</i></a> {% include themes/verso/_date.html date=include.lead.date %}</figcaption>
+  </figure>
+  {%- endif %}
+  <section class="verso-index" aria-labelledby="verso-index-title">
+    {%- if include.title %}
+    <h1 class="verso-page-title" id="verso-index-title">{{ include.title }}</h1>
+    {%- if include.description %}<p class="verso-page-lede">{{ include.description }}</p>{% endif %}
+    {%- else %}
+    <h2 class="verso-index-title" id="verso-index-title">Index</h2>
+    {%- endif %}
+    {%- if site.posts.size > 0 %}
+    <ul class="verso-rows">
+      {%- for post in site.posts %}
+      <li class="verso-row">
+        <a href="{{ post.url | relative_url }}"><i class="verso-row-title">{{ post.title }}</i> {% include themes/verso/_date.html date=post.date %}</a>
+        {%- if post.cover_image and forloop.index <= 40 %}
+        <figure class="verso-swap" aria-hidden="true"><img src="{{ post.cover_image }}" alt="" loading="lazy"><figcaption><i>{{ post.title }}</i> {% include themes/verso/_date.html date=post.date %}</figcaption></figure>
+        {%- endif %}
+      </li>
+      {%- endfor %}
+    </ul>
+    {%- else %}
+    <p class="verso-empty" role="status">Nothing is published yet. Projects appear here, newest first, after the first sync from Notion.</p>
+    {%- endif %}
+  </section>
+</div>

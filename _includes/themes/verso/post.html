@@ -1,0 +1,29 @@
+<article class="ink-post verso-post">
+  <header class="verso-post-head">
+    <h1 class="verso-post-title">{{ page.title }}</h1>
+    <p class="verso-post-meta">
+      {% include themes/verso/_date.html date=page.date %}
+      {%- if page.tags.size > 0 %}
+      <span class="verso-post-tags">{% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</span>
+      {%- endif %}
+    </p>
+  </header>
+  {%- if page.cover_image %}
+  <figure class="verso-post-cover"><img src="{{ page.cover_image }}" alt="{{ page.title | escape }}" fetchpriority="high"></figure>
+  {%- endif %}
+  <div class="verso-body">
+    {{ content }}
+  </div>
+  {%- if page.canonical_url %}
+  <p class="verso-canonical">First published in <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+  {%- endif %}
+  <nav class="verso-post-nav" aria-label="More work">
+    {%- if page.previous %}
+    <p><span>Earlier</span> <a href="{{ page.previous.url | relative_url }}"><i>{{ page.previous.title }}</i></a></p>
+    {%- endif %}
+    {%- if page.next %}
+    <p><span>Later</span> <a href="{{ page.next.url | relative_url }}"><i>{{ page.next.title }}</i></a></p>
+    {%- endif %}
+    <p><a href="{{ '/blog/' | relative_url }}">The whole index</a></p>
+  </nav>
+</article>

@@ -1,0 +1,9 @@
+<article class="ink-page lp-page">
+  <header class="lp-post-head">
+    <h1 class="lp-post-title">{{ page.title }}</h1>
+    {%- if page.description %}<p class="lp-page-lede">{{ page.description }}</p>{% endif %}
+  </header>
+  <div class="lp-body">
+    {{ content }}
+  </div>
+</article>

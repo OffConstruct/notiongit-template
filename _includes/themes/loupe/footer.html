@@ -1,0 +1,7 @@
+{%- assign owner = site.data.home.name | default: site.author.name | default: site.title -%}
+<footer class="ink-footer lp-footer">
+  <p class="lp-footer-count">{{ site.posts.size }} {% if site.posts.size == 1 %}frame{% else %}frames{% endif %}, {{ site.tags.size }} {% if site.tags.size == 1 %}tag{% else %}tags{% endif %}</p>
+  <p><a href="{{ '/tags/' | relative_url }}">All tags</a></p>
+  <p><a href="{{ '/feed.xml' | relative_url }}">Feed</a></p>
+  <p class="lp-footer-owner">&copy; {{ 'now' | date: '%Y' }} {{ owner }}</p>
+</footer>

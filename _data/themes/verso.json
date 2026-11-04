@@ -1,0 +1,81 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "verso",
+  "name": "Verso",
+  "version": "1.0.0",
+  "summary": "The photobook spread: a quiet text column facing one uncropped plate and an index of work.",
+  "description": "Set like the left-hand page of a photobook. A fixed column holds your name, nav and a line of bio; one plate faces it at natural aspect, and every project is listed as an italic title with its year. Hovering a title lays its cover over the plate. For fine-art and documentary photographers.",
+  "categories": ["photographers", "artists"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "garamond",
+      "label": "EB Garamond",
+      "google": "family=EB+Garamond:ital,wght@0,400;0,500;1,400",
+      "stacks": {
+        "body": "\"EB Garamond\", \"Iowan Old Style\", \"Palatino Linotype\", Palatino, serif",
+        "display": "\"EB Garamond\", \"Iowan Old Style\", \"Palatino Linotype\", Palatino, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "piazzolla",
+      "label": "Piazzolla",
+      "google": "family=Piazzolla:ital,opsz,wght@0,8..30,400;0,8..30,500;1,8..30,400",
+      "stacks": {
+        "body": "Piazzolla, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, serif",
+        "display": "Piazzolla, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "newsreader",
+      "label": "Newsreader",
+      "google": "family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400",
+      "stacks": {
+        "body": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, serif",
+        "display": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#e9eded", "text": "#1b1d1d", "muted": "#5c6262" },
+    "dark": { "bg": "#141515", "text": "#e3e5e2", "muted": "#9aa09e" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent", "role": "text", "default": "ink", "custom": false,
+      "presets": [
+        { "value": "ink", "label": "Ink only", "light": "#1b1d1d", "dark": "#e3e5e2" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Typeface", "default": "garamond" },
+    { "key": "ground", "type": "select", "label": "Mount", "default": "mount",
+      "options": [
+        { "value": "mount", "label": "Print-mount grey" },
+        { "value": "paper", "label": "Warm paper" },
+        { "value": "white", "label": "Gallery white" } ] },
+    { "key": "column", "type": "select", "label": "Text column", "default": "left",
+      "options": [
+        { "value": "left", "label": "Fixed on the left" },
+        { "value": "top", "label": "One line at the top" } ] },
+    { "key": "home", "type": "select", "label": "Home page", "default": "spread",
+      "options": [
+        { "value": "spread", "label": "Plate and index" },
+        { "value": "index", "label": "Index only" },
+        { "value": "plate", "label": "Plate only" } ] },
+    { "key": "dates", "type": "select", "label": "Dates", "default": "year",
+      "options": [
+        { "value": "year", "label": "Year only" },
+        { "value": "full", "label": "Full date" },
+        { "value": "hidden", "label": "Hidden" } ] },
+    { "key": "plate_swap", "type": "boolean", "label": "Show a cover over the plate on hover", "default": true }
+  ]
+}

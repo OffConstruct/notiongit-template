@@ -1,0 +1,19 @@
+{%- assign owner = site.data.home.name | default: site.author.name | default: site.title -%}
+<header class="ink-header an-header">
+  <p class="an-wordmark"><a href="{{ '/' | relative_url }}">{{ owner }}</a></p>
+  {%- if site.data.nav and site.data.nav.size > 0 %}
+  <nav class="an-nav" aria-label="Main navigation">
+    <ul>
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      {%- assign is_active = false %}
+      {%- if page.url == item_url %}{% assign is_active = true %}{% endif %}
+      {%- if item.url != "/" and page.url contains item.url %}{% assign is_active = true %}{% endif %}
+      <li><a href="{{ item_url }}"{% if is_active %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+      {%- endfor %}
+    </ul>
+  </nav>
+  {%- else %}
+  <nav class="an-nav" aria-label="Main navigation"><p class="an-nav-empty" role="status">Navigation appears after the first sync.</p></nav>
+  {%- endif %}
+</header>
