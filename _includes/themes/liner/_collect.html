@@ -1,0 +1,23 @@
+{%- comment -%} Splits site.posts into upcoming and past dates (posts tagged with a live-music synonym) and the rest. Shows count as upcoming through the day they happen. {%- endcomment -%}
+{%- assign liner_date_tags = "live,tour,shows,show,gigs,gig,concerts,concert,dates" | split: "," -%}
+{%- assign liner_now_s = site.time | date: "%s" | plus: 0 -%}
+{%- assign liner_upcoming = "" | split: "" -%}
+{%- assign liner_past = "" | split: "" -%}
+{%- assign liner_rest = "" | split: "" -%}
+{%- for p in site.posts -%}
+  {%- assign liner_is_date = false -%}
+  {%- for t in p.tags -%}
+    {%- assign liner_t = t | downcase -%}
+    {%- if liner_date_tags contains liner_t -%}{%- assign liner_is_date = true -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if liner_is_date -%}
+    {%- assign liner_end_s = p.date | date: "%s" | plus: 86400 -%}
+    {%- if liner_end_s > liner_now_s -%}
+      {%- assign liner_upcoming = liner_upcoming | push: p -%}
+    {%- else -%}
+      {%- assign liner_past = liner_past | push: p -%}
+    {%- endif -%}
+  {%- else -%}
+    {%- assign liner_rest = liner_rest | push: p -%}
+  {%- endif -%}
+{%- endfor -%}

@@ -1,0 +1,26 @@
+<div class="ink-post-list liner-list liner-wrap">
+  <h1 class="liner-page-title">{{ page.title | default: "Log" }}</h1>
+  {%- if page.description %}
+  <p class="liner-page-dek">{{ page.description }}</p>
+  {%- endif %}
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign liner_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for y in liner_years %}
+  <section class="liner-year" aria-labelledby="liner-year-{{ y.name }}">
+    <h2 class="liner-year-label" id="liner-year-{{ y.name }}">{{ y.name }}</h2>
+    <ol class="liner-rows">
+      {%- for post in y.items %}
+      {% include themes/liner/_row.html post=post %}
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

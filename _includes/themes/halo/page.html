@@ -1,0 +1,12 @@
+<article class="ink-page halo-page">
+  <header class="halo-post-head">
+    {%- include themes/halo/_fit.html text=page.title %}
+    <h1 class="halo-post-title halo-fit"{% if halo_fit > 0 %} data-fit="{{ halo_fit }}"{% endif %}>{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="halo-page-dek">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="halo-prose page-content">
+    {{ content }}
+  </div>
+</article>

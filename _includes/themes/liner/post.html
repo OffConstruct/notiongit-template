@@ -1,0 +1,31 @@
+<article class="ink-post liner-post liner-wrap">
+  <header class="liner-post-head">
+    <p class="liner-post-meta">
+      {% include themes/liner/_date.html date=page.date %}
+      {%- for tag in page.tags %}
+      <a class="liner-tag" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">#{{ tag }}</a>
+      {%- endfor %}
+    </p>
+    <h1 class="liner-post-title">{{ page.title }}</h1>
+  </header>
+  {%- if page.cover_image %}
+  <img class="liner-post-cover" src="{{ page.cover_image }}" alt="" loading="eager">
+  {%- endif %}
+  <div class="liner-prose post-content">
+    {{ content }}
+  </div>
+  {%- if page.canonical_url %}
+  <p class="liner-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+  {%- endif %}
+  <nav class="liner-pager" aria-label="More posts">
+    <ul>
+      {%- if page.previous %}
+      <li><span class="liner-pager-k">Older</span> <a href="{{ page.previous.url | relative_url }}">{{ page.previous.title }}</a></li>
+      {%- endif %}
+      {%- if page.next %}
+      <li><span class="liner-pager-k">Newer</span> <a href="{{ page.next.url | relative_url }}">{{ page.next.title }}</a></li>
+      {%- endif %}
+      <li><a href="{{ '/blog/' | relative_url }}">All posts</a></li>
+    </ul>
+  </nav>
+</article>

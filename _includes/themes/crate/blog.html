@@ -1,0 +1,21 @@
+<div class="ink-post-list crate-list crate-wrap">
+  <header class="crate-list-head">
+    <h1 class="crate-page-title">{{ page.title | default: "Archive" }}</h1>
+    <p class="crate-page-dek">{% if page.description %}{{ page.description }} {% endif %}{% if site.posts.size > 0 %}<span class="crate-page-count">{{ site.posts.size }} {% if site.posts.size == 1 %}post{% else %}posts{% endif %}</span>{% endif %}</p>
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <ul class="crate-grid">
+    {%- for post in site.posts %}
+    {%- assign crate_tile_n = site.posts.size | minus: forloop.index0 %}
+    {% include themes/crate/_tile.html post=post n=crate_tile_n %}
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+</div>

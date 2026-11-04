@@ -1,0 +1,10 @@
+{%- comment -%} Sets halo_fit to the longest word's length, rounded up to an even step from 8 to 18, or 0 when every word fits the default size. The CSS shrinks wide-caps display type by it so a long name never breaks mid-word. {%- endcomment -%}
+{%- assign halo_fit = 0 -%}
+{%- assign halo_fit_words = include.text | strip_html | split: " " -%}
+{%- for w in halo_fit_words -%}{%- if w.size > halo_fit -%}{%- assign halo_fit = w.size -%}{%- endif -%}{%- endfor -%}
+{%- if halo_fit > 6 -%}
+  {%- assign halo_fit = halo_fit | plus: 1 | divided_by: 2 | times: 2 -%}
+  {%- if halo_fit > 18 -%}{%- assign halo_fit = 18 -%}{%- endif -%}
+{%- else -%}
+  {%- assign halo_fit = 0 -%}
+{%- endif -%}

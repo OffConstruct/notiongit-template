@@ -1,0 +1,3 @@
+{%- comment -%} Sets crate_n: the post's place in the whole archive, oldest = 1. {%- endcomment -%}
+{%- assign crate_n = nil -%}
+{%- for p in site.posts -%}{%- if p.url == include.post.url -%}{%- assign crate_n = site.posts.size | minus: forloop.index0 -%}{%- break -%}{%- endif -%}{%- endfor -%}

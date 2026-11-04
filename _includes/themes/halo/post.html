@@ -1,0 +1,35 @@
+<article class="ink-post halo-post">
+  {%- if page.cover_image %}
+  <div class="halo-post-band">
+    <span class="halo-post-art halo-duo"><img src="{{ page.cover_image }}" alt="" loading="eager"></span>
+  </div>
+  {%- endif %}
+  <header class="halo-post-head">
+    <p class="halo-post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %b %Y" }}</time>
+      {%- if page.tags.size > 0 %}
+      <span class="halo-post-tags">/
+        {%- for tag in page.tags %}
+        <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %},{% endunless %}
+        {%- endfor %}
+      </span>
+      {%- endif %}
+    </p>
+    {%- include themes/halo/_fit.html text=page.title %}
+    <h1 class="halo-post-title halo-fit"{% if halo_fit > 0 %} data-fit="{{ halo_fit }}"{% endif %}>{{ page.title }}</h1>
+  </header>
+  <div class="halo-prose post-content">
+    {{ content }}
+  </div>
+  {%- if page.canonical_url %}
+  <p class="halo-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+  {%- endif %}
+  <nav class="halo-pager" aria-label="More posts">
+    {%- if page.previous %}
+    <a class="halo-pager-link" href="{{ page.previous.url | relative_url }}"><span class="halo-pager-k">Older</span> <span class="halo-pager-t">{{ page.previous.title }}</span></a>
+    {%- endif %}
+    {%- if page.next %}
+    <a class="halo-pager-link halo-pager-link--next" href="{{ page.next.url | relative_url }}"><span class="halo-pager-k">Newer</span> <span class="halo-pager-t">{{ page.next.title }}</span></a>
+    {%- endif %}
+  </nav>
+</article>

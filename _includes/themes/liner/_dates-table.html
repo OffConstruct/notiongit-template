@@ -1,0 +1,19 @@
+<table class="liner-dates-table">
+  <caption class="liner-vh">{{ include.caption }}</caption>
+  <thead class="liner-vh"><tr><th scope="col">Date</th><th scope="col">Event</th><th scope="col">Details</th></tr></thead>
+  <tbody>
+    {%- assign liner_year = "" -%}
+    {%- for p in include.posts %}
+    {%- assign liner_y = p.date | date: "%Y" -%}
+    {%- if include.years and liner_y != liner_year %}
+    <tr class="liner-dates-year"><th colspan="3" scope="colgroup">{{ liner_y }}</th></tr>
+    {%- assign liner_year = liner_y -%}
+    {%- endif %}
+    <tr>
+      <td class="liner-dates-when">{% include themes/liner/_date.html date=p.date %}</td>
+      <td class="liner-dates-what"><a href="{{ p.url | relative_url }}">{{ p.title }}</a></td>
+      <td class="liner-dates-where">{% if p.excerpt %}{{ p.excerpt | strip_html | strip | truncate: 90 }}{% endif %}</td>
+    </tr>
+    {%- endfor %}
+  </tbody>
+</table>

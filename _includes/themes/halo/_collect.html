@@ -1,0 +1,23 @@
+{%- comment -%} Splits site.posts into upcoming and past dates (posts tagged with a live-music synonym) and the rest. Shows count as upcoming through the day they happen. {%- endcomment -%}
+{%- assign halo_date_tags = "live,tour,shows,show,gigs,gig,concerts,concert,dates" | split: "," -%}
+{%- assign halo_now_s = site.time | date: "%s" | plus: 0 -%}
+{%- assign halo_upcoming = "" | split: "" -%}
+{%- assign halo_past = "" | split: "" -%}
+{%- assign halo_rest = "" | split: "" -%}
+{%- for p in site.posts -%}
+  {%- assign halo_is_date = false -%}
+  {%- for t in p.tags -%}
+    {%- assign halo_t = t | downcase -%}
+    {%- if halo_date_tags contains halo_t -%}{%- assign halo_is_date = true -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if halo_is_date -%}
+    {%- assign halo_end_s = p.date | date: "%s" | plus: 86400 -%}
+    {%- if halo_end_s > halo_now_s -%}
+      {%- assign halo_upcoming = halo_upcoming | push: p -%}
+    {%- else -%}
+      {%- assign halo_past = halo_past | push: p -%}
+    {%- endif -%}
+  {%- else -%}
+    {%- assign halo_rest = halo_rest | push: p -%}
+  {%- endif -%}
+{%- endfor -%}

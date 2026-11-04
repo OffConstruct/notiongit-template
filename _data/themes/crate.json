@@ -1,0 +1,59 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "crate",
+  "name": "Crate",
+  "version": "0.1.0",
+  "summary": "A numbered crate of jewel cases on chrome: every release or episode as a tile, browsable by tag.",
+  "description": "Your back catalogue as numbered tiles on a chrome-silver ground. The home page leads with the latest featured episode or release, then a grid of square covers with No. badges, and an Explore panel of every tag with its count. Switch the archive to a compact table when it runs to hundreds. For podcasters and prolific producers.",
+  "categories": ["musicians"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "michroma",
+      "label": "Michroma and Nunito",
+      "google": "family=Michroma&family=Nunito:ital,wght@0,400..900;1,400..700",
+      "stacks": {
+        "body": "Nunito, \"Avenir Next\", Avenir, \"Segoe UI\", \"Helvetica Neue\", Arial, sans-serif",
+        "display": "Michroma, Eurostile, \"Microgramma\", \"Arial Black\", \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "ui-monospace, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#e0e4ea", "text": "#0b0d12", "muted": "#4a5160" },
+    "dark": { "bg": "#0b1020", "text": "#dce9ff", "muted": "#8fa0bf" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "light",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Chrome" },
+        { "value": "dark", "label": "Night" } ] },
+    { "key": "accent", "type": "color", "label": "Badge color", "role": "surface", "default": "acid", "custom": false,
+      "presets": [
+        { "value": "acid", "label": "Acid", "light": "#a8ff00", "dark": "#a8ff00", "on": "#0b0d12" },
+        { "value": "ice", "label": "Ice", "light": "#a3d5ff", "dark": "#a3d5ff", "on": "#0b0d12" },
+        { "value": "magenta", "label": "Magenta", "light": "#ff66c4", "dark": "#ff66c4", "on": "#0b0d12" },
+        { "value": "cyan", "label": "Cyan", "light": "#5fc9f8", "dark": "#5fc9f8", "on": "#0b0d12" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "density", "type": "select", "label": "Archive", "default": "tiles",
+      "options": [
+        { "value": "tiles", "label": "Tiles" },
+        { "value": "large", "label": "Large tiles" },
+        { "value": "table", "label": "Table" } ] },
+    { "key": "numbering", "type": "boolean", "label": "No. badges", "default": true },
+    { "key": "covers", "type": "select", "label": "Covers", "default": "square",
+      "options": [
+        { "value": "square", "label": "Square" },
+        { "value": "original", "label": "Original shape" } ] },
+    { "key": "corners", "type": "select", "label": "Corners", "default": "gummy",
+      "options": [
+        { "value": "gummy", "label": "Gummy" },
+        { "value": "soft", "label": "Soft" },
+        { "value": "square", "label": "Square" } ] },
+    { "key": "edge", "type": "boolean", "label": "Iridescent edge on the featured tile", "default": true }
+  ]
+}

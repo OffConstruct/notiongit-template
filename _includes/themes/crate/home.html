@@ -1,0 +1,80 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home crate-home crate-wrap">
+  {%- if home and home.name and home.name != "" %}
+  {%- assign crate_featured = site.posts | where: "featured", true -%}
+  {%- assign crate_lead = crate_featured | first -%}
+  {%- unless crate_lead -%}{%- assign crate_lead = site.posts | first -%}{%- endunless -%}
+  {%- if crate_lead %}
+  {%- include themes/crate/_number.html post=crate_lead -%}
+  <section class="crate-hero{% if crate_lead.cover_image %} crate-hero--art{% endif %}" aria-labelledby="crate-hero-title">
+    <div class="crate-hero-text">
+      <p class="crate-hero-k"><span class="crate-badge crate-badge--big">No.&nbsp;{{ crate_n }}</span>{% if crate_lead.featured %}<span class="crate-hero-kind">Featured</span>{% else %}<span class="crate-hero-kind">Latest</span>{% endif %}</p>
+      <h2 class="crate-hero-title" id="crate-hero-title">{{ crate_lead.title }}</h2>
+      <p class="crate-hero-meta"><time datetime="{{ crate_lead.date | date_to_xmlschema }}">{{ crate_lead.date | date: "%-d %B %Y" }}</time>{% if crate_lead.tags.size > 0 %} <span class="crate-sep" aria-hidden="true">/</span> {{ crate_lead.tags | join: ", " }}{% endif %}</p>
+      {%- if crate_lead.excerpt %}
+      <p class="crate-hero-excerpt">{{ crate_lead.excerpt | strip_html | strip | truncate: 240 }}</p>
+      {%- endif %}
+      <p class="crate-hero-cta"><a class="crate-pill crate-pill--solid" href="{{ crate_lead.url | relative_url }}" aria-describedby="crate-hero-title">Read the notes</a></p>
+    </div>
+    {%- if crate_lead.cover_image %}
+    <div class="crate-hero-art"><img src="{{ crate_lead.cover_image }}" alt="" loading="eager"></div>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  <section class="crate-archive" aria-labelledby="crate-archive-h">
+    <div class="crate-head">
+      <h2 class="crate-h" id="crate-archive-h">Archive</h2>
+      {%- if site.posts.size > 12 %}
+      <a class="crate-pill" href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} posts</a>
+      {%- endif %}
+    </div>
+    <ul class="crate-grid">
+      {%- for post in site.posts limit: 12 %}
+      {%- assign crate_tile_n = site.posts.size | minus: forloop.index0 %}
+      {% include themes/crate/_tile.html post=post n=crate_tile_n %}
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- else %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your archive will appear here"
+    copy="Each post you publish in Notion becomes a numbered tile, newest first."
+  %}
+  {%- endif %}
+
+  {%- assign crate_tags = site.tags | sort -%}
+  {%- assign crate_has_bio = false -%}{%- if home.bio and home.bio != "" -%}{%- assign crate_has_bio = true -%}{%- endif %}
+  {%- if crate_has_bio or crate_tags.size > 0 %}
+  <div class="crate-info{% if home.bio and home.bio != "" and crate_tags.size > 0 %} crate-info--two{% endif %}">
+    {%- if home.bio and home.bio != "" %}
+    <section class="crate-panel crate-about" aria-labelledby="crate-about-h">
+      <h2 class="crate-h" id="crate-about-h">About</h2>
+      <div class="crate-prose crate-bio">{{ home.bio | markdownify }}</div>
+    </section>
+    {%- endif %}
+    {%- if crate_tags.size > 0 %}
+    <section class="crate-panel crate-explore" aria-labelledby="crate-explore-h">
+      <h2 class="crate-h" id="crate-explore-h">Explore</h2>
+      <ul class="crate-chips">
+        {%- for t in crate_tags %}
+        <li><a class="crate-pill crate-chip" href="{{ '/tags/' | relative_url }}#{{ t[0] | slugify }}">{{ t[0] }} <span class="crate-count">{{ t[1].size }}</span></a></li>
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endif %}
+  </div>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

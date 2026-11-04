@@ -1,0 +1,6 @@
+{%- comment -%} Square art for a post: the cover in the theme's image treatment, or a signal field set like a flyer with the day and month (the title already sits under the art). {%- endcomment -%}
+{%- if include.post.cover_image -%}
+<span class="halo-art halo-duo"><img src="{{ include.post.cover_image }}" alt="" loading="{{ include.loading | default: 'lazy' }}"></span>
+{%- else -%}
+<span class="halo-art halo-art--type" aria-hidden="true"><span class="halo-art-day">{{ include.post.date | date: "%d" }}</span><span class="halo-art-mon">{{ include.post.date | date: "%b" }}</span></span>
+{%- endif -%}

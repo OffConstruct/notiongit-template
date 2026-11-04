@@ -1,0 +1,10 @@
+<li class="halo-card">
+  <a class="halo-card-link" href="{{ include.post.url | relative_url }}">
+    {% include themes/halo/_art.html post=include.post %}
+    <span class="halo-card-meta"><time datetime="{{ include.post.date | date_to_xmlschema }}">{{ include.post.date | date: "%-d %b %Y" }}</time>{% if include.post.tags.size > 0 %} <span class="halo-card-tags">/ {{ include.post.tags | join: ", " }}</span>{% endif %}</span>
+    <span class="halo-card-title">{{ include.post.title }}</span>
+  </a>
+  {%- if include.excerpt and include.post.excerpt %}
+  <p class="halo-card-excerpt">{{ include.post.excerpt | strip_html | strip | truncate: 140 }}</p>
+  {%- endif %}
+</li>

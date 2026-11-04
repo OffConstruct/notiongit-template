@@ -1,0 +1,26 @@
+name: "Rowan Vale"
+tagline: "Producer, DJ and host of Low Water, a radio show recorded at the harbour."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "Bandcamp"
+    url: "https://bandcamp.example/rowanvale"
+  - name: "SoundCloud"
+    url: "https://soundcloud.example/rowanvale"
+  - name: "Resident Advisor"
+    url: "https://ra.example/dj/rowanvale"
+  - name: "Apple Podcasts"
+    url: "https://podcasts.example/low-water"
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "RSS"
+    url: "{{BASEURL}}/feed.xml"
+bio: |
+  I make slow electronic music out of field recordings from the harbour, play
+  records on Friday nights, and host [Low Water]({{BASEURL}}/blog/), a monthly
+  radio show about sound and the sea. Start with the [new EP]({{BASEURL}}/2026/02/20/slack-water/)
+  or see [where I am playing]({{BASEURL}}/now/).
+
+  ## Booking
+
+  - Europe: [bookings@example.com](mailto:bookings@example.com)
+  - Press and radio: [press@example.com](mailto:press@example.com)

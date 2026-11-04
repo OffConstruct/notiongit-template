@@ -1,0 +1,107 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home halo-home">
+  {%- if home and home.name and home.name != "" %}
+  {%- include themes/halo/_collect.html -%}
+  {%- assign halo_featured = site.posts | where: "featured", true -%}
+  {%- assign halo_lead = halo_featured | where_exp: "p", "p.cover_image" | first -%}
+  {%- unless halo_lead -%}{%- assign halo_lead = halo_rest | where_exp: "p", "p.cover_image" | first -%}{%- endunless -%}
+  <section class="halo-poster{% if home.profile_picture and home.profile_picture != "" %} halo-poster--has-portrait{% endif %}{% if halo_lead %} halo-poster--has-lead{% endif %}" aria-labelledby="halo-name">
+    <div class="halo-horizon" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    {%- if home.profile_picture and home.profile_picture != "" %}
+    <span class="halo-poster-portrait halo-duo"><img src="{{ home.profile_picture }}" alt="" loading="eager"></span>
+    {%- endif %}
+    <div class="halo-poster-type">
+      {%- include themes/halo/_fit.html text=home.name %}
+      <h1 class="halo-name halo-fit" id="halo-name"{% if halo_fit > 0 %} data-fit="{{ halo_fit }}"{% endif %}>{{ home.name }}</h1>
+      {%- if home.tagline and home.tagline != "" %}
+      <p class="halo-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+    </div>
+    {%- if halo_lead %}
+    <a class="halo-lead" href="{{ halo_lead.url | relative_url }}">
+      {% include themes/halo/_art.html post=halo_lead loading="eager" %}
+      <span class="halo-lead-text"><span class="halo-lead-kicker">New</span> <span class="halo-lead-title">{{ halo_lead.title }}</span></span>
+    </a>
+    {%- endif %}
+  </section>
+
+  {%- if halo_upcoming.size > 0 or halo_past.size > 0 %}
+  <section class="halo-section halo-dates" aria-labelledby="halo-dates-h">
+    <h2 class="halo-h" id="halo-dates-h">Dates</h2>
+    {%- if halo_upcoming.size > 0 %}
+    <ol class="halo-gigs">
+      {%- for p in halo_upcoming reversed %}
+      {% include themes/halo/_gig.html post=p next=forloop.first %}
+      {%- endfor %}
+    </ol>
+    {%- else %}
+    <p class="halo-none">No dates announced right now.</p>
+    {%- endif %}
+    {%- if halo_past.size > 0 %}
+    <details class="halo-past">
+      <summary>Past dates ({{ halo_past.size }})</summary>
+      <ol class="halo-gigs halo-gigs--past">
+        {%- for p in halo_past %}
+        {% include themes/halo/_gig.html post=p %}
+        {%- endfor %}
+      </ol>
+    </details>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
+  {%- if halo_rest.size > 0 %}
+  <section class="halo-section halo-latest" aria-labelledby="halo-latest-h">
+    <div class="halo-section-head">
+      <h2 class="halo-h" id="halo-latest-h">Latest</h2>
+      <a class="halo-more" href="{{ '/blog/' | relative_url }}">{% if site.posts.size > 1 %}All {{ site.posts.size }} posts{% else %}All posts{% endif %}</a>
+    </div>
+    <ul class="halo-releases">
+      {%- for post in halo_rest limit: 10 %}
+      {% include themes/halo/_card.html post=post %}
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- elsif site.posts.size == 0 %}
+  <section class="halo-section">
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your releases will appear here"
+    copy="Posts you publish in Notion show up here with their covers. Tag a post live to list it under Dates."
+  %}
+  </section>
+  {%- endif %}
+
+  {%- if home.bio and home.bio != "" %}
+  <section class="halo-section halo-about{% if home.profile_picture and home.profile_picture != "" %} halo-about--pic{% endif %}" aria-labelledby="halo-about-h">
+    <h2 class="halo-h" id="halo-about-h">About</h2>
+    {%- if home.profile_picture and home.profile_picture != "" %}
+    <span class="halo-about-pic halo-duo"><img src="{{ home.profile_picture }}" alt="{{ home.name }}" loading="lazy"></span>
+    {%- endif %}
+    <div class="halo-prose halo-bio">{{ home.bio | markdownify }}</div>
+  </section>
+  {%- endif %}
+
+  {%- if home.social_links.size > 0 %}
+  <section class="halo-section halo-listen" aria-labelledby="halo-listen-h">
+    <h2 class="halo-h halo-h--small" id="halo-listen-h">Listen and follow</h2>
+    <ul class="halo-links">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <section class="halo-section">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </section>
+  {%- endif %}
+</div>

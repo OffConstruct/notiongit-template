@@ -1,0 +1,33 @@
+{%- assign home = site.data.home -%}
+{%- assign liner_who = home.name | default: site.author.name | default: site.title -%}
+<header class="ink-header liner-header">
+  <div class="liner-wrap">
+    {%- if page.layout == "home" and home.name and home.name != "" %}
+    <h1 class="liner-name">{{ liner_who }}</h1>
+    {%- else %}
+    <p class="liner-name"><a href="{{ '/' | relative_url }}">{{ liner_who }}</a></p>
+    {%- endif %}
+    {%- if page.layout == "home" and home.tagline and home.tagline != "" %}
+    <p class="liner-tagline">{{ home.tagline }}</p>
+    {%- endif %}
+    {%- if home.social_links.size > 0 %}
+    <ul class="liner-social" aria-label="Listen and follow">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="liner-nav" aria-label="Main navigation">
+      <ul>
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        <li><a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- else %}
+    <p class="liner-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

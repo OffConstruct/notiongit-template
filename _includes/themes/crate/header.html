@@ -1,0 +1,49 @@
+{%- assign home = site.data.home -%}
+{%- assign crate_who = home.name | default: site.author.name | default: site.title -%}
+{%- assign crate_on_home = false -%}
+{%- if page.layout == "home" and home.name and home.name != "" -%}{%- assign crate_on_home = true -%}{%- endif -%}
+<header class="ink-header crate-header">
+  <div class="crate-wrap">
+    <div class="crate-bar">
+      {%- if crate_on_home %}<div class="crate-id">{% else %}<a class="crate-id" href="{{ '/' | relative_url }}">{% endif %}
+        {%- if home.profile_picture and home.profile_picture != "" %}
+        <img class="crate-avatar" src="{{ home.profile_picture }}" alt="" width="56" height="56">
+        {%- else %}
+        <span class="crate-avatar crate-avatar--blank" aria-hidden="true">{{ crate_who | slice: 0 | upcase }}</span>
+        {%- endif %}
+        <span class="crate-id-text">
+          {%- if crate_on_home %}
+          <h1 class="crate-name">{{ crate_who }}</h1>
+          {%- else %}
+          <span class="crate-name">{{ crate_who }}</span>
+          {%- endif %}
+          {%- if home.tagline and home.tagline != "" %}
+          <span class="crate-tagline">{{ home.tagline }}</span>
+          {%- endif %}
+        </span>
+      {% if crate_on_home %}</div>{% else %}</a>{% endif %}
+      {%- if site.data.nav and site.data.nav.size > 0 %}
+      <nav class="crate-nav" aria-label="Main navigation">
+        <ul>
+          {%- for item in site.data.nav %}
+          {%- assign item_url = item.url | relative_url %}
+          <li><a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+          {%- endfor %}
+        </ul>
+      </nav>
+      {%- else %}
+      <p class="crate-nav-empty" role="status">Navigation will appear after the first sync.</p>
+      {%- endif %}
+    </div>
+    {%- if home.social_links.size > 0 %}
+    <div class="crate-listen">
+      <span class="crate-listen-k" id="crate-listen-k">Listen and follow</span>
+      <ul aria-labelledby="crate-listen-k">
+        {%- for link in home.social_links %}
+        <li><a class="crate-pill" href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+    </div>
+    {%- endif %}
+  </div>
+</header>

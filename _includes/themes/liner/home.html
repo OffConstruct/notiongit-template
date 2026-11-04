@@ -1,0 +1,83 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home liner-home liner-wrap">
+  {%- if home and home.name and home.name != "" %}
+  {%- include themes/liner/_collect.html -%}
+  {%- assign liner_featured = site.posts | where: "featured", true -%}
+  {%- assign liner_current = liner_featured | first -%}
+  {%- unless liner_current -%}{%- assign liner_current = liner_rest | first -%}{%- endunless -%}
+  {%- assign liner_has_dates = false -%}
+  {%- if liner_upcoming.size > 0 or liner_past.size > 0 -%}{%- assign liner_has_dates = true -%}{%- endif -%}
+  {%- if liner_current or liner_has_dates %}
+  <div class="liner-grid{% unless liner_current and liner_has_dates %} liner-grid--single{% endunless %}">
+    {%- if liner_current %}
+    <section class="liner-current" aria-labelledby="liner-current-label">
+      <h2 class="liner-label" id="liner-current-label">Current</h2>
+      <h3 class="liner-current-title"><a href="{{ liner_current.url | relative_url }}">{{ liner_current.title }}</a></h3>
+      <p class="liner-current-date">{% include themes/liner/_date.html date=liner_current.date %}</p>
+      {%- if liner_current.cover_image %}
+      <img class="liner-current-cover" src="{{ liner_current.cover_image }}" alt="" loading="eager">
+      {%- endif %}
+      {%- if liner_current.excerpt %}
+      <p class="liner-current-excerpt">{{ liner_current.excerpt | strip_html | strip | truncate: 260 }}</p>
+      {%- endif %}
+    </section>
+    {%- endif %}
+    {%- if liner_has_dates %}
+    <section class="liner-dates" aria-labelledby="liner-dates-label">
+      <h2 class="liner-label" id="liner-dates-label">Dates</h2>
+      {%- if liner_upcoming.size > 0 %}
+      {%- assign liner_up = liner_upcoming | reverse %}
+      {% include themes/liner/_dates-table.html posts=liner_up caption="Upcoming dates" years=true %}
+      {%- else %}
+      <p class="liner-dates-none">No dates announced right now.</p>
+      {%- endif %}
+      {%- if liner_past.size > 0 %}
+      <details class="liner-past">
+        <summary>Past dates ({{ liner_past.size }})</summary>
+        {% include themes/liner/_dates-table.html posts=liner_past caption="Past dates" years=true %}
+      </details>
+      {%- endif %}
+    </section>
+    {%- endif %}
+  </div>
+  {%- endif %}
+  {%- if home.bio and home.bio != "" %}
+  <section class="liner-bio{% if home.profile_picture and home.profile_picture != "" %} liner-bio--pic{% endif %}" aria-label="About">
+    {%- if home.profile_picture and home.profile_picture != "" %}
+    <img class="liner-bio-pic" src="{{ home.profile_picture }}" alt="{{ home.name }}" width="96" height="96" loading="lazy">
+    {%- endif %}
+    <div class="liner-prose liner-bio-text">{{ home.bio | markdownify }}</div>
+  </section>
+  {%- endif %}
+  {%- if site.posts.size > 0 %}
+  <section class="liner-log" aria-labelledby="liner-log-label">
+    <h2 class="liner-label" id="liner-log-label">Log</h2>
+    <ol class="liner-rows">
+      {%- for post in site.posts limit: 16 %}
+      {%- assign liner_row_is_date = true -%}
+      {%- if liner_rest contains post -%}{%- assign liner_row_is_date = false -%}{%- endif %}
+      {% include themes/liner/_row.html post=post date_row=liner_row_is_date %}
+      {%- endfor %}
+    </ol>
+    {%- if site.posts.size > 16 %}
+    <p class="liner-more"><a href="{{ '/blog/' | relative_url }}">Full log ({{ site.posts.size }} posts)</a></p>
+    {%- endif %}
+  </section>
+  {%- else %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your log will appear here"
+    copy="Posts you publish in Notion show up here, newest first. Tag a post live to list it under Dates."
+  %}
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

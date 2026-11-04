@@ -1,0 +1,44 @@
+{%- include themes/crate/_number.html post=page -%}
+<article class="ink-post crate-post crate-wrap{% if page.cover_image %} crate-post--art{% endif %}">
+  <header class="crate-post-head">
+    <h1 class="crate-post-title">{{ page.title }}</h1>
+  </header>
+  <aside class="crate-side" aria-label="Post details">
+    <div class="crate-side-card">
+      {%- if page.cover_image %}
+      <img class="crate-side-cover" src="{{ page.cover_image }}" alt="" loading="eager">
+      {%- endif %}
+      {%- if crate_n %}
+      <p class="crate-side-n"><span class="crate-badge crate-badge--big">No.&nbsp;{{ crate_n }}</span></p>
+      {%- endif %}
+      <dl class="crate-side-dl">
+        <dt>Date</dt>
+        <dd><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time></dd>
+        {%- if page.tags.size > 0 %}
+        <dt>Tags</dt>
+        <dd><ul class="crate-chips">
+          {%- for tag in page.tags %}
+          <li><a class="crate-pill crate-chip" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>
+          {%- endfor %}
+        </ul></dd>
+        {%- endif %}
+      </dl>
+    </div>
+  </aside>
+  <div class="crate-post-body">
+    <div class="crate-prose post-content">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="crate-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <nav class="crate-pager" aria-label="More posts">
+      {%- if page.previous %}
+      <a class="crate-pager-link" href="{{ page.previous.url | relative_url }}"><span class="crate-pager-k">Older</span> <span class="crate-pager-t">{{ page.previous.title }}</span></a>
+      {%- endif %}
+      {%- if page.next %}
+      <a class="crate-pager-link crate-pager-link--next" href="{{ page.next.url | relative_url }}"><span class="crate-pager-k">Newer</span> <span class="crate-pager-t">{{ page.next.title }}</span></a>
+      {%- endif %}
+    </nav>
+  </div>
+</article>

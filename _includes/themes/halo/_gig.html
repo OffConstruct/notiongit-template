@@ -1,0 +1,9 @@
+<li class="halo-gig{% if include.next %} halo-gig--next{% endif %}">
+  <time class="halo-gig-date" datetime="{{ include.post.date | date_to_xmlschema }}"><span class="halo-gig-day">{{ include.post.date | date: "%d" }}</span> <span class="halo-gig-mon">{{ include.post.date | date: "%b" }}</span> <span class="halo-gig-yr">{{ include.post.date | date: "%Y" }}</span></time>
+  <span class="halo-gig-body">
+    <a class="halo-gig-title" href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a>
+    {%- if include.post.excerpt %}
+    <span class="halo-gig-where">{{ include.post.excerpt | strip_html | strip | truncate: 90 }}</span>
+    {%- endif %}
+  </span>
+</li>

@@ -1,0 +1,23 @@
+{%- assign home = site.data.home -%}
+{%- assign halo_who = home.name | default: site.author.name | default: site.title -%}
+{%- assign halo_on_home = false -%}
+{%- if page.layout == "home" and home.name and home.name != "" -%}{%- assign halo_on_home = true -%}{%- endif -%}
+<header class="ink-header halo-header{% if halo_on_home %} halo-header--poster{% endif %}">
+  <div class="halo-bar">
+    {%- unless halo_on_home %}
+    <a class="halo-mark" href="{{ '/' | relative_url }}">{{ halo_who }}</a>
+    {%- endunless %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="halo-nav" aria-label="Main navigation">
+      <ul>
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        <li><a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- else %}
+    <p class="halo-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

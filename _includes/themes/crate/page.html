@@ -1,0 +1,11 @@
+<article class="ink-page crate-page crate-wrap">
+  <header class="crate-list-head">
+    <h1 class="crate-post-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="crate-page-dek">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="crate-prose page-content">
+    {{ content }}
+  </div>
+</article>

@@ -1,0 +1,24 @@
+<div class="ink-post-list halo-list">
+  <header class="halo-list-head">
+    {%- assign halo_list_title = page.title | default: "Posts" %}
+    {%- include themes/halo/_fit.html text=halo_list_title %}
+    <h1 class="halo-page-title halo-fit"{% if halo_fit > 0 %} data-fit="{{ halo_fit }}"{% endif %}>{{ halo_list_title }}</h1>
+    {%- if page.description %}
+    <p class="halo-page-dek">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <ul class="halo-cards">
+    {%- for post in site.posts %}
+    {% include themes/halo/_card.html post=post excerpt=true %}
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+</div>
