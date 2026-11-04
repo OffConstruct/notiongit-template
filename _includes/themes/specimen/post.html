@@ -1,0 +1,43 @@
+{%- assign spec_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign spec_dek = page.excerpt | strip_html | strip -%}
+{%- assign spec_min = content | number_of_words | divided_by: 230 | plus: 1 -%}
+<div class="ink-post spec-post spec-wrap">
+  <article class="spec-grid">
+    <div class="spec-side">
+      <dl class="spec-meta">
+        <div><dt>Published</dt><dd><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time></dd></div>
+        <div><dt>Reading</dt><dd>{{ spec_min }} min</dd></div>
+        {%- if page.tags.size > 0 %}
+        <div><dt>Tags</dt><dd>{% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</dd></div>
+        {%- endif %}
+        {%- if page.canonical_url %}
+        <div><dt>First in</dt><dd><a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a></dd></div>
+        {%- endif %}
+      </dl>
+    </div>
+    <div class="spec-main">
+      <header class="spec-post-head">
+        <h1 class="spec-title">{{ page.title }}</h1>
+        {%- if spec_dek != "" and spec_dek != spec_first %}
+        <p class="spec-dek">{{ spec_dek }}</p>
+        {%- endif %}
+      </header>
+      {%- if page.cover_image %}
+      <figure class="spec-cover"><img src="{{ page.cover_image }}" alt="" loading="lazy"></figure>
+      {%- endif %}
+      <div class="spec-prose spec-reading">
+        {{ content | replace: '<table>', '<div class="spec-table-scroll" role="region" aria-label="Table" tabindex="0"><table>' | replace: '</table>', '</table></div>' }}
+      </div>
+      {%- if page.previous or page.next %}
+      <nav class="spec-pager" aria-label="More posts">
+        {%- if page.next %}
+        <a href="{{ page.next.url | relative_url }}"><span class="spec-pager-label">Newer</span> {{ page.next.title }}</a>
+        {%- endif %}
+        {%- if page.previous %}
+        <a href="{{ page.previous.url | relative_url }}"><span class="spec-pager-label">Older</span> {{ page.previous.title }}</a>
+        {%- endif %}
+      </nav>
+      {%- endif %}
+    </div>
+  </article>
+</div>

@@ -1,0 +1,15 @@
+<div class="ink-page spec-page spec-wrap">
+  <div class="spec-grid">
+    <div class="spec-side">
+      {%- if page.description %}
+      <p class="spec-side-note">{{ page.description }}</p>
+      {%- endif %}
+    </div>
+    <div class="spec-main">
+      <h1 class="spec-title">{{ page.title }}</h1>
+      <div class="spec-prose spec-reading">
+        {{ content | replace: '<table>', '<div class="spec-table-scroll" role="region" aria-label="Table" tabindex="0"><table>' | replace: '</table>', '</table></div>' }}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+{%- assign home = site.data.home -%}
+<footer class="ink-footer poster-footer">
+  <div class="poster-wrap">
+    {%- if home.social_links.size > 0 %}
+    <ul class="poster-elsewhere" role="list" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    <div class="poster-footer-meta">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ home.name | default: site.author.name | default: site.title }}</p>
+      <p class="poster-colophon">Set in Bricolage Grotesque and Public Sans.</p>
+    </div>
+  </div>
+</footer>

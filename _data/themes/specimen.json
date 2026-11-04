@@ -1,0 +1,60 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "specimen",
+  "name": "Specimen",
+  "version": "1.0.0",
+  "summary": "The archive table: identity in a fixed left column, every post a row in a typeset index.",
+  "description": "A 12-column page with Rethink Sans heads over IBM Plex Sans, and Azeret Mono as the material. Name, bio and links stay in a sticky left column while Selected and Writing run as hairline tables of year, title and tags, each headed with its real count. One spot color marks rules, focus and the active tag. For type, systems and UX designers who think in grids.",
+  "categories": ["designers"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page", "tags"],
+  "fonts": [
+    {
+      "value": "rethink",
+      "label": "Rethink Sans, Plex Sans, Azeret Mono",
+      "google": "family=Rethink+Sans:wght@600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Azeret+Mono:wght@400;500",
+      "stacks": {
+        "body": "\"IBM Plex Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Rethink Sans\", \"IBM Plex Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "\"Azeret Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#fbfbf9", "text": "#111110", "muted": "#5c5c58" },
+    "dark": { "bg": "#0e0e0d", "text": "#f0f0ee", "muted": "#a3a39e" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Spot color", "role": "large", "default": "cobalt", "custom": true,
+      "presets": [
+        { "value": "orange", "label": "Orange", "light": "#ff4a00", "dark": "#ff6a2b" },
+        { "value": "cobalt", "label": "Cobalt", "light": "#2340ff", "dark": "#7d8cff" },
+        { "value": "red", "label": "Red", "light": "#e10600", "dark": "#ff5a4f" },
+        { "value": "green", "label": "Green", "light": "#00a050", "dark": "#2ecc71" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "index_view", "type": "select", "label": "Selected work", "default": "table",
+      "options": [
+        { "value": "table", "label": "Table rows" },
+        { "value": "grid", "label": "Cover grid with captions" } ] },
+    { "key": "index_scale", "type": "select", "label": "Index type size", "default": "regular",
+      "options": [
+        { "value": "regular", "label": "Regular mono rows" },
+        { "value": "large", "label": "Large sans titles" } ] },
+    { "key": "density", "type": "select", "label": "Row height", "default": "comfortable",
+      "options": [
+        { "value": "comfortable", "label": "Comfortable" },
+        { "value": "compact", "label": "Compact" } ] },
+    { "key": "show_tags", "type": "boolean", "label": "Tags column", "default": true },
+    { "key": "identity", "type": "select", "label": "Identity column", "default": "sticky",
+      "options": [
+        { "value": "sticky", "label": "Sticky on the left" },
+        { "value": "top", "label": "Block above the index" } ] }
+  ]
+}

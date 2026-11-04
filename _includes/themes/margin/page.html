@@ -1,0 +1,9 @@
+<div class="ink-page margin-page margin-col">
+  <h1 class="margin-h margin-page-title">{{ page.title }}</h1>
+  {%- if page.description %}
+  <p class="margin-dek">{{ page.description }}</p>
+  {%- endif %}
+  <div class="margin-prose margin-reading">
+    {{ content | replace: '<table>', '<div class="margin-table" role="region" aria-label="Table" tabindex="0"><table>' | replace: '</table>', '</table></div>' }}
+  </div>
+</div>

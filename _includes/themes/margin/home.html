@@ -1,0 +1,71 @@
+{%- assign home = site.data.home -%}
+{%- assign margin_h_name = home.name | strip -%}
+{%- assign margin_h_tagline = home.tagline | strip -%}
+{%- assign margin_h_pic = home.profile_picture | strip -%}
+{%- assign margin_h_bio = home.bio | strip -%}
+{%- assign margin_selected = site.posts | where: "featured", true -%}
+<div class="ink-home margin-home margin-col">
+  {%- if margin_h_name != "" %}
+  <header class="margin-intro{% if margin_h_pic != "" %} has-avatar{% endif %}">
+    {%- if margin_h_pic != "" %}
+    <img class="margin-avatar" src="{{ home.profile_picture }}" alt="" width="40" height="40">
+    {%- endif %}
+    <div class="margin-intro-text">
+      <h1 class="margin-name">{{ home.name }}</h1>
+      {%- if margin_h_tagline != "" %}
+      <p class="margin-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+    </div>
+  </header>
+
+  {%- if margin_h_bio != "" %}
+  <div class="margin-bio margin-prose">{{ home.bio | markdownify }}</div>
+  {%- endif %}
+
+  <div class="margin-sections">
+    {%- if margin_selected.size > 0 %}
+    <section class="margin-section margin-selected" aria-labelledby="margin-selected-h">
+      <h2 class="margin-h" id="margin-selected-h">Selected</h2>
+      <ul class="margin-picks" role="list">
+        {%- for post in margin_selected %}
+        <li>
+          <a class="margin-pick-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          {%- if post.excerpt %}
+          <p class="margin-pick-line">{{ post.excerpt | strip_html | strip | truncate: 140 }}</p>
+          {%- endif %}
+        </li>
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endif %}
+
+    <section class="margin-section margin-writing{% if margin_selected.size == site.posts.size %} is-all-featured{% endif %}" aria-labelledby="margin-writing-h">
+      <h2 class="margin-h" id="margin-writing-h">Writing</h2>
+      {%- if site.posts.size > 0 %}
+      {% include themes/margin/_rows.html posts=site.posts limit=14 %}
+      {%- if site.posts.size > 14 %}
+      <p class="margin-more"><a href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} posts, by year</a></p>
+      {%- endif %}
+      {%- else %}
+      <p class="margin-note">Posts you publish in Notion will be listed here after the next sync.</p>
+      {%- endif %}
+    </section>
+
+    {%- if home.social_links.size > 0 %}
+    <section class="margin-section margin-elsewhere" aria-labelledby="margin-elsewhere-h">
+      <h2 class="margin-h" id="margin-elsewhere-h">Elsewhere</h2>
+      <p class="margin-links">{% for link in home.social_links %}<a href="{{ link.url }}">{{ link.name }}</a>{% if forloop.rindex == 2 %} and {% elsif forloop.last == false %}, {% endif %}{% endfor %}.</p>
+    </section>
+    {%- endif %}
+  </div>
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="Setup in progress"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

@@ -1,0 +1,20 @@
+<div class="ink-post-list spec-archive spec-wrap">
+  <div class="spec-grid">
+    <div class="spec-side">
+      <h1 class="spec-name">{{ page.title | default: "Writing" }}</h1>
+      <p class="spec-tagline">{{ site.posts.size }} {% if site.posts.size == 1 %}post{% else %}posts{% endif %}, newest first.</p>
+    </div>
+    <div class="spec-index">
+      {%- if site.posts.size == 0 %}
+      {% include empty-state.html
+        kicker="Notion posts"
+        title="Your posts will appear here"
+        copy="Published posts will show up automatically after your first sync completes."
+        note="If nothing appears after a few minutes, run the sync from the Actions tab."
+      %}
+      {%- else %}
+      {% include themes/specimen/_table.html posts=site.posts limit=1000 label="All posts" %}
+      {%- endif %}
+    </div>
+  </div>
+</div>

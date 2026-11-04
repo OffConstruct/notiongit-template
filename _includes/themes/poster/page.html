@@ -1,0 +1,15 @@
+<div class="ink-page poster-page">
+  <section class="poster-band poster-page-head">
+    <div class="poster-wrap">
+      <h1 class="poster-page-title">{{ page.title }}</h1>
+      {%- if page.description %}
+      <p class="poster-dek">{{ page.description }}</p>
+      {%- endif %}
+    </div>
+  </section>
+  <div class="poster-wrap poster-post-body">
+    <div class="poster-prose poster-reading">
+      {{ content | replace: '<table>', '<div class="poster-table" role="region" aria-label="Table" tabindex="0"><table>' | replace: '</table>', '</table></div>' }}
+    </div>
+  </div>
+</div>

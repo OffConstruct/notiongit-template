@@ -1,0 +1,33 @@
+{%- assign tags_list = site.tags | sort -%}
+<div class="ink-tags spec-tags spec-wrap">
+  <div class="spec-grid">
+    <div class="spec-side">
+      <h1 class="spec-name">Tags</h1>
+      {%- if tags_list.size > 0 %}
+      <ul class="spec-tag-index" role="list">
+        {%- for tag in tags_list %}
+        <li><a href="#{{ tag[0] | slugify }}"><span>{{ tag[0] }}</span> <span class="spec-count">{{ tag[1].size }}</span></a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+    <div class="spec-index">
+      {%- if tags_list.size == 0 %}
+      {% include empty-state.html
+        kicker="Notion tags"
+        title="Your tags will appear here"
+        copy="Tags from your published posts will be collected here automatically."
+      %}
+      {%- else %}
+      {%- for tag in tags_list %}
+      <section class="spec-section spec-tag" id="{{ tag[0] | slugify }}" aria-labelledby="spec-tag-{{ tag[0] | slugify }}">
+        <div class="spec-h-row"><h2 class="spec-h" id="spec-tag-{{ tag[0] | slugify }}">{{ tag[0] }}</h2><p class="spec-count">{{ tag[1].size }} {% if tag[1].size == 1 %}post{% else %}posts{% endif %}</p></div>
+        {%- assign sorted_posts = tag[1] | sort: 'date' | reverse %}
+        {%- assign spec_tag_name = tag[0] %}
+        {% include themes/specimen/_table.html posts=sorted_posts limit=1000 label=spec_tag_name %}
+      </section>
+      {%- endfor %}
+      {%- endif %}
+    </div>
+  </div>
+</div>

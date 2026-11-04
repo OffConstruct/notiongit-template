@@ -1,0 +1,27 @@
+<div class="ink-tags margin-tags margin-col">
+  <h1 class="margin-h margin-page-title">Tags</h1>
+  {%- assign tags_list = site.tags | sort %}
+  {%- if tags_list.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion tags"
+    title="Your tags will appear here"
+    copy="Tags from your published posts will be collected here automatically."
+  %}
+  {%- else %}
+  <p class="margin-tag-index">{% for tag in tags_list %}<a href="#{{ tag[0] | slugify }}">{{ tag[0] }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
+  {%- for tag in tags_list %}
+  <section class="margin-tag" id="{{ tag[0] | slugify }}" aria-labelledby="margin-tag-{{ tag[0] | slugify }}">
+    <div class="margin-tag-head"><h2 class="margin-h" id="margin-tag-{{ tag[0] | slugify }}">{{ tag[0] }}</h2><p class="margin-count">{{ tag[1].size }} {% if tag[1].size == 1 %}post{% else %}posts{% endif %}</p></div>
+    <ul class="margin-rows" role="list">
+      {%- assign sorted_posts = tag[1] | sort: 'date' | reverse %}
+      {%- for post in sorted_posts %}
+      <li class="margin-row">
+        <span class="margin-row-main"><a class="margin-row-title" href="{{ post.url | relative_url }}">{{ post.title }}</a></span>
+        <time class="margin-date margin-date--day" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %Y" }}</time>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

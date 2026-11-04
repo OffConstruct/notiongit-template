@@ -1,0 +1,95 @@
+{%- assign home = site.data.home -%}
+{%- assign specimen_h_name = home.name | strip -%}
+{%- assign specimen_h_tagline = home.tagline | strip -%}
+{%- assign specimen_h_pic = home.profile_picture | strip -%}
+{%- assign specimen_h_bio = home.bio | strip -%}
+{%- assign spec_selected = site.posts | where: "featured", true -%}
+{%- assign spec_writing = site.posts | where_exp: "p", "p.featured != true" -%}
+{%- assign spec_bio = home.bio | markdownify -%}
+{%- assign spec_parts = spec_bio | split: "<h2" -%}
+<div class="ink-home spec-home spec-wrap">
+  {%- if specimen_h_name != "" %}
+  <div class="spec-grid">
+    <div class="spec-id">
+      <div class="spec-id-head">
+        {%- if specimen_h_pic != "" %}
+        <img class="spec-avatar" src="{{ home.profile_picture }}" alt="" width="88" height="88">
+        {%- endif %}
+        <h1 class="spec-name">{{ home.name }}</h1>
+        {%- if specimen_h_tagline != "" %}
+        <p class="spec-tagline">{{ home.tagline }}</p>
+        {%- endif %}
+      </div>
+      {%- if specimen_h_bio != "" %}
+      <div class="spec-lead spec-prose">{{ spec_parts[0] }}</div>
+      {%- endif %}
+      {%- if home.social_links.size > 0 %}
+      <ul class="spec-links" role="list" aria-label="Links">
+        {%- for link in home.social_links %}
+        <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+
+    <div class="spec-index">
+      {%- if spec_selected.size > 0 %}
+      <section class="spec-section" aria-labelledby="spec-selected-h">
+        <div class="spec-h-row"><h2 class="spec-h" id="spec-selected-h">Selected</h2><p class="spec-count">{{ spec_selected.size }} {% if spec_selected.size == 1 %}post{% else %}posts{% endif %}</p></div>
+        <div class="ink-variant" data-variant="index_view:table">
+          {% include themes/specimen/_table.html posts=spec_selected limit=50 label="Selected posts" %}
+        </div>
+        <div class="ink-variant" data-variant="index_view:grid">
+          <ul class="spec-plates" role="list">
+            {%- for post in spec_selected %}
+            <li class="spec-plate">
+              <a href="{{ post.url | relative_url }}">
+                {%- if post.cover_image %}
+                <img class="spec-plate-img" src="{{ post.cover_image }}" alt="" loading="lazy">
+                {%- else %}
+                <span class="spec-plate-type" aria-hidden="true">{{ post.title }}</span>
+                {%- endif %}
+                <span class="spec-plate-title">{{ post.title }}</span>
+              </a>
+              <p class="spec-plate-meta">{{ post.date | date: "%Y" }}{% if post.tags.size > 0 %}, {{ post.tags | join: ", " }}{% endif %}</p>
+            </li>
+            {%- endfor %}
+          </ul>
+        </div>
+      </section>
+      {%- endif %}
+
+      <section class="spec-section" aria-labelledby="spec-writing-h">
+        <div class="spec-h-row"><h2 class="spec-h" id="spec-writing-h">Writing</h2><p class="spec-count">{{ spec_writing.size }} {% if spec_writing.size == 1 %}post{% else %}posts{% endif %}</p></div>
+        {%- if spec_writing.size > 0 %}
+        {% include themes/specimen/_table.html posts=spec_writing limit=40 label="Writing" %}
+        {%- if spec_writing.size > 40 %}
+        <p class="spec-more"><a href="{{ '/blog/' | relative_url }}">The full index of {{ site.posts.size }} posts</a></p>
+        {%- endif %}
+        {%- elsif site.posts.size == 0 %}
+        <p class="spec-note">Posts you publish in Notion will be indexed here after the next sync.</p>
+        {%- else %}
+        <p class="spec-note">Every post is in Selected.</p>
+        {%- endif %}
+      </section>
+
+      {%- if spec_parts.size > 1 %}
+      <section class="spec-section spec-profile" aria-label="Profile">
+        {%- for part in spec_parts offset: 1 %}
+        <div class="spec-profile-row spec-prose"><h2{{ part }}</div>
+        {%- endfor %}
+      </section>
+      {%- endif %}
+    </div>
+  </div>
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="Setup in progress"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

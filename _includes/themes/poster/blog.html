@@ -1,0 +1,25 @@
+<div class="ink-post-list poster-archive">
+  <section class="poster-band poster-page-head">
+    <div class="poster-wrap">
+      <h1 class="poster-page-title">{{ page.title | default: "Writing" }}</h1>
+    </div>
+  </section>
+  <section class="poster-band">
+    <div class="poster-wrap">
+      {%- if site.posts.size == 0 %}
+      {% include empty-state.html
+        kicker="Notion posts"
+        title="Your posts will appear here"
+        copy="Published posts will show up automatically after your first sync completes."
+        note="If nothing appears after a few minutes, run the sync from the Actions tab."
+      %}
+      {%- else %}
+      <ol class="poster-list poster-list--archive" role="list">
+        {%- for post in site.posts %}
+        <li{% if post.featured %} class="is-featured"{% endif %}><a href="{{ post.url | relative_url }}"><span class="poster-list-title">{{ post.title }}</span> <time class="poster-list-year" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %Y" }}</time></a></li>
+        {%- endfor %}
+      </ol>
+      {%- endif %}
+    </div>
+  </section>
+</div>

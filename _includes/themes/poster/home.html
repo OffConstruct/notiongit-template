@@ -1,0 +1,89 @@
+{%- assign home = site.data.home -%}
+{%- assign poster_h_name = home.name | strip -%}
+{%- assign poster_h_tagline = home.tagline | strip -%}
+{%- assign poster_h_pic = home.profile_picture | strip -%}
+{%- assign poster_h_bio = home.bio | strip -%}
+{%- assign poster_featured = site.posts | where: "featured", true -%}
+{%- assign poster_notes = site.posts | where_exp: "p", "p.featured != true" -%}
+<div class="ink-home poster-home">
+  {%- if poster_h_name != "" %}
+  <section class="poster-band poster-hero" aria-labelledby="poster-name">
+    <div class="poster-wrap">
+      <h1 class="poster-name" id="poster-name">{{ home.name }}</h1>
+      <div class="poster-hero-foot">
+        {%- if poster_h_tagline != "" %}
+        <p class="poster-tagline">{{ home.tagline }}</p>
+        {%- endif %}
+        {%- if poster_featured.size == 1 %}
+        <a class="poster-action" href="#poster-work">See the selected work</a>
+        {%- elsif poster_featured.size > 1 %}
+        <a class="poster-action" href="#poster-work">See {{ poster_featured.size }} selected works</a>
+        {%- elsif site.posts.size > 0 %}
+        <a class="poster-action" href="#poster-notes">Read the notes</a>
+        {%- endif %}
+      </div>
+    </div>
+  </section>
+
+  {%- if poster_featured.size > 0 %}
+  <section class="poster-works" id="poster-work" aria-labelledby="poster-work-h">
+    <h2 class="poster-sr" id="poster-work-h">Selected work</h2>
+    {%- for post in poster_featured %}
+    {%- assign poster_n = forloop.index0 | modulo: 3 %}
+    {% include themes/poster/_work.html post=post n=poster_n %}
+    {%- endfor %}
+  </section>
+  {%- endif %}
+
+  <section class="poster-band poster-notes" id="poster-notes" aria-labelledby="poster-notes-h">
+    <div class="poster-wrap poster-split">
+      <h2 class="poster-h" id="poster-notes-h">Notes</h2>
+      {%- if poster_notes.size > 0 %}
+      <div>
+        <ol class="poster-list" role="list">
+          {%- for post in poster_notes limit: 12 %}
+          <li><a href="{{ post.url | relative_url }}"><span class="poster-list-title">{{ post.title }}</span> <time class="poster-list-year" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time></a></li>
+          {%- endfor %}
+        </ol>
+        {%- if poster_notes.size > 12 %}
+        <p class="poster-more"><a href="{{ '/blog/' | relative_url }}">All {{ poster_notes.size }} notes</a></p>
+        {%- endif %}
+      </div>
+      {%- elsif site.posts.size == 0 %}
+      <p class="poster-note">Posts you publish in Notion will be listed here after the next sync.</p>
+      {%- else %}
+      <p class="poster-note">Every post here is selected work. <a href="{{ '/blog/' | relative_url }}">See the full list.</a></p>
+      {%- endif %}
+    </div>
+  </section>
+
+  {%- if poster_h_bio != "" or poster_h_pic != "" %}
+  <section class="poster-band poster-about" aria-labelledby="poster-about-h">
+    <div class="poster-wrap poster-split">
+      <h2 class="poster-sr" id="poster-about-h">About {{ home.name }}</h2>
+      {%- if poster_h_pic != "" %}
+      <div class="poster-about-side">
+        <img class="poster-portrait" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="280" height="280" loading="lazy">
+      </div>
+      {%- endif %}
+      {%- if poster_h_bio != "" %}
+      <div class="poster-prose poster-bio">{{ home.bio | markdownify }}</div>
+      {%- endif %}
+    </div>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="poster-band poster-hero">
+    <div class="poster-wrap">
+      {% include empty-state.html
+        variant="home-empty-state"
+        heading="h1"
+        kicker="Setup in progress"
+        title="Your site is almost ready"
+        copy="Your Notion content will appear here after the first sync completes."
+        note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+      %}
+    </div>
+  </div>
+  {%- endif %}
+</div>

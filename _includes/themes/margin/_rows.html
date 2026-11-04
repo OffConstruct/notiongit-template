@@ -1,0 +1,21 @@
+{%- comment -%} Unruled title/date rows. same-all / same-rest mark a repeated year among all rows or among non-featured rows, so "year once per group" works whether featured rows are shown or not. {%- endcomment -%}
+{%- assign margin_prev_all = "" -%}
+{%- assign margin_prev_rest = "" -%}
+<ul class="margin-rows" role="list">
+  {%- for post in include.posts limit: include.limit %}
+  {%- assign margin_y = post.date | date: "%Y" %}
+  {%- assign margin_cls = "" %}
+  {%- if margin_y == margin_prev_all %}{% assign margin_cls = margin_cls | append: " same-all" %}{% endif %}
+  {%- assign margin_prev_all = margin_y %}
+  {%- if post.featured == true %}
+  {%- assign margin_cls = margin_cls | append: " is-featured" %}
+  {%- else %}
+  {%- if margin_y == margin_prev_rest %}{% assign margin_cls = margin_cls | append: " same-rest" %}{% endif %}
+  {%- assign margin_prev_rest = margin_y %}
+  {%- endif %}
+  <li class="margin-row{{ margin_cls }}">
+    <span class="margin-row-main"><a class="margin-row-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>{% if post.canonical_url %} <span class="margin-outlet">in {{ post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif %}</span>
+    <time class="margin-date" datetime="{{ post.date | date_to_xmlschema }}"><span class="d-year">{{ margin_y }}</span><span class="d-month">{{ post.date | date: "%b %Y" }}</span><span class="d-full">{{ post.date | date: "%b %-d, %Y" }}</span></time>
+  </li>
+  {%- endfor %}
+</ul>

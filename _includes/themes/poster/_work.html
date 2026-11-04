@@ -1,0 +1,16 @@
+{%- comment -%} One featured post as a colour field. include.n picks the field (0 to 2). {%- endcomment -%}
+{%- assign w = include.post -%}
+<article class="poster-band poster-work poster-field-{{ include.n }}{% if w.cover_image %} has-cover{% else %} is-type{% endif %}" aria-labelledby="poster-w-{{ w.id | slugify }}">
+  <div class="poster-wrap poster-work-inner">
+    {%- if w.cover_image %}
+    <a class="poster-cover" href="{{ w.url | relative_url }}" tabindex="-1" aria-hidden="true"><img src="{{ w.cover_image }}" alt="" loading="lazy"></a>
+    {%- endif %}
+    <div class="poster-work-text">
+      <h3 class="poster-work-title" id="poster-w-{{ w.id | slugify }}"><a href="{{ w.url | relative_url }}">{{ w.title }}</a></h3>
+      {%- if w.excerpt %}
+      <p class="poster-work-line">{{ w.excerpt | strip_html | strip | truncate: 160 }}</p>
+      {%- endif %}
+      <p class="poster-work-meta"><time datetime="{{ w.date | date_to_xmlschema }}">{{ w.date | date: "%Y" }}</time>{% if w.tags.size > 0 %}<span class="poster-work-tags">{{ w.tags | join: ", " }}</span>{% endif %}</p>
+    </div>
+  </div>
+</article>

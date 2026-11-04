@@ -1,0 +1,39 @@
+{%- assign poster_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign poster_dek = page.excerpt | strip_html | strip -%}
+{%- assign poster_n = page.date | date: "%j" | modulo: 3 -%}
+<div class="ink-post poster-post">
+  <article>
+    <header class="poster-band poster-post-head poster-field-{{ poster_n }}">
+      <div class="poster-wrap">
+        <h1 class="poster-post-title{% if page.title.size > 60 %} is-long{% endif %}">{{ page.title }}</h1>
+        {%- if poster_dek != "" and poster_dek != poster_first %}
+        <p class="poster-dek">{{ poster_dek }}</p>
+        {%- endif %}
+        <p class="poster-post-meta"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>{% if page.tags.size > 0 %}<span>{% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</span>{% endif %}</p>
+      </div>
+    </header>
+    {%- if page.cover_image %}
+    <figure class="poster-wrap poster-post-cover"><img src="{{ page.cover_image }}" alt="" loading="lazy"></figure>
+    {%- endif %}
+    <div class="poster-wrap poster-post-body">
+      <div class="poster-prose poster-reading">
+        {{ content | replace: '<table>', '<div class="poster-table" role="region" aria-label="Table" tabindex="0"><table>' | replace: '</table>', '</table></div>' }}
+      </div>
+      {%- if page.canonical_url %}
+      <p class="poster-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+      {%- endif %}
+    </div>
+    {%- if page.previous or page.next %}
+    <nav class="poster-band poster-pager" aria-label="More posts">
+      <div class="poster-wrap poster-pager-inner">
+        {%- if page.next %}
+        <a href="{{ page.next.url | relative_url }}"><span class="poster-pager-label">Newer</span> <span class="poster-pager-title">{{ page.next.title }}</span></a>
+        {%- endif %}
+        {%- if page.previous %}
+        <a href="{{ page.previous.url | relative_url }}"><span class="poster-pager-label">Older</span> <span class="poster-pager-title">{{ page.previous.title }}</span></a>
+        {%- endif %}
+      </div>
+    </nav>
+    {%- endif %}
+  </article>
+</div>

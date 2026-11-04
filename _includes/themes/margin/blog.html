@@ -1,0 +1,26 @@
+<div class="ink-post-list margin-archive margin-col">
+  <h1 class="margin-h margin-page-title">{{ page.title | default: "Writing" }}</h1>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign margin_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for y in margin_years %}
+  <section class="margin-year" aria-labelledby="margin-y-{{ y.name }}">
+    <h2 class="margin-h" id="margin-y-{{ y.name }}">{{ y.name }}</h2>
+    <ul class="margin-rows" role="list">
+      {%- for post in y.items %}
+      <li class="margin-row">
+        <span class="margin-row-main"><a class="margin-row-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>{% if post.canonical_url %} <span class="margin-outlet">in {{ post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif %}</span>
+        <time class="margin-date margin-date--day" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d" }}</time>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>
