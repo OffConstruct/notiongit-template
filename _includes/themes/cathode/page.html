@@ -1,0 +1,13 @@
+<div class="ink-page ca-page">
+  <article class="ca-article">
+    <header class="ca-post-head">
+      <h1 class="ca-post-title">{{ page.title }}</h1>
+      {%- if page.description %}
+      <p class="ca-tagline"><span class="ca-mark" aria-hidden="true">&gt; </span>{{ page.description }}</p>
+      {%- endif %}
+    </header>
+    <div class="ca-prose ca-body">
+      {{ content }}
+    </div>
+  </article>
+</div>

@@ -1,0 +1,75 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "plaintext",
+  "name": "Plaintext",
+  "version": "1.0.0",
+  "summary": "The archive: one serif, one hue, and a year-grouped index of everything you have written.",
+  "description": "Set entirely in Source Serif 4 on a page tinted from a single hue. The home page is your bio followed by two parallel indexes, Writing and Featured; the archive groups posts by year with a tabular date column. For engineers who write rarely, at length, and want it read.",
+  "categories": ["developers", "writers"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "serif",
+      "label": "Source Serif 4",
+      "google": "family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400",
+      "stacks": {
+        "body": "\"Source Serif 4\", Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif",
+        "display": "\"Source Serif 4\", Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "charter",
+      "label": "System serif (no downloads)",
+      "google": null,
+      "stacks": {
+        "body": "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, \"Iowan Old Style\", Georgia, serif",
+        "display": "Charter, \"Bitstream Charter\", \"Sitka Text\", Cambria, \"Iowan Old Style\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "sans",
+      "label": "Source Sans 3",
+      "google": "family=Source+Sans+3:ital,wght@0,400;0,600;1,400",
+      "stacks": {
+        "body": "\"Source Sans 3\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "display": "\"Source Sans 3\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#fafcfe", "text": "#192230", "muted": "#596475" },
+    "dark": { "bg": "#0e1217", "text": "#e3e8f0", "muted": "#a3abb8" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Link color", "role": "text", "default": "hue", "custom": true,
+      "presets": [
+        { "value": "hue", "label": "From the page hue", "light": "#2759a2", "dark": "#92bdfb" },
+        { "value": "ink", "label": "Ink (underlined only)", "light": "#192230", "dark": "#e3e8f0" },
+        { "value": "oxblood", "label": "Oxblood", "light": "#932b2a", "dark": "#f19e97" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "hue", "type": "range", "label": "Page hue", "min": 0, "max": 360, "step": 1, "unit": "", "default": 258 },
+    { "key": "font", "type": "font", "label": "Typeface", "default": "serif" },
+    { "key": "home_indexes", "type": "select", "label": "Home page indexes", "default": "both",
+      "options": [
+        { "value": "both", "label": "Writing and Featured" },
+        { "value": "writing", "label": "Writing only" },
+        { "value": "bio", "label": "Bio only" } ] },
+    { "key": "archive_grouping", "type": "select", "label": "Archive grouping", "default": "year",
+      "options": [
+        { "value": "year", "label": "By year" },
+        { "value": "flat", "label": "One list" },
+        { "value": "tag", "label": "By tag" } ] },
+    { "key": "show_avatar", "type": "boolean", "label": "Show profile picture", "default": false }
+  ]
+}

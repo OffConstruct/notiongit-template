@@ -1,0 +1,72 @@
+{%- assign home = site.data.home -%}
+{%- assign pt_name = home.name | strip -%}
+{%- assign pt_tagline = home.tagline | strip -%}
+{%- assign pt_pic = home.profile_picture | strip -%}
+{%- assign pt_bio = home.bio | strip -%}
+{%- assign pt_featured = site.posts | where: "featured", true -%}
+{%- assign pt_blog = site.pages | where: "layout", "blog" | first -%}
+{%- if pt_blog %}{% assign pt_blog_url = pt_blog.url | relative_url %}{% else %}{% assign pt_blog_url = '/blog/' | relative_url %}{% endif -%}
+<div class="ink-home pt-home">
+  {%- if pt_name != "" %}
+  <header class="pt-intro">
+    {%- if pt_pic != "" %}
+    <img class="pt-avatar" src="{{ home.profile_picture }}" alt="" width="56" height="56">
+    {%- endif %}
+    <div class="pt-intro-text">
+      <h1 class="pt-name">{{ home.name }}</h1>
+      {%- if pt_tagline != "" %}
+      <p class="pt-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+    </div>
+  </header>
+
+  {%- if pt_bio != "" %}
+  <div class="pt-prose pt-bio">{{ home.bio | markdownify }}</div>
+  {%- endif %}
+
+  {%- if home.social_links.size > 0 %}
+  <ul class="pt-links" aria-label="Elsewhere">
+    {%- for link in home.social_links %}
+    <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  <div class="pt-indexes{% if pt_featured.size > 0 %} pt-indexes--two{% endif %}">
+    <section class="pt-index pt-index--writing" aria-labelledby="pt-writing">
+      <h2 class="pt-label" id="pt-writing">Writing</h2>
+      <ol class="pt-rows" reversed>
+        {%- for post in site.posts limit: 10 %}
+        <li class="pt-row">
+          <time class="pt-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+          <a class="pt-row-title" href="{{ post.url | relative_url }}">{% if post.featured %}<span class="pt-star" aria-hidden="true">*</span>{% endif %}{{ post.title }}</a>
+        </li>
+        {%- endfor %}
+      </ol>
+      <p class="pt-more"><a href="{{ pt_blog_url }}">{% if site.posts.size > 10 %}All {{ site.posts.size }} posts{% else %}The archive{% endif %}</a></p>
+    </section>
+    {%- if pt_featured.size > 0 %}
+    <section class="pt-index pt-index--featured" aria-labelledby="pt-featured">
+      <h2 class="pt-label" id="pt-featured">Featured</h2>
+      <ul class="pt-rows">
+        {%- for post in pt_featured limit: 10 %}
+        <li class="pt-row"><a class="pt-row-title" href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endif %}
+  </div>
+  <p class="pt-bio-archive"><a href="{{ pt_blog_url }}">Read the writing archive</a> ({{ site.posts.size }} post{% if site.posts.size != 1 %}s{% endif %})</p>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

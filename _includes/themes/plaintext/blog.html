@@ -1,0 +1,64 @@
+<div class="ink-post-list pt-archive">
+  <header class="pt-page-head">
+    <h1 class="pt-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="pt-standfirst">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <div class="ink-variant pt-chrono" data-variant="archive_grouping:year">
+    {%- assign pt_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+    {%- for y in pt_years %}
+    <section class="pt-group" aria-labelledby="pt-y-{{ y.name }}">
+      <h2 class="pt-label pt-year" id="pt-y-{{ y.name }}">{{ y.name }}</h2>
+      <ol class="pt-rows">
+        {%- for post in y.items %}
+        <li class="pt-row">
+          <time class="pt-date" datetime="{{ post.date | date_to_xmlschema }}"><span class="pt-date-year">{{ post.date | date: "%Y-" }}</span>{{ post.date | date: "%m-%d" }}</time>
+          <a class="pt-row-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </li>
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- endfor %}
+  </div>
+  <div class="ink-variant pt-bytag" data-variant="archive_grouping:tag">
+    {%- assign pt_tags = site.tags | sort %}
+    {%- for t in pt_tags %}
+    {%- assign pt_tag_posts = t[1] | sort: "date" | reverse %}
+    <section class="pt-group" aria-labelledby="pt-t-{{ t[0] | slugify }}">
+      <h2 class="pt-label" id="pt-t-{{ t[0] | slugify }}">{{ t[0] }} <span class="pt-count">{{ t[1].size }}</span></h2>
+      <ol class="pt-rows">
+        {%- for post in pt_tag_posts %}
+        <li class="pt-row">
+          <time class="pt-date pt-date--full" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+          <a class="pt-row-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </li>
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- endfor %}
+    {%- assign pt_untagged = site.posts | where_exp: "p", "p.tags.size == 0" %}
+    {%- if pt_untagged.size > 0 %}
+    <section class="pt-group" aria-labelledby="pt-t-untagged">
+      <h2 class="pt-label" id="pt-t-untagged">Untagged <span class="pt-count">{{ pt_untagged.size }}</span></h2>
+      <ol class="pt-rows">
+        {%- for post in pt_untagged %}
+        <li class="pt-row">
+          <time class="pt-date pt-date--full" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+          <a class="pt-row-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </li>
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- endif %}
+  </div>
+  {%- endif %}
+</div>

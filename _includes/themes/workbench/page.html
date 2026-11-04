@@ -1,0 +1,13 @@
+<div class="ink-page wb-page">
+  <article class="wb-article">
+    <header class="wb-post-head">
+      <h1 class="wb-post-title">{{ page.title }}</h1>
+      {%- if page.description %}
+      <p class="wb-dek">{{ page.description }}</p>
+      {%- endif %}
+    </header>
+    <div class="wb-prose wb-body">
+      {{ content }}
+    </div>
+  </article>
+</div>

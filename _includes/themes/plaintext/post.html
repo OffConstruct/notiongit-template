@@ -1,0 +1,42 @@
+{%- assign pt_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign pt_dek = page.excerpt | strip_html | strip -%}
+{%- assign pt_blog = site.pages | where: "layout", "blog" | first -%}
+{%- if pt_blog %}{% assign pt_blog_url = pt_blog.url | relative_url %}{% else %}{% assign pt_blog_url = '/blog/' | relative_url %}{% endif -%}
+<div class="ink-post pt-post">
+  <article class="pt-article">
+    <header class="pt-post-head">
+      <h1 class="pt-post-title">{{ page.title }}</h1>
+      {%- if pt_dek != "" and pt_dek != pt_first %}
+      <p class="pt-standfirst">{{ pt_dek }}</p>
+      {%- endif %}
+      <p class="pt-post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        {%- for tag in page.tags %}
+        <a class="pt-tag" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">#{{ tag }}</a>
+        {%- endfor %}
+      </p>
+    </header>
+    {%- if page.cover_image %}
+    <figure class="pt-cover"><img src="{{ page.cover_image }}" alt=""></figure>
+    {%- endif %}
+    <div class="pt-prose pt-body">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="pt-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="pt-post-foot">
+      {%- if page.previous or page.next %}
+      <nav class="pt-pager" aria-label="More writing">
+        {%- if page.previous %}
+        <a class="pt-pager-link" href="{{ page.previous.url | relative_url }}" rel="prev"><span class="pt-pager-dir">Older</span> {{ page.previous.title }}</a>
+        {%- endif %}
+        {%- if page.next %}
+        <a class="pt-pager-link pt-pager-link--next" href="{{ page.next.url | relative_url }}" rel="next"><span class="pt-pager-dir">Newer</span> {{ page.next.title }}</a>
+        {%- endif %}
+      </nav>
+      {%- endif %}
+      <p class="pt-back"><a href="{{ pt_blog_url }}">All writing</a></p>
+    </footer>
+  </article>
+</div>

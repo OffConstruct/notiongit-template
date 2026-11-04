@@ -1,0 +1,74 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "cathode",
+  "name": "Cathode",
+  "version": "1.0.0",
+  "summary": "The source view: a huge wide name, JetBrains Mono everywhere else, markdown marks in vermilion.",
+  "description": "Dark first. Your name is set huge in wide Archivo; everything else is JetBrains Mono, with the markdown it was written in left visible in one hot accent. The bio splits into labeled columns at its ## headings, and posts run as a stream of titles, dates, tags and one-line excerpts.",
+  "categories": ["developers"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "wide",
+      "label": "Archivo Expanded and JetBrains Mono",
+      "google": "family=Archivo:wdth,wght@125,800&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400",
+      "stacks": {
+        "body": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace",
+        "display": "Archivo, \"Arial Black\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "mono": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "mono",
+      "label": "JetBrains Mono only",
+      "google": "family=JetBrains+Mono:ital,wght@0,400;0,700;0,800;1,400",
+      "stacks": {
+        "body": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace",
+        "display": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace",
+        "mono": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "serif",
+      "label": "Instrument Serif and JetBrains Mono",
+      "google": "family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400",
+      "stacks": {
+        "body": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace",
+        "display": "\"Instrument Serif\", \"Iowan Old Style\", Georgia, serif",
+        "mono": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f3f3f1", "text": "#1c1b1f", "muted": "#5c5f66" },
+    "dark": { "bg": "#1c1b1f", "text": "#ebeeef", "muted": "#a3a6ab" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "dark",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "light", "label": "Light" },
+        { "value": "auto", "label": "Match system" } ] },
+    { "key": "accent", "type": "color", "label": "Accent", "role": "text", "default": "vermilion", "custom": true,
+      "presets": [
+        { "value": "vermilion", "label": "Vermilion", "light": "#b5390b", "dark": "#ff6b3d" },
+        { "value": "phosphor", "label": "Phosphor", "light": "#17753a", "dark": "#7ee787" },
+        { "value": "cyan", "label": "Cyan", "light": "#0b6a80", "dark": "#5ccfe6" },
+        { "value": "magenta", "label": "Magenta", "light": "#ad2679", "dark": "#ff7ad9" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Name typeface", "default": "wide" },
+    { "key": "marks", "type": "boolean", "label": "Show markdown marks", "default": true },
+    { "key": "bio_layout", "type": "select", "label": "Bio layout", "default": "columns",
+      "options": [
+        { "value": "columns", "label": "Columns at each ## heading" },
+        { "value": "prose", "label": "One block" } ] },
+    { "key": "list_style", "type": "select", "label": "Post list", "default": "stream",
+      "options": [
+        { "value": "stream", "label": "Titles with excerpts" },
+        { "value": "compact", "label": "Titles and dates only" } ] },
+    { "key": "avatar", "type": "boolean", "label": "Show profile picture", "default": false }
+  ]
+}

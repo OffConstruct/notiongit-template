@@ -1,0 +1,18 @@
+<header class="ink-header ca-header">
+  <div class="ca-wrap ca-header-inner">
+    {%- assign ca_brand = site.data.home.name | default: site.title | strip %}
+    {%- if ca_brand != "" %}
+    <a class="ca-brand" href="{{ '/' | relative_url }}">{{ ca_brand }}</a>
+    {%- endif %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="ca-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="ca-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

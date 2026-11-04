@@ -1,0 +1,43 @@
+{%- assign wb_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign wb_dek = page.excerpt | strip_html | strip -%}
+{%- assign wb_blog = site.pages | where: "layout", "blog" | first -%}
+{%- if wb_blog %}{% assign wb_blog_url = wb_blog.url | relative_url %}{% else %}{% assign wb_blog_url = '/blog/' | relative_url %}{% endif -%}
+{%- assign wb_tag = page.tags | first -%}
+<div class="ink-post wb-post">
+  <article class="wb-article">
+    <header class="wb-post-head">
+      <p class="wb-meta wb-post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%b %-d, %Y" }}</time>
+        {%- for tag in page.tags %}
+        <a class="wb-chip" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+        {%- endfor %}
+        <span class="wb-words">{{ content | strip_html | number_of_words }} words</span>
+      </p>
+      <h1 class="wb-post-title">{{ page.title }}</h1>
+      {%- if wb_dek != "" and wb_dek != wb_first %}
+      <p class="wb-dek">{{ wb_dek }}</p>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <figure class="wb-cover"><img src="{{ page.cover_image }}" alt=""></figure>
+    {%- endif %}
+    <div class="wb-prose wb-body">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="wb-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="wb-post-foot">
+      {%- if wb_tag %}
+      {%- assign wb_related = site.tags[wb_tag] | sort: "date" | reverse %}
+      {%- if wb_related.size > 1 %}
+      <section class="wb-related" aria-labelledby="wb-related-label">
+        <h2 class="wb-label" id="wb-related-label">More in {{ wb_tag }}</h2>
+        {% include themes/workbench/_list.html posts=wb_related limit=4 skip=page.url %}
+      </section>
+      {%- endif %}
+      {%- endif %}
+      <p class="wb-back"><a href="{{ wb_blog_url }}">All posts</a></p>
+    </footer>
+  </article>
+</div>

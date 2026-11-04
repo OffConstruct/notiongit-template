@@ -1,0 +1,67 @@
+{%- assign home = site.data.home -%}
+{%- assign ca_name = home.name | strip -%}
+{%- assign ca_tagline = home.tagline | strip -%}
+{%- assign ca_pic = home.profile_picture | strip -%}
+{%- assign ca_bio = home.bio | strip -%}
+{%- assign ca_blog = site.pages | where: "layout", "blog" | first -%}
+{%- if ca_blog %}{% assign ca_blog_url = ca_blog.url | relative_url %}{% else %}{% assign ca_blog_url = '/blog/' | relative_url %}{% endif -%}
+<div class="ink-home ca-home">
+  {%- if ca_name != "" %}
+  <header class="ca-hero">
+    {%- if ca_pic != "" %}
+    <img class="ca-avatar" src="{{ home.profile_picture }}" alt="" width="72" height="72">
+    {%- endif %}
+    <h1 class="ca-name"><span class="ca-mark ca-mark--name" aria-hidden="true">#</span>{{ home.name }}</h1>
+    {%- if ca_tagline != "" %}
+    <p class="ca-tagline"><span class="ca-mark" aria-hidden="true">&gt; </span>{{ home.tagline }}</p>
+    {%- endif %}
+  </header>
+
+  {%- if ca_bio != "" %}
+  {%- assign ca_bio = home.bio | markdownify %}
+  {%- assign ca_parts = ca_bio | split: "<h2" %}
+  {%- assign ca_lead = ca_parts[0] | strip %}
+  <div class="ca-bio{% if ca_parts.size > 1 %} ca-bio--split{% endif %}">
+    {%- if ca_lead != "" %}
+    <div class="ca-bio-lead ca-prose">{{ ca_lead }}</div>
+    {%- endif %}
+    {%- if ca_parts.size > 1 %}
+    <div class="ca-bio-cols">
+      {%- for ca_part in ca_parts offset: 1 %}
+      <section class="ca-bio-col ca-prose"><h2{{ ca_part }}</section>
+      {%- endfor %}
+    </div>
+    {%- endif %}
+  </div>
+  {%- endif %}
+
+  {%- if home.social_links.size > 0 %}
+  <ul class="ca-links" aria-label="Elsewhere">
+    {%- for link in home.social_links %}
+    <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  <section class="ca-posts" aria-labelledby="ca-posts-label">
+    <h2 class="ca-label" id="ca-posts-label">writing</h2>
+    {% include themes/cathode/_stream.html posts=site.posts limit=8 %}
+    {%- if site.posts.size > 8 %}
+    <p class="ca-more"><a href="{{ ca_blog_url }}">all {{ site.posts.size }} posts</a></p>
+    {%- else %}
+    <p class="ca-more"><a href="{{ ca_blog_url }}">the archive</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

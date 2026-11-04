@@ -1,0 +1,21 @@
+<header class="ink-header wb-header">
+  <div class="wb-wrap wb-header-inner">
+    {%- assign wb_brand = site.data.home.name | default: site.title | strip %}
+    {%- if wb_brand != "" %}
+    <a class="wb-brand" href="{{ '/' | relative_url }}">
+      {%- assign wb_pic = site.data.home.profile_picture | strip %}{% if wb_pic != "" %}<img class="wb-brand-avatar" src="{{ site.data.home.profile_picture }}" alt="" width="28" height="28">{% endif -%}
+      <span>{{ wb_brand }}</span>
+    </a>
+    {%- endif %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="wb-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="wb-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

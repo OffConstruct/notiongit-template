@@ -1,0 +1,14 @@
+<ol class="ca-stream">
+  {%- for post in include.posts limit: include.limit %}
+  {%- assign ca_excerpt = post.excerpt | strip_html | strip | truncate: 200 %}
+  <li class="ca-item">
+    <a class="ca-item-link" href="{{ post.url | relative_url }}">
+      <span class="ca-item-title"><span class="ca-mark" aria-hidden="true">##</span><span class="ca-item-text">{{ post.title }}</span></span>
+      <span class="ca-item-meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>{% for tag in post.tags limit: 3 %} <span class="ca-item-tag">#{{ tag }}</span>{% endfor %}</span>
+      {%- if ca_excerpt != "" %}
+      <span class="ca-item-excerpt">{{ ca_excerpt }}</span>
+      {%- endif %}
+    </a>
+  </li>
+  {%- endfor %}
+</ol>

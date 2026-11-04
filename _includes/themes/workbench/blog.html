@@ -1,0 +1,21 @@
+<div class="ink-post-list wb-archive">
+  <header class="wb-page-head">
+    <h1 class="wb-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="wb-tagline">{{ page.description }}</p>
+    {%- endif %}
+    {%- if site.posts.size > 0 %}
+    <p class="wb-meta">{{ site.posts.size }} post{% if site.posts.size != 1 %}s{% endif %}{% if site.tags.size > 0 %}, {{ site.tags.size }} topic{% if site.tags.size != 1 %}s{% endif %}{% endif %}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {% include themes/workbench/_list.html posts=site.posts limit=100000 skip="" %}
+  {%- endif %}
+</div>

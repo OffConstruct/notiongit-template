@@ -1,0 +1,27 @@
+{%- assign wb_n = 0 -%}
+<ul class="wb-list">
+  {%- for post in include.posts %}
+  {%- if post.url == include.skip %}{% continue %}{% endif %}
+  {%- if wb_n >= include.limit %}{% break %}{% endif %}
+  {%- assign wb_n = wb_n | plus: 1 %}
+  {%- assign wb_excerpt = post.excerpt | strip_html | strip | truncate: 220 %}
+  <li class="wb-item">
+    <a class="wb-card" href="{{ post.url | relative_url }}">
+      {%- if post.cover_image %}
+      <span class="wb-card-media"><img src="{{ post.cover_image }}" alt="" loading="lazy"></span>
+      {%- endif %}
+      <span class="wb-card-head wb-meta">
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+        {%- if post.tags.size > 0 %}
+        <span class="wb-card-tags">{% for tag in post.tags limit: 2 %}<span>{{ tag }}</span>{% endfor %}</span>
+        {%- endif %}
+        <span class="wb-words">{{ post.content | strip_html | number_of_words }} words</span>
+      </span>
+      <span class="wb-card-title">{{ post.title }}</span>
+      {%- if wb_excerpt != "" %}
+      <span class="wb-card-excerpt">{{ wb_excerpt }}</span>
+      {%- endif %}
+    </a>
+  </li>
+  {%- endfor %}
+</ul>

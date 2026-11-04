@@ -1,0 +1,21 @@
+{%- assign wb_post = include.post -%}
+{%- assign wb_excerpt = wb_post.excerpt | strip_html | strip | truncate: 260 -%}
+<article class="wb-feature" aria-labelledby="wb-feature-title">
+  <a class="wb-feature-media{% unless wb_post.cover_image %} wb-feature-media--block{% endunless %}" href="{{ wb_post.url | relative_url }}" tabindex="-1" aria-hidden="true">
+    {%- if wb_post.cover_image %}
+    <img src="{{ wb_post.cover_image }}" alt="" loading="lazy">
+    {%- else %}
+    <span class="wb-feature-block">{% if wb_post.tags.size > 0 %}{{ wb_post.tags | first }}{% else %}{{ wb_post.date | date: "%Y" }}{% endif %}</span>
+    {%- endif %}
+  </a>
+  <div class="wb-feature-text">
+    <p class="wb-meta wb-feature-head"><span class="wb-feature-kind">{{ include.kind }}</span><time datetime="{{ wb_post.date | date_to_xmlschema }}">{{ wb_post.date | date: "%b %-d, %Y" }}</time></p>
+    <h2 class="wb-feature-title" id="wb-feature-title"><a href="{{ wb_post.url | relative_url }}">{{ wb_post.title }}</a></h2>
+    {%- if wb_excerpt != "" %}
+    <p class="wb-feature-excerpt">{{ wb_excerpt }}</p>
+    {%- endif %}
+    {%- if wb_post.tags.size > 0 %}
+    <p class="wb-meta wb-feature-tags">{% for tag in wb_post.tags limit: 3 %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% endfor %}</p>
+    {%- endif %}
+  </div>
+</article>

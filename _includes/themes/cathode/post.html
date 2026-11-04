@@ -1,0 +1,42 @@
+{%- assign ca_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign ca_dek = page.excerpt | strip_html | strip -%}
+{%- assign ca_blog = site.pages | where: "layout", "blog" | first -%}
+{%- if ca_blog %}{% assign ca_blog_url = ca_blog.url | relative_url %}{% else %}{% assign ca_blog_url = '/blog/' | relative_url %}{% endif -%}
+<div class="ink-post ca-post">
+  <article class="ca-article">
+    <header class="ca-post-head">
+      <p class="ca-post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
+        {%- for tag in page.tags %}
+        <a class="ca-tag" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">#{{ tag }}</a>
+        {%- endfor %}
+      </p>
+      <h1 class="ca-post-title">{{ page.title }}</h1>
+      {%- if ca_dek != "" and ca_dek != ca_first %}
+      <p class="ca-tagline"><span class="ca-mark" aria-hidden="true">&gt; </span>{{ ca_dek }}</p>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <figure class="ca-cover"><img src="{{ page.cover_image }}" alt=""></figure>
+    {%- endif %}
+    <div class="ca-prose ca-body">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="ca-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="ca-post-foot">
+      {%- if page.previous or page.next %}
+      <nav class="ca-pager" aria-label="More writing">
+        {%- if page.previous %}
+        <a class="ca-pager-link" href="{{ page.previous.url | relative_url }}" rel="prev"><span class="ca-pager-dir">older</span> {{ page.previous.title }}</a>
+        {%- endif %}
+        {%- if page.next %}
+        <a class="ca-pager-link ca-pager-link--next" href="{{ page.next.url | relative_url }}" rel="next"><span class="ca-pager-dir">newer</span> {{ page.next.title }}</a>
+        {%- endif %}
+      </nav>
+      {%- endif %}
+      <p class="ca-back"><a href="{{ ca_blog_url }}">all posts</a></p>
+    </footer>
+  </article>
+</div>
