@@ -1,0 +1,18 @@
+<div class="ink-post-list issue-blog">
+  <header class="issue-blog-head">
+    <h1 class="issue-blog-title">{{ page.title | default: "The archive" }}</h1>
+    {%- if page.description %}
+    <p class="issue-dek">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {% include themes/issue/_features.html level=2 %}
+  {%- endif %}
+</div>

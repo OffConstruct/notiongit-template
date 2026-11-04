@@ -1,0 +1,128 @@
+{%- assign home = site.data.home -%}
+{%- comment -%} Strip to strings first: in Jekyll's Liquid, "" != blank is true. {%- endcomment -%}
+{%- assign h_name = home.name | strip -%}
+{%- assign h_tagline = home.tagline | strip -%}
+{%- assign h_picture = home.profile_picture | strip -%}
+{%- assign h_bio = home.bio | strip -%}
+<div class="ink-home byline-home">
+  {%- if h_name != "" %}
+  {%- assign byline_lead = site.posts | where: "featured", true | first %}
+  {%- unless byline_lead %}{% assign byline_lead = site.posts.first %}{% endunless %}
+  {%- assign byline_has_about = false %}
+  {%- if h_bio != "" or h_picture != "" %}{% assign byline_has_about = true %}{% endif %}
+  {%- if byline_lead or byline_has_about %}
+  <div class="byline-front{% unless byline_lead %} byline-front--nolead{% endunless %}{% unless byline_has_about %} byline-front--noabout{% endunless %}">
+    {%- if byline_lead %}
+    {%- assign lead_host = "" %}
+    {%- if byline_lead.canonical_url %}{% assign lead_host = byline_lead.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." %}{% endif %}
+    <article class="byline-lead">
+      {% include themes/byline/_kicker.html post=byline_lead %}
+      <h2 class="byline-lead-title"><a href="{{ byline_lead.url | relative_url }}">{{ byline_lead.title }}</a></h2>
+      {%- if byline_lead.excerpt %}
+      <p class="byline-standfirst">{{ byline_lead.excerpt | strip_html | strip | truncate: 240 }}</p>
+      {%- endif %}
+      <p class="byline-meta"><span>By {{ home.name }}</span>{% if lead_host != "" %}<span class="byline-outlet">{{ lead_host }}</span>{% endif %}<time datetime="{{ byline_lead.date | date_to_xmlschema }}">{{ byline_lead.date | date: "%-d %B %Y" }}</time></p>
+      {%- if byline_lead.cover_image %}
+      <figure class="byline-lead-art"><img src="{{ byline_lead.cover_image }}" alt="" loading="eager"></figure>
+      {%- endif %}
+    </article>
+    {%- endif %}
+    {%- if byline_has_about %}
+    {%- assign bio_parts = home.bio | markdownify | split: "<h2" %}
+    <aside class="byline-about" aria-labelledby="byline-about-label">
+      <h2 class="byline-label" id="byline-about-label">About the author</h2>
+      {%- if h_picture != "" %}
+      <img class="byline-portrait" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="96" height="96" loading="lazy">
+      {%- endif %}
+      {%- if h_bio != "" %}
+      <div class="byline-bio">{{ bio_parts[0] }}</div>
+      {%- if bio_parts.size > 1 %}
+      <div class="byline-bio-more">{% for part in bio_parts offset: 1 %}<h3{{ part | replace: "</h2>", "</h3>" }}{% endfor %}</div>
+      {%- endif %}
+      {%- endif %}
+    </aside>
+    {%- endif %}
+  </div>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  {%- comment -%} Tag sections: tags with 2+ posts, each story shown once, the lead skipped. {%- endcomment -%}
+  {%- assign byline_tags = site.tags | sort %}
+  {%- assign byline_shown = "|" %}
+  {%- if byline_lead %}{% assign byline_shown = byline_shown | append: byline_lead.url | append: "|" %}{% endif %}
+  {%- capture byline_sections_html %}
+      {%- for t in byline_tags %}
+      {%- if t[1].size > 1 %}
+      {%- assign sec_posts = t[1] | sort: "date" | reverse %}
+      {%- assign sec_name = t[0] %}
+      {%- capture sec_rows %}
+        {%- assign sec_count = 0 %}
+        {%- for post in sec_posts %}
+        {%- assign key = "|" | append: post.url | append: "|" %}
+        {%- if sec_count < 4 %}{% unless byline_shown contains key %}
+        {%- assign byline_shown = byline_shown | append: post.url | append: "|" %}
+        {%- assign sec_count = sec_count | plus: 1 %}
+        {% include themes/byline/_row.html post=post section=sec_name %}
+        {%- endunless %}{% endif %}
+        {%- endfor %}
+      {%- endcapture %}
+      {%- if sec_count > 0 %}
+      <section class="byline-section" aria-labelledby="byline-sec-{{ t[0] | slugify }}">
+        <h2 class="byline-label" id="byline-sec-{{ t[0] | slugify }}"><a href="{{ '/tags/' | relative_url }}#{{ t[0] | slugify }}">{{ t[0] }}</a></h2>
+        <ol class="byline-rows">{{ sec_rows }}
+        </ol>
+      </section>
+      {%- endif %}
+      {%- endif %}
+      {%- endfor %}
+  {%- endcapture %}
+  <div class="ink-variant" data-variant="group_by:tag">
+    {%- if byline_sections_html contains "byline-section" %}
+    <div class="byline-sections">{{ byline_sections_html }}
+    </div>
+    {%- else %}
+    <section class="byline-section byline-section--all" aria-labelledby="byline-sec-all">
+      <h2 class="byline-label" id="byline-sec-all">Latest</h2>
+      <ol class="byline-rows">
+        {%- for post in site.posts limit: 12 %}
+        {% include themes/byline/_row.html post=post %}
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- endif %}
+  </div>
+  <div class="ink-variant" data-variant="group_by:date">
+    <section class="byline-section byline-section--all" aria-labelledby="byline-sec-latest">
+      <h2 class="byline-label" id="byline-sec-latest">Latest</h2>
+      <ol class="byline-rows">
+        {%- for post in site.posts limit: 12 %}
+        {% include themes/byline/_row.html post=post %}
+        {%- endfor %}
+      </ol>
+    </section>
+  </div>
+  {%- assign byline_archive = site.pages | where: "layout", "blog" | first %}
+  {%- if byline_archive %}
+  <p class="byline-archive"><a href="{{ byline_archive.url | relative_url }}">All {{ site.posts.size }} stories, newest first</a></p>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="The front page is waiting for its first story"
+    copy="Published posts will appear here as headlines after your next sync."
+  %}
+  {%- endif %}
+  {%- else %}
+  {%- comment -%} The header's masthead already holds the page h1 whenever it has a name to show. {%- endcomment -%}
+  {%- assign byline_masthead = site.data.home.name | default: site.author.name | default: site.title | strip %}
+  {%- if byline_masthead == "" %}{% assign byline_empty_h = "h1" %}{% else %}{% assign byline_empty_h = "h2" %}{% endif %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading=byline_empty_h
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

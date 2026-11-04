@@ -1,0 +1,63 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "issue",
+  "name": "Issue",
+  "version": "1.0.1",
+  "summary": "The magazine cover: a cream sheet on a spot-color field, a Gloock masthead and numbered features.",
+  "description": "Every visit lands on the current issue. Your name is the masthead, the latest featured post is the cover story, and the archive is a numbered feature list in two columns. The color field carries the page with or without images. For newsletter writers, poets and zine makers.",
+  "categories": ["writers"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "gloock",
+      "label": "Gloock, Literata and Hanken Grotesk",
+      "google": "family=Gloock&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Hanken+Grotesk:wght@500;600",
+      "stacks": {
+        "body": "Literata, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "display": "Gloock, \"Bodoni 72\", Didot, \"Times New Roman\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f2efe7", "text": "#1a1a1a", "muted": "#5c574c" },
+    "dark": { "bg": "#1c1b18", "text": "#ede8dc", "muted": "#a8a293" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Cover color", "role": "surface", "default": "vermilion", "custom": false,
+      "presets": [
+        { "value": "vermilion", "label": "Vermilion", "light": "#c7322e", "dark": "#a82a26", "on": "#ffffff" },
+        { "value": "cobalt", "label": "Cobalt", "light": "#2b4bb8", "dark": "#223d99", "on": "#ffffff" },
+        { "value": "sunflower", "label": "Sunflower", "light": "#f2b705", "dark": "#d9a404", "on": "#1a1a1a" },
+        { "value": "moss", "label": "Moss", "light": "#3f5a3a", "dark": "#2f4530", "on": "#ffffff" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "sheet", "type": "select", "label": "Frame", "default": "framed",
+      "options": [
+        { "value": "framed", "label": "Framed" },
+        { "value": "wide", "label": "Wide frame" },
+        { "value": "full", "label": "No frame" } ] },
+    { "key": "cover_story", "type": "select", "label": "Cover story", "default": "featured",
+      "options": [
+        { "value": "featured", "label": "Latest featured post" },
+        { "value": "latest", "label": "Latest post" },
+        { "value": "none", "label": "None (your letter is the cover)" } ] },
+    { "key": "masthead", "type": "select", "label": "Masthead size", "default": "poster",
+      "options": [
+        { "value": "poster", "label": "Poster" },
+        { "value": "standard", "label": "Standard" },
+        { "value": "compact", "label": "Compact" } ] },
+    { "key": "columns", "type": "select", "label": "Feature columns", "default": "two",
+      "options": [
+        { "value": "two", "label": "Two" },
+        { "value": "one", "label": "One" } ] },
+    { "key": "feature_numbers", "type": "boolean", "label": "Number the features", "default": true }
+  ]
+}

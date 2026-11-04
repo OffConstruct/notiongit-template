@@ -1,0 +1,13 @@
+<div class="ink-page issue-page">
+  <article>
+    <header class="issue-page-head">
+      <h1 class="issue-blog-title">{{ page.title }}</h1>
+      {%- if page.description %}
+      <p class="issue-dek">{{ page.description }}</p>
+      {%- endif %}
+    </header>
+    <div class="page-content">
+      {{ content }}
+    </div>
+  </article>
+</div>

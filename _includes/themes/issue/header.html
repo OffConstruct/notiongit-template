@@ -1,0 +1,26 @@
+{%- assign issue_name = site.data.home.name | default: site.author.name | default: site.title | strip -%}
+{%- assign issue_latest = site.posts.first -%}
+<header class="ink-header issue-header">
+  <div class="issue-bar">
+    <p class="issue-dateline">
+      {%- unless page.layout == "home" or issue_name == "" %}<a class="issue-plate" href="{{ '/' | relative_url }}">{{ issue_name }}</a>{% endunless -%}
+      {%- if issue_latest %}<span class="issue-dateline-n">N&ordm; {{ site.posts.size }}</span><span class="issue-dateline-date">{{ issue_latest.date | date: "%B %Y" }}</span>{% endif -%}
+    </p>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="issue-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <div class="site-nav-empty" role="status">
+      {%- if page.layout == "home" %}{% assign issue_named = site.data.home.name | strip %}{% else %}{% assign issue_named = issue_name %}{% endif %}
+      {%- if issue_named == "" %}
+      <span class="site-nav-empty-title">{{ site.title }}</span>
+      {%- endif %}
+      <span>Navigation will appear after the first sync.</span>
+    </div>
+    {%- endif %}
+  </div>
+</header>

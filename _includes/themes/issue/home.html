@@ -1,0 +1,76 @@
+{%- assign home = site.data.home -%}
+{%- comment -%} Strip to strings first: in Jekyll's Liquid, "" != blank is true. {%- endcomment -%}
+{%- assign h_name = home.name | strip -%}
+{%- assign h_tagline = home.tagline | strip -%}
+{%- assign h_picture = home.profile_picture | strip -%}
+{%- assign h_bio = home.bio | strip -%}
+<div class="ink-home issue-home">
+  {%- if h_name != "" %}
+  <header class="issue-masthead">
+    <h1 class="issue-name">{{ home.name }}</h1>
+    {%- if h_tagline != "" %}
+    <p class="issue-tagline">{{ home.tagline }}</p>
+    {%- endif %}
+  </header>
+
+  {%- if site.posts.size > 0 %}
+  {%- assign issue_featured = site.posts | where: "featured", true | first %}
+  {%- unless issue_featured %}{% assign issue_featured = site.posts.first %}{% endunless %}
+  <div class="ink-variant" data-variant="cover_story:featured">
+    {% include themes/issue/_cover.html post=issue_featured %}
+  </div>
+  <div class="ink-variant" data-variant="cover_story:latest">
+    {% include themes/issue/_cover.html post=site.posts.first %}
+  </div>
+  {%- endif %}
+
+  {%- if h_bio != "" or h_picture != "" or home.social_links.size > 0 %}
+  {%- assign bio_parts = home.bio | markdownify | split: "<h2" %}
+  <section class="issue-desk" aria-labelledby="issue-desk-label">
+    <h2 class="issue-label" id="issue-desk-label">From the desk</h2>
+    <div class="issue-desk-grid">
+      {%- if h_picture != "" %}
+      <img class="issue-portrait" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="144" height="180" loading="lazy">
+      {%- endif %}
+      <div class="issue-desk-text">
+        {%- if h_bio != "" %}
+        <div class="issue-letter">{{ bio_parts[0] }}</div>
+        {%- if bio_parts.size > 1 %}
+        <div class="issue-letter-more">{% for part in bio_parts offset: 1 %}<h2{{ part }}{% endfor %}</div>
+        {%- endif %}
+        {%- endif %}
+        {%- if home.social_links.size > 0 %}
+        <ul class="issue-links" aria-label="Elsewhere">
+          {%- for link in home.social_links %}
+          <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+          {%- endfor %}
+        </ul>
+        {%- endif %}
+      </div>
+    </div>
+  </section>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  <section class="issue-contents" aria-labelledby="issue-contents-label">
+    <h2 class="issue-label" id="issue-contents-label">In this issue</h2>
+    {% include themes/issue/_features.html %}
+  </section>
+  {%- else %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your first issue is on its way"
+    copy="Published posts will show up here as numbered features after your next sync."
+  %}
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

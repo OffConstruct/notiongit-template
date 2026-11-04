@@ -1,0 +1,41 @@
+{%- assign byline_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign byline_dek = page.excerpt | strip_html | strip -%}
+{%- assign byline_author = site.data.home.name | default: site.author.name | strip -%}
+{%- assign byline_host = "" -%}
+{%- if page.canonical_url %}{% assign byline_host = page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." %}{% endif -%}
+<div class="ink-post byline-post">
+  <article>
+    <header class="byline-post-head">
+      {% include themes/byline/_kicker.html post=page %}
+      <h1 class="byline-post-title">{{ page.title }}</h1>
+      {%- if byline_dek != "" and byline_dek != byline_first %}
+      <p class="byline-standfirst">{{ byline_dek }}</p>
+      {%- endif %}
+      <div class="byline-credit">
+        {%- if byline_author != "" %}
+        <p class="byline-by">By {{ byline_author }}{% if byline_host != "" %} <span>for {{ byline_host }}</span>{% endif %}</p>
+        {%- endif %}
+        <p class="byline-meta"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time><span>{{ content | number_of_words | divided_by: 230 | plus: 1 }} min read</span></p>
+      </div>
+    </header>
+    {%- if page.cover_image %}
+    <figure class="byline-post-art"><img src="{{ page.cover_image }}" alt="" loading="eager"></figure>
+    {%- endif %}
+    {%- if byline_host != "" %}
+    <aside class="byline-stub" aria-label="Published elsewhere">
+      <p class="byline-stub-k">Published elsewhere</p>
+      <p>This piece first ran in <i>{{ byline_host }}</i>. The full text lives there.</p>
+      <p><a class="byline-stub-link" href="{{ page.canonical_url }}">Read it at {{ byline_host }}</a></p>
+    </aside>
+    {%- endif %}
+    <div class="byline-body">
+      {{ content }}
+    </div>
+    <footer class="byline-post-foot">
+      {%- if page.tags.size > 0 %}
+      <p class="byline-more">More on {% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
+      {%- endif %}
+      <p><a href="{{ '/' | relative_url }}">Back to the front page</a></p>
+    </footer>
+  </article>
+</div>

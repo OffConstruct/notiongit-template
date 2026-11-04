@@ -1,0 +1,18 @@
+{%- comment -%} The contents list: newest first, numbered down to 1. Roman numerals are built here, not with counter(list-item): Chrome numbers a reversed list's counter from 0 downwards. {%- endcomment -%}
+{%- assign roman_vals = "1000,900,500,400,100,90,50,40,10,9,5,4,1" | split: "," -%}
+{%- assign roman_syms = "M,CM,D,CD,C,XC,L,XL,X,IX,V,IV,I" | split: "," -%}
+<ol class="quire-toc" reversed>
+  {%- for post in site.posts %}
+  {%- assign year = post.date | date: "%Y" %}
+  {%- assign roman = "" %}{% assign rest = forloop.rindex %}
+  {%- for v in roman_vals %}{% assign vn = v | plus: 0 %}{% assign times = rest | divided_by: vn %}{% for i in (1..times) %}{% assign roman = roman | append: roman_syms[forloop.parentloop.index0] %}{% endfor %}{% assign rest = rest | modulo: vn %}{% endfor %}
+  <li class="quire-toc-item">
+    <a class="quire-toc-link" href="{{ post.url | relative_url }}">
+      <span class="quire-toc-n" aria-hidden="true"><span class="quire-toc-arabic">{{ forloop.rindex }}</span><span class="quire-toc-roman">{{ roman }}</span></span>
+      <span class="quire-toc-title">{{ post.title }}{% if post.canonical_url %} <span class="quire-toc-outlet">in {{ post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif %}</span>
+      <span class="quire-toc-leader" aria-hidden="true"></span>
+      <time class="quire-toc-year" datetime="{{ post.date | date_to_xmlschema }}"><span class="quire-date-year">{{ year }}</span><span class="quire-date-full">{{ post.date | date: "%-d %b %Y" }}</span></time>
+    </a>
+  </li>
+  {%- endfor %}
+</ol>

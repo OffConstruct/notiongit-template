@@ -1,0 +1,28 @@
+<div class="ink-post-list byline-blog">
+  <header class="byline-page-head">
+    <h1 class="byline-page-title">{{ page.title | default: "All stories" }}</h1>
+    {%- if page.description %}
+    <p class="byline-standfirst">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for y in years %}
+  <section class="byline-year" aria-labelledby="byline-year-{{ y.name }}">
+    <h2 class="byline-label" id="byline-year-{{ y.name }}">{{ y.name }}</h2>
+    <ol class="byline-rows">
+      {%- for post in y.items %}
+      {% include themes/byline/_row.html post=post %}
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

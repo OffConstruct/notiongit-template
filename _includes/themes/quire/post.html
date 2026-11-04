@@ -1,0 +1,30 @@
+{%- for p in site.posts %}{% if p.url == page.url %}{% assign quire_n = forloop.rindex %}{% endif %}{% endfor -%}
+{%- assign quire_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign quire_dek = page.excerpt | strip_html | strip -%}
+<div class="ink-post quire-post">
+  <article class="quire-chapter">
+    <header class="quire-chapter-head">
+      <p class="quire-kicker">{% if quire_n %}<span>No. {{ quire_n }}</span> &middot; {% endif %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time></p>
+      <h1 class="quire-chapter-title">{{ page.title }}</h1>
+      {%- if quire_dek != "" and quire_dek != quire_first %}
+      <p class="quire-standfirst">{{ quire_dek }}</p>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <figure class="quire-plate"><img src="{{ page.cover_image }}" alt="" loading="lazy"></figure>
+    {%- endif %}
+    <div class="quire-body">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="quire-outlet">First published in <a href="{{ page.canonical_url }}"><i>{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</i></a>.</p>
+    {%- endif %}
+    <footer class="quire-colophon">
+      {%- if page.tags.size > 0 %}
+      <p class="quire-tags">Filed under {% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}.</p>
+      {%- endif %}
+      <p><a href="{{ '/' | relative_url }}#quire-contents-label">Back to contents</a></p>
+      <p class="quire-setin">Set in EB Garamond.</p>
+    </footer>
+  </article>
+</div>

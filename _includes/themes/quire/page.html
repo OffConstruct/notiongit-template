@@ -1,0 +1,13 @@
+<div class="ink-page quire-page">
+  <article>
+    <header class="quire-page-head">
+      <h1 class="quire-page-title">{{ page.title }}</h1>
+      {%- if page.description %}
+      <p class="quire-standfirst">{{ page.description }}</p>
+      {%- endif %}
+    </header>
+    <div class="page-content">
+      {{ content }}
+    </div>
+  </article>
+</div>

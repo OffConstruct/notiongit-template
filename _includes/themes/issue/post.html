@@ -1,0 +1,33 @@
+{%- for p in site.posts %}{% if p.url == page.url %}{% assign issue_n = forloop.rindex %}{% endif %}{% endfor -%}
+{%- assign issue_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign issue_dek = page.excerpt | strip_html | strip -%}
+{%- assign issue_author = site.data.home.name | default: site.author.name | strip -%}
+<div class="ink-post issue-post">
+  <article>
+    <header class="issue-post-head">
+      <div class="issue-post-head-inner">
+        <p class="issue-kicker">{% if issue_n %}N&ordm; {{ issue_n }}{% endif %}{% if issue_n and page.tags.size > 0 %}<span aria-hidden="true"> &middot; </span>{% endif %}{% if page.tags.size > 0 %}{{ page.tags.first }}{% endif %}</p>
+        <h1 class="issue-post-title">{{ page.title }}</h1>
+        {%- if issue_dek != "" and issue_dek != issue_first %}
+        <p class="issue-dek">{{ issue_dek }}</p>
+        {%- endif %}
+        <p class="issue-byline">{% if issue_author != "" %}<span>By {{ issue_author }}</span> {% endif %}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time> <span class="issue-byline-read">{{ content | number_of_words | divided_by: 230 | plus: 1 }} min read</span></p>
+      </div>
+    </header>
+    {%- if page.cover_image %}
+    <figure class="issue-post-cover"><img src="{{ page.cover_image }}" alt="" loading="eager"></figure>
+    {%- endif %}
+    <div class="issue-body">
+      {{ content }}
+    </div>
+    <footer class="issue-post-foot">
+      {%- if page.canonical_url %}
+      <p class="issue-outlet">First published in <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+      {%- endif %}
+      {%- if page.tags.size > 0 %}
+      <p class="issue-filed">Filed under {% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
+      {%- endif %}
+      <p><a href="{{ '/' | relative_url }}#issue-contents-label">Back to this issue</a></p>
+    </footer>
+  </article>
+</div>

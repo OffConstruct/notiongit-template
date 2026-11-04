@@ -1,0 +1,80 @@
+{%- assign home = site.data.home -%}
+{%- comment -%} Strip to strings first: in Jekyll's Liquid, "" != blank is true. {%- endcomment -%}
+{%- assign h_name = home.name | strip -%}
+{%- assign h_tagline = home.tagline | strip -%}
+{%- assign h_picture = home.profile_picture | strip -%}
+{%- assign h_bio = home.bio | strip -%}
+<div class="ink-home quire-home">
+  {%- if h_name != "" %}
+  <header class="quire-halftitle">
+    <h1 class="quire-name">{{ home.name }}</h1>
+    {%- if h_tagline != "" %}
+    <p class="quire-tagline">{{ home.tagline }}</p>
+    {%- endif %}
+  </header>
+
+  {%- if h_bio != "" or home.social_links.size > 0 %}
+  <section class="quire-section quire-preface" aria-labelledby="quire-preface-label">
+    <h2 class="quire-label" id="quire-preface-label">Preface</h2>
+    {%- if h_bio != "" %}
+    <div class="quire-bio">{{ home.bio | markdownify }}</div>
+    {%- endif %}
+    {%- if h_picture != "" or home.social_links.size > 0 %}
+    <div class="quire-flap">
+      {%- if h_picture != "" %}
+      <img class="quire-portrait" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="88" height="88" loading="lazy">
+      {%- endif %}
+      {%- if home.social_links.size > 0 %}
+      <ul class="quire-links" aria-label="Elsewhere">
+        {%- for link in home.social_links %}
+        <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
+  {%- assign books = site.posts | where: "featured", true | where_exp: "p", "p.cover_image" %}
+  {%- if books.size > 0 %}
+  <section class="quire-section quire-shelf" aria-labelledby="quire-shelf-label">
+    <h2 class="quire-label" id="quire-shelf-label">Books</h2>
+    {%- for post in books %}
+    <article class="quire-book">
+      <a class="quire-book-cover" href="{{ post.url | relative_url }}" tabindex="-1" aria-hidden="true"><img src="{{ post.cover_image }}" alt="" loading="lazy"></a>
+      <div class="quire-book-text">
+        <h3 class="quire-book-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+        <p class="quire-book-year"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time></p>
+        {%- if post.excerpt %}
+        <p class="quire-book-excerpt">{{ post.excerpt | strip_html | truncate: 220 }}</p>
+        {%- endif %}
+      </div>
+    </article>
+    {%- endfor %}
+  </section>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  <section class="quire-section quire-contents" aria-labelledby="quire-contents-label">
+    <h2 class="quire-label" id="quire-contents-label">Contents</h2>
+    {% include themes/quire/_contents.html %}
+  </section>
+  {%- else %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="The contents page is still blank"
+    copy="Published posts will be listed here, newest first, after your next sync."
+  %}
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

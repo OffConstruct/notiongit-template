@@ -1,0 +1,44 @@
+{%- assign byline_name = site.data.home.name | default: site.author.name | default: site.title | strip -%}
+{%- assign byline_tagline = site.data.home.tagline | strip -%}
+{%- assign byline_links = site.data.home.social_links -%}
+<header class="ink-header byline-header{% if page.layout == 'home' %} byline-header--front{% endif %}">
+  <div class="byline-wrap">
+    {%- if page.layout == "home" %}
+    <div class="byline-dateline">
+      <p class="byline-updated">{% if site.posts.size > 0 %}Updated <time datetime="{{ site.posts.first.date | date_to_xmlschema }}">{{ site.posts.first.date | date: "%A, %-d %B %Y" }}</time>{% endif %}</p>
+      {%- if byline_links.size > 0 %}
+      <ul class="byline-social" aria-label="Elsewhere">
+        {%- for link in byline_links %}
+        <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+    {%- if byline_name != "" %}
+    <div class="byline-nameplate">
+      <h1 class="byline-name">{{ byline_name }}</h1>
+      {%- if byline_tagline != "" %}
+      <p class="byline-tagline">{{ site.data.home.tagline }}</p>
+      {%- endif %}
+    </div>
+    {%- endif %}
+    {%- elsif byline_name != "" %}
+    <a class="byline-plate" href="{{ '/' | relative_url }}">{{ byline_name }}</a>
+    {%- endif %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="byline-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <div class="site-nav-empty" role="status">
+      {%- if byline_name == "" %}
+      <span class="site-nav-empty-title">{{ site.title }}</span>
+      {%- endif %}
+      <span>Navigation will appear after the first sync.</span>
+    </div>
+    {%- endif %}
+  </div>
+</header>

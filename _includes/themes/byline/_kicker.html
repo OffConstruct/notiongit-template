@@ -1,0 +1,9 @@
+{%- comment -%} Three kickers; theme.css shows the one the kicker tweak picks. Inside a tag section the tag kicker skips that tag. Missing values fall back to the date. {%- endcomment -%}
+{%- assign k_post = include.post -%}
+{%- assign k_date = k_post.date | date: "%B %Y" -%}
+{%- assign k_tag = "" -%}
+{%- for t in k_post.tags %}{% if t != include.section %}{% assign k_tag = t %}{% break %}{% endif %}{% endfor -%}
+{%- if k_tag == "" %}{% assign k_tag = k_date %}{% endif -%}
+{%- assign k_host = "" -%}
+{%- if k_post.canonical_url %}{% assign k_host = k_post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." %}{% endif -%}
+<p class="byline-kicker"><span class="byline-k byline-k--tag">{{ k_tag }}</span><span class="byline-k byline-k--date">{{ k_date }}</span><span class="byline-k byline-k--outlet">{{ k_host | default: k_tag }}</span></p>

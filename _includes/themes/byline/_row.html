@@ -1,0 +1,16 @@
+{%- assign post = include.post -%}
+{%- assign row_host = "" -%}
+{%- if post.canonical_url %}{% assign row_host = post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." %}{% endif -%}
+<li class="byline-row{% if post.cover_image %} byline-row--thumb{% endif %}">
+  <div class="byline-row-text">
+    {% include themes/byline/_kicker.html post=post section=include.section %}
+    <h3 class="byline-row-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+    {%- if post.excerpt %}
+    <p class="byline-dek">{{ post.excerpt | strip_html | strip | truncate: 180 }}</p>
+    {%- endif %}
+    <p class="byline-meta">{% if row_host != "" %}<span class="byline-outlet">{{ row_host }}</span>{% endif %}<time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %b %Y" }}</time></p>
+  </div>
+  {%- if post.cover_image %}
+  <img class="byline-thumb" src="{{ post.cover_image }}" alt="" loading="lazy">
+  {%- endif %}
+</li>

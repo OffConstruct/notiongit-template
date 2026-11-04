@@ -1,0 +1,18 @@
+<div class="ink-post-list quire-blog">
+  <header class="quire-blog-header">
+    <h1 class="quire-page-title">{{ page.title | default: "Contents" }}</h1>
+    {%- if page.description %}
+    <p class="quire-standfirst">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {% include themes/quire/_contents.html %}
+  {%- endif %}
+</div>

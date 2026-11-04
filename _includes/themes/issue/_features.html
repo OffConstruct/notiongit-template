@@ -1,0 +1,23 @@
+{%- comment -%} Numbered features, newest first, counting down to 1. Titles are h3 under a section label, or h2 when include.level says so. {%- endcomment -%}
+{%- assign f_level = include.level | default: 3 -%}
+<ol class="issue-features" reversed>
+  {%- for post in site.posts %}
+  {%- assign n = site.posts.size | minus: forloop.index0 %}
+  <li class="issue-feature{% if post.cover_image %} issue-feature--plate{% endif %}">
+    <span class="issue-num" aria-hidden="true">{% if n < 10 %}0{% endif %}{{ n }}</span>
+    <div class="issue-feature-text">
+      {%- if post.tags.size > 0 %}
+      <p class="issue-kicker">{{ post.tags.first }}</p>
+      {%- endif %}
+      <h{{ f_level }} class="issue-feature-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h{{ f_level }}>
+      {%- if post.excerpt %}
+      <p class="issue-feature-dek">{{ post.excerpt | strip_html | strip | truncate: 160 }}</p>
+      {%- endif %}
+      <p class="issue-meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %b %Y" }}</time>{% if post.canonical_url %} <span>in {{ post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif %}</p>
+    </div>
+    {%- if post.cover_image %}
+    <img class="issue-feature-plate" src="{{ post.cover_image }}" alt="" loading="lazy">
+    {%- endif %}
+  </li>
+  {%- endfor %}
+</ol>

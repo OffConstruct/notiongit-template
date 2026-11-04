@@ -1,0 +1,18 @@
+{%- comment -%} The cover story: kicker, headline, dek, and a cover cropped at the sheet edge, or the issue numeral when there is no image. {%- endcomment -%}
+{%- assign post = include.post -%}
+{%- for p in site.posts %}{% if p.url == post.url %}{% assign cover_n = site.posts.size | minus: forloop.index0 %}{% endif %}{% endfor -%}
+<article class="issue-cover{% if post.cover_image %} issue-cover--image{% endif %}">
+  <div class="issue-cover-text">
+    <p class="issue-kicker">Cover story{% if post.tags.size > 0 %}<span aria-hidden="true"> &middot; </span><span class="issue-kicker-tag">{{ post.tags.first }}</span>{% endif %}</p>
+    <h2 class="issue-cover-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+    {%- if post.excerpt %}
+    <p class="issue-dek">{{ post.excerpt | strip_html | strip | truncate: 220 }}</p>
+    {%- endif %}
+    <p class="issue-meta"><span>N&ordm; {{ cover_n }}</span> <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %B %Y" }}</time>{% if post.canonical_url %} <span>in {{ post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif %}</p>
+  </div>
+  {%- if post.cover_image %}
+  <figure class="issue-cover-art"><img src="{{ post.cover_image }}" alt="" loading="eager"></figure>
+  {%- else %}
+  <div class="issue-cover-art issue-cover-numeral" aria-hidden="true">{{ cover_n }}</div>
+  {%- endif %}
+</article>
