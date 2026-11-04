@@ -1,0 +1,43 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "classic",
+  "name": "Classic",
+  "version": "1.0.0",
+  "summary": "The original InkDrafts look: IBM Plex Sans, a quiet gray ground and one blue accent.",
+  "description": "A centred name and tagline on the home page, card-style post lists, Space Mono headings and an automatic dark mode. Every site starts here, and any site without a theme setting keeps this look.",
+  "categories": ["developers", "writers"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": [],
+  "fonts": [
+    {
+      "value": "plex",
+      "label": "IBM Plex Sans",
+      "google": "family=Space+Mono:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600",
+      "stacks": {
+        "body": "\"IBM Plex Sans\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"IBM Plex Sans\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "\"Space Mono\", \"SFMono-Regular\", Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f3f4f6", "text": "#18181b", "muted": "#52525b" },
+    "dark": { "bg": "#111111", "text": "#fafafa", "muted": "#d4d4d8" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent", "role": "text", "default": "blue", "custom": true,
+      "presets": [
+        { "value": "blue", "label": "Blue", "light": "#2563eb", "dark": "#60a5fa" },
+        { "value": "violet", "label": "Violet", "light": "#6d28d9", "dark": "#a78bfa" },
+        { "value": "green", "label": "Green", "light": "#15803d", "dark": "#4ade80" },
+        { "value": "slate", "label": "Slate", "light": "#475569", "dark": "#94a3b8" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true }
+  ]
+}

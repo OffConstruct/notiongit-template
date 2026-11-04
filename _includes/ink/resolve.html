@@ -1,0 +1,12 @@
+{%- comment -%}
+  Resolves the active theme. No output. Sets ink_id, ink_theme (the manifest
+  from _data/themes/<id>.json) and ink_slots. Every layout includes this,
+  because each layout is a separate Liquid render. Unknown or missing themes
+  fall back to classic.
+{%- endcomment -%}
+{%- assign ink_id = site.inkdrafts.theme_id | default: "classic" | downcase -%}
+{%- assign ink_theme = site.data.themes[ink_id] -%}
+{%- unless ink_theme and ink_theme.id == ink_id -%}
+  {%- assign ink_id = "classic" -%}{%- assign ink_theme = site.data.themes.classic -%}
+{%- endunless -%}
+{%- assign ink_slots = ink_theme.slots -%}

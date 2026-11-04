@@ -3,7 +3,7 @@ layout: default
 title: Tags
 permalink: /tags/
 ---
-<div class="container">
+{% include ink/resolve.html %}{% if ink_slots contains "tags" %}{% include themes/{{ ink_id }}/tags.html %}{% else %}<div class="container ink-tags">
   <header class="tags-header">
     <h1>Tags</h1>
   </header>
@@ -39,3 +39,4 @@ permalink: /tags/
   {% endfor %}
   {% endif %}
 </div>
+{% endif %}

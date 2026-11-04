@@ -1,13 +1,13 @@
 ---
 layout: default
 ---
-{% assign home = site.data.home %}
+{% include ink/resolve.html %}{% if ink_slots contains "home" %}{% include themes/{{ ink_id }}/home.html %}{% else %}{% assign home = site.data.home %}
 {% assign has_home_content = false %}
 {% if home and home.name != blank %}
 {% assign has_home_content = true %}
 {% endif %}
 
-<div class="home-page">
+<div class="home-page ink-home">
 
   {% if has_home_content %}
   {% if home.profile_picture and home.profile_picture != "" %}
@@ -41,3 +41,4 @@ layout: default
 
 
 </div>
+{% endif %}

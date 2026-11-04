@@ -1,0 +1,21 @@
+{%- comment -%}
+  Theme part of <head>: color-scheme, web fonts, the theme stylesheet, the
+  validated tweak values, and the owner's optional assets/css/custom.css.
+  Requires ink/resolve.html and ink/tweaks.html first (default.html does both).
+{%- endcomment %}
+<meta name="color-scheme" content="{{ ink_color_scheme }}">
+{%- if ink_webfonts and ink_pairing.google %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link id="ink-fonts" href="https://fonts.googleapis.com/css2?{{ ink_pairing.google | escape }}&amp;display=swap" rel="stylesheet">
+{%- endif %}
+<link rel="stylesheet" href="{{ '/assets/themes/' | append: ink_id | append: '/theme.css' | relative_url }}">
+<style id="ink-tweaks">:root{ {{- ink_vars -}} }</style>
+{%- assign ink_custom = site.static_files | where: "path", "/assets/css/custom.css" | first -%}
+{%- if ink_custom %}
+<link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}">
+{%- endif -%}
+{%- if site.inkdrafts_preview %}
+<script type="application/json" id="ink-manifest">{{ ink_theme | jsonify }}</script>
+<script src="{{ '/assets/ink-preview/preview.js' | relative_url }}" defer></script>
+{%- endif -%}

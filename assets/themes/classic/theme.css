@@ -12,17 +12,26 @@
   --text-secondary:  #52525b;
   --text-muted:      #a1a1aa;
   --border:          #e4e4e7;
-  --accent:          #2563eb;
+  --accent:          var(--tw-accent, #2563eb);
   --accent-hover:    #1d4ed8;
   --code-bg:         #f4f4f5;
   --code-text:       #18181b;
   --tag-bg:          #f4f4f5;
 
+  /* InkDrafts theme tokens: the stable names custom.css can rely on. */
+  --ink-bg:          #f3f4f6;
+  --ink-text:        #18181b;
+  --ink-muted:       #52525b;
+  --ink-accent:      var(--accent);
+  --ink-font-body:   var(--font-sans);
+  --ink-font-display: var(--font-sans);
+  --ink-font-mono:   var(--font-mono);
+
   /* Typography */
-  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "Space Mono", "SFMono-Regular", Menlo, Monaco, Consolas,
-               "Liberation Mono", "Courier New", monospace;
+  --font-sans: var(--tw-font-body, "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif);
+  --font-mono: var(--tw-font-mono, "Space Mono", "SFMono-Regular", Menlo, Monaco, Consolas,
+               "Liberation Mono", "Courier New", monospace);
 
   /* Layout */
   --container:   720px;
@@ -41,19 +50,75 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-ink-mode="light"]) {
     --bg:             #111111;
     --surface:        #111111;
     --text:           #fafafa;
     --text-secondary: #d4d4d8;
     --text-muted:     #71717a;
     --border:         #27272a;
-    --accent:         #60a5fa;
+    --accent:         var(--tw-accent-dark, #60a5fa);
     --accent-hover:   #93c5fd;
     --code-bg:        #27272a;
     --code-text:      #e4e4e7;
     --tag-bg:         #27272a;
+    --ink-bg:         #111111;
+    --ink-text:       #fafafa;
+    --ink-muted:      #d4d4d8;
   }
+}
+
+:root[data-ink-mode="dark"] {
+  --bg:             #111111;
+  --surface:        #111111;
+  --text:           #fafafa;
+  --text-secondary: #d4d4d8;
+  --text-muted:     #71717a;
+  --border:         #27272a;
+  --accent:         var(--tw-accent-dark, #60a5fa);
+  --accent-hover:   #93c5fd;
+  --code-bg:        #27272a;
+  --code-text:      #e4e4e7;
+  --tag-bg:         #27272a;
+  --ink-bg:         #111111;
+  --ink-text:       #fafafa;
+  --ink-muted:      #d4d4d8;
+}
+
+/* Non-default accents: derive hover from the accent; blue keeps its exact
+   hand-picked hover. A custom accent has no dark hex, so dark mode lifts it. */
+:root[data-ink-accent]:not([data-ink-accent="blue"]) {
+  --accent-hover: color-mix(in oklab, var(--accent) 82%, black);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-accent="custom"]:not([data-ink-mode="light"]) {
+    --accent: var(--tw-accent);
+  }
+  :root[data-ink-accent]:not([data-ink-accent="blue"]):not([data-ink-mode="light"]) {
+    --accent-hover: color-mix(in oklab, var(--accent) 70%, white);
+  }
+}
+
+:root[data-ink-accent="custom"][data-ink-mode="dark"] {
+  --accent: var(--tw-accent);
+}
+
+/* A var() declaration never fails at parse time, so relative color needs
+   @supports rather than a fallback line. */
+@supports (color: oklch(from red l c h)) {
+  @media (prefers-color-scheme: dark) {
+    :root[data-ink-accent="custom"]:not([data-ink-mode="light"]) {
+      --accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+    }
+  }
+  :root[data-ink-accent="custom"][data-ink-mode="dark"] {
+    --accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+  }
+}
+
+:root[data-ink-accent]:not([data-ink-accent="blue"])[data-ink-mode="dark"] {
+  --accent-hover: color-mix(in oklab, var(--accent) 70%, white);
 }
 
 /* ─── Reset ──────────────────────────────────────────────────── */
@@ -227,10 +292,15 @@ img, video {
 }
 
 @media (prefers-color-scheme: dark) {
-  .home-avatar-placeholder {
+  :root:not([data-ink-mode="light"]) .home-avatar-placeholder {
     background: #374151;
     color: #9ca3af;
   }
+}
+
+:root[data-ink-mode="dark"] .home-avatar-placeholder {
+  background: #374151;
+  color: #9ca3af;
 }
 
 /* Space Mono runs wider than the display face it replaced, so the clamp
@@ -964,52 +1034,101 @@ img, video {
 
 /* Dark mode syntax highlighting */
 @media (prefers-color-scheme: dark) {
-  .highlight .c,
-  .highlight .cm,
-  .highlight .cp,
-  .highlight .c1,
-  .highlight .cs  { color: #8b949e; }
+  :root:not([data-ink-mode="light"]) .highlight .c,
+  :root:not([data-ink-mode="light"]) .highlight .cm,
+  :root:not([data-ink-mode="light"]) .highlight .cp,
+  :root:not([data-ink-mode="light"]) .highlight .c1,
+  :root:not([data-ink-mode="light"]) .highlight .cs  { color: #8b949e; }
 
-  .highlight .k,
-  .highlight .kd,
-  .highlight .kn,
-  .highlight .kr  { color: #ff7b72; }
-  .highlight .kc  { color: #79c0ff; }
-  .highlight .kt  { color: #ff7b72; }
+  :root:not([data-ink-mode="light"]) .highlight .k,
+  :root:not([data-ink-mode="light"]) .highlight .kd,
+  :root:not([data-ink-mode="light"]) .highlight .kn,
+  :root:not([data-ink-mode="light"]) .highlight .kr  { color: #ff7b72; }
+  :root:not([data-ink-mode="light"]) .highlight .kc  { color: #79c0ff; }
+  :root:not([data-ink-mode="light"]) .highlight .kt  { color: #ff7b72; }
 
-  .highlight .s,
-  .highlight .sb,
-  .highlight .sc,
-  .highlight .sd,
-  .highlight .s2,
-  .highlight .s1,
-  .highlight .se,
-  .highlight .sh,
-  .highlight .si,
-  .highlight .ss,
-  .highlight .sx,
-  .highlight .sr  { color: #a5d6ff; }
+  :root:not([data-ink-mode="light"]) .highlight .s,
+  :root:not([data-ink-mode="light"]) .highlight .sb,
+  :root:not([data-ink-mode="light"]) .highlight .sc,
+  :root:not([data-ink-mode="light"]) .highlight .sd,
+  :root:not([data-ink-mode="light"]) .highlight .s2,
+  :root:not([data-ink-mode="light"]) .highlight .s1,
+  :root:not([data-ink-mode="light"]) .highlight .se,
+  :root:not([data-ink-mode="light"]) .highlight .sh,
+  :root:not([data-ink-mode="light"]) .highlight .si,
+  :root:not([data-ink-mode="light"]) .highlight .ss,
+  :root:not([data-ink-mode="light"]) .highlight .sx,
+  :root:not([data-ink-mode="light"]) .highlight .sr  { color: #a5d6ff; }
 
-  .highlight .n   { color: #c9d1d9; }
-  .highlight .na  { color: #d2a8ff; }
-  .highlight .nb  { color: #79c0ff; }
-  .highlight .nc,
-  .highlight .nd,
-  .highlight .ne,
-  .highlight .nf,
-  .highlight .nl,
-  .highlight .nn  { color: #d2a8ff; }
-  .highlight .ni  { color: #79c0ff; }
+  :root:not([data-ink-mode="light"]) .highlight .n   { color: #c9d1d9; }
+  :root:not([data-ink-mode="light"]) .highlight .na  { color: #d2a8ff; }
+  :root:not([data-ink-mode="light"]) .highlight .nb  { color: #79c0ff; }
+  :root:not([data-ink-mode="light"]) .highlight .nc,
+  :root:not([data-ink-mode="light"]) .highlight .nd,
+  :root:not([data-ink-mode="light"]) .highlight .ne,
+  :root:not([data-ink-mode="light"]) .highlight .nf,
+  :root:not([data-ink-mode="light"]) .highlight .nl,
+  :root:not([data-ink-mode="light"]) .highlight .nn  { color: #d2a8ff; }
+  :root:not([data-ink-mode="light"]) .highlight .ni  { color: #79c0ff; }
 
-  .highlight .m,
-  .highlight .mf,
-  .highlight .mh,
-  .highlight .mi,
-  .highlight .mo  { color: #79c0ff; }
+  :root:not([data-ink-mode="light"]) .highlight .m,
+  :root:not([data-ink-mode="light"]) .highlight .mf,
+  :root:not([data-ink-mode="light"]) .highlight .mh,
+  :root:not([data-ink-mode="light"]) .highlight .mi,
+  :root:not([data-ink-mode="light"]) .highlight .mo  { color: #79c0ff; }
 
-  .highlight .o,
-  .highlight .ow  { color: #ff7b72; }
-  .highlight .p   { color: #c9d1d9; }
+  :root:not([data-ink-mode="light"]) .highlight .o,
+  :root:not([data-ink-mode="light"]) .highlight .ow  { color: #ff7b72; }
+  :root:not([data-ink-mode="light"]) .highlight .p   { color: #c9d1d9; }
 
-  .highlight .err { color: #ff7b72; background: #3d1f1f; }
+  :root:not([data-ink-mode="light"]) .highlight .err { color: #ff7b72; background: #3d1f1f; }
 }
+
+:root[data-ink-mode="dark"] .highlight .c,
+:root[data-ink-mode="dark"] .highlight .cm,
+:root[data-ink-mode="dark"] .highlight .cp,
+:root[data-ink-mode="dark"] .highlight .c1,
+:root[data-ink-mode="dark"] .highlight .cs  { color: #8b949e; }
+
+:root[data-ink-mode="dark"] .highlight .k,
+:root[data-ink-mode="dark"] .highlight .kd,
+:root[data-ink-mode="dark"] .highlight .kn,
+:root[data-ink-mode="dark"] .highlight .kr  { color: #ff7b72; }
+:root[data-ink-mode="dark"] .highlight .kc  { color: #79c0ff; }
+:root[data-ink-mode="dark"] .highlight .kt  { color: #ff7b72; }
+
+:root[data-ink-mode="dark"] .highlight .s,
+:root[data-ink-mode="dark"] .highlight .sb,
+:root[data-ink-mode="dark"] .highlight .sc,
+:root[data-ink-mode="dark"] .highlight .sd,
+:root[data-ink-mode="dark"] .highlight .s2,
+:root[data-ink-mode="dark"] .highlight .s1,
+:root[data-ink-mode="dark"] .highlight .se,
+:root[data-ink-mode="dark"] .highlight .sh,
+:root[data-ink-mode="dark"] .highlight .si,
+:root[data-ink-mode="dark"] .highlight .ss,
+:root[data-ink-mode="dark"] .highlight .sx,
+:root[data-ink-mode="dark"] .highlight .sr  { color: #a5d6ff; }
+
+:root[data-ink-mode="dark"] .highlight .n   { color: #c9d1d9; }
+:root[data-ink-mode="dark"] .highlight .na  { color: #d2a8ff; }
+:root[data-ink-mode="dark"] .highlight .nb  { color: #79c0ff; }
+:root[data-ink-mode="dark"] .highlight .nc,
+:root[data-ink-mode="dark"] .highlight .nd,
+:root[data-ink-mode="dark"] .highlight .ne,
+:root[data-ink-mode="dark"] .highlight .nf,
+:root[data-ink-mode="dark"] .highlight .nl,
+:root[data-ink-mode="dark"] .highlight .nn  { color: #d2a8ff; }
+:root[data-ink-mode="dark"] .highlight .ni  { color: #79c0ff; }
+
+:root[data-ink-mode="dark"] .highlight .m,
+:root[data-ink-mode="dark"] .highlight .mf,
+:root[data-ink-mode="dark"] .highlight .mh,
+:root[data-ink-mode="dark"] .highlight .mi,
+:root[data-ink-mode="dark"] .highlight .mo  { color: #79c0ff; }
+
+:root[data-ink-mode="dark"] .highlight .o,
+:root[data-ink-mode="dark"] .highlight .ow  { color: #ff7b72; }
+:root[data-ink-mode="dark"] .highlight .p   { color: #c9d1d9; }
+
+:root[data-ink-mode="dark"] .highlight .err { color: #ff7b72; background: #3d1f1f; }

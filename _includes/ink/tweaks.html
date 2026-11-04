@@ -1,0 +1,89 @@
+{%- comment -%}
+  Validates site.inkdrafts.tweaks against the active manifest. No output.
+  Builds ink_attrs (attributes for <html>), ink_vars (declarations for
+  #ink-tweaks), ink_pairing, ink_webfonts and ink_color_scheme. Only manifest
+  strings and values validated here reach the page; an invalid or undeclared
+  value falls back to the manifest default. Requires ink/resolve.html first.
+  A hand-edited unquoted value reaches Liquid typed by YAML 1.1 (`2` is an
+  integer, `off` is false), so string choices compare against ink_cand: the
+  value as text, with true/false spelled on/off.
+{%- endcomment -%}
+{%- assign ink_attrs = ' data-ink-theme="' | append: ink_id | append: '"' -%}
+{%- assign ink_vars = "" -%}
+{%- assign ink_pairing = ink_theme.fonts | first -%}
+{%- assign ink_webfonts = true -%}
+{%- assign ink_color_scheme = "light dark" -%}
+{%- assign ink_user = site.inkdrafts.tweaks -%}
+{%- for tw in ink_theme.tweaks -%}
+  {%- assign ink_raw = nil -%}
+  {%- if ink_user -%}{%- assign ink_raw = ink_user[tw.key] -%}{%- endif -%}
+  {%- capture ink_raw_s -%}{{ ink_raw }}{%- endcapture -%}
+  {%- if ink_raw == true -%}{%- assign ink_cand = "on" -%}
+  {%- elsif ink_raw == false -%}{%- assign ink_cand = "off" -%}
+  {%- else -%}{%- assign ink_cand = ink_raw_s -%}{%- endif -%}
+  {%- assign ink_val = tw.default -%}
+  {%- assign ink_name = tw.key | replace: "_", "-" -%}
+  {%- case tw.type -%}
+    {%- when "select" -%}
+      {%- assign ink_values = tw.options | map: "value" -%}
+      {%- if ink_cand != "" and ink_values contains ink_cand -%}{%- assign ink_val = ink_cand -%}{%- endif -%}
+      {%- assign ink_attrs = ink_attrs | append: ' data-ink-' | append: ink_name | append: '="' | append: ink_val | append: '"' -%}
+      {%- if tw.key == "mode" -%}
+        {%- if ink_val == "light" or ink_val == "dark" -%}{%- assign ink_color_scheme = ink_val -%}{%- endif -%}
+      {%- endif -%}
+    {%- when "boolean" -%}
+      {%- if ink_cand == "on" or ink_cand == "true" -%}{%- assign ink_val = true -%}
+      {%- elsif ink_cand == "off" or ink_cand == "false" -%}{%- assign ink_val = false -%}{%- endif -%}
+      {%- if ink_val == true -%}{%- assign ink_state = "on" -%}{%- else -%}{%- assign ink_state = "off" -%}{%- endif -%}
+      {%- assign ink_attrs = ink_attrs | append: ' data-ink-' | append: ink_name | append: '="' | append: ink_state | append: '"' -%}
+      {%- if tw.key == "webfonts" -%}{%- assign ink_webfonts = ink_val -%}{%- endif -%}
+    {%- when "color" -%}
+      {%- assign ink_values = tw.presets | map: "value" -%}
+      {%- assign ink_hex = nil -%}
+      {%- if ink_cand != "" and ink_values contains ink_cand -%}
+        {%- assign ink_val = ink_cand -%}
+      {%- elsif tw.custom and ink_raw_s.size == 7 -%}
+        {%- assign ink_hex = ink_raw_s | downcase -%}
+        {%- assign ink_first = ink_hex | slice: 0 -%}
+        {%- if ink_first != "#" -%}{%- assign ink_hex = nil -%}{%- endif -%}
+        {%- if ink_hex -%}
+          {%- assign ink_chars = ink_hex | slice: 1, 6 | split: "" -%}
+          {%- for ink_c in ink_chars -%}
+            {%- unless "0123456789abcdef" contains ink_c -%}{%- assign ink_hex = nil -%}{%- endunless -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endif -%}
+      {%- if ink_hex -%}
+        {%- assign ink_attrs = ink_attrs | append: ' data-ink-' | append: ink_name | append: '="custom"' -%}
+        {%- assign ink_vars = ink_vars | append: '--tw-' | append: ink_name | append: ':' | append: ink_hex | append: ';' -%}
+      {%- else -%}
+        {%- assign ink_preset = tw.presets | where: "value", ink_val | first -%}
+        {%- assign ink_attrs = ink_attrs | append: ' data-ink-' | append: ink_name | append: '="' | append: ink_val | append: '"' -%}
+        {%- if ink_preset -%}
+          {%- assign ink_vars = ink_vars | append: '--tw-' | append: ink_name | append: ':' | append: ink_preset.light | append: ';--tw-' | append: ink_name | append: '-dark:' | append: ink_preset.dark | append: ';' -%}
+          {%- if ink_preset.on -%}
+            {%- assign ink_vars = ink_vars | append: '--tw-' | append: ink_name | append: '-on:' | append: ink_preset.on | append: ';' -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- when "range" -%}
+      {%- assign ink_num = ink_raw | plus: 0 -%}
+      {%- capture ink_num_s -%}{{ ink_num }}{%- endcapture -%}
+      {%- comment -%} On the step grid from min, with float slack. {%- endcomment -%}
+      {%- assign ink_steps = ink_num | minus: tw.min | times: 1.0 | divided_by: tw.step | round: 6 -%}
+      {%- assign ink_whole = ink_steps | round -%}
+      {%- if ink_raw_s != "" and ink_num_s == ink_raw_s and ink_num >= tw.min and ink_num <= tw.max and ink_steps == ink_whole -%}
+        {%- assign ink_val = ink_num -%}
+      {%- endif -%}
+      {%- assign ink_vars = ink_vars | append: '--tw-' | append: ink_name | append: ':' | append: ink_val | append: tw.unit | append: ';' -%}
+    {%- when "font" -%}
+      {%- assign ink_found = nil -%}
+      {%- if ink_cand != "" -%}{%- assign ink_found = ink_theme.fonts | where: "value", ink_cand | first -%}{%- endif -%}
+      {%- if ink_found -%}{%- assign ink_val = ink_cand -%}{%- endif -%}
+      {%- assign ink_pairing = ink_theme.fonts | where: "value", ink_val | first -%}
+      {%- assign ink_attrs = ink_attrs | append: ' data-ink-font="' | append: ink_val | append: '"' -%}
+  {%- endcase -%}
+{%- endfor -%}
+{%- if ink_pairing -%}
+  {%- assign ink_vars = ink_vars | append: '--tw-font-body:' | append: ink_pairing.stacks.body | append: ';--tw-font-display:' | append: ink_pairing.stacks.display | append: ';--tw-font-mono:' | append: ink_pairing.stacks.mono | append: ';' -%}
+{%- endif -%}

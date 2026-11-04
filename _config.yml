@@ -9,6 +9,13 @@ author:
   name: ""
   email: ""
 
+# Site appearance. inkdrafts.com rewrites this block when you change themes;
+# you can also edit it by hand. Theme ids: _data/themes/. Docs: docs/themes/.
+# Quote text values when editing by hand, as in mode: "dark".
+inkdrafts:
+  theme_id: "classic"
+  tweaks: {}
+
 # Build settings
 markdown: kramdown
 highlighter: rouge
@@ -58,3 +65,5 @@ exclude:
   - .env
   - .env.*
   - vendor/
+  - docs/
+  - THEMES.md

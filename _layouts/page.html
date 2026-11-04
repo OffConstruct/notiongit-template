@@ -1,8 +1,9 @@
 ---
 layout: default
 ---
-<div class="container">
+{% include ink/resolve.html %}{% if ink_slots contains "page" %}{% include themes/{{ ink_id }}/page.html %}{% else %}<div class="container ink-page">
   <div class="page-content">
     {{ content }}
   </div>
 </div>
+{% endif %}

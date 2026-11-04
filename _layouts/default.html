@@ -1,13 +1,15 @@
+{%- include ink/resolve.html -%}
+{%- include ink/tweaks.html -%}
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: 'en' }}">
+<html lang="{{ site.lang | default: 'en' }}"{{ ink_attrs }}>
   <head>
     {% include head.html %}
   </head>
-  <body{% if page.layout == 'home' %} class="home-body"{% endif %}>
-    {% include header.html %}
+  <body class="ink-body ink-body--{{ page.layout | default: 'page' }}{% if page.layout == 'home' %} home-body{% endif %}">
+    {% if ink_slots contains "header" %}{% include themes/{{ ink_id }}/header.html %}{% else %}{% include header.html %}{% endif %}
     <main class="main" id="main-content">
       {{ content }}
     </main>
-    {% include footer.html %}
+    {% if ink_slots contains "footer" %}{% include themes/{{ ink_id }}/footer.html %}{% else %}{% include footer.html %}{% endif %}
   </body>
 </html>
