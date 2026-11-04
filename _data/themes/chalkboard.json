@@ -1,0 +1,59 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "chalkboard",
+  "name": "Chalkboard",
+  "version": "1.0.0",
+  "summary": "The lesson board: a slate ground, one highlighter and lesson cards in Atkinson Hyperlegible.",
+  "description": "A slate board with one highlighter. Your tagline is the headline, marked like the key line on a board, beside your portrait. Readers pick a topic from your tags, start with one featured lesson, then browse lesson cards. Set in a face drawn for low-vision readers. For course creators and online tutors.",
+  "categories": ["educators", "developers"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "atkinson",
+      "label": "Atkinson Hyperlegible",
+      "google": "family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;0,800;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;700",
+      "stacks": {
+        "body": "\"Atkinson Hyperlegible Next\", \"Atkinson Hyperlegible\", Verdana, \"Segoe UI\", system-ui, sans-serif",
+        "display": "\"Atkinson Hyperlegible Next\", \"Atkinson Hyperlegible\", Verdana, \"Segoe UI\", system-ui, sans-serif",
+        "mono": "\"Atkinson Hyperlegible Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#fffaf0", "text": "#1e2a2c", "muted": "#5a6663" },
+    "dark": { "bg": "#1e2a2c", "text": "#f3efe4", "muted": "#b9c2bd" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "dark",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Cream" },
+        { "value": "dark", "label": "Board" } ] },
+    { "key": "accent", "type": "color", "label": "Highlighter", "role": "surface", "default": "yellow", "custom": false,
+      "presets": [
+        { "value": "yellow", "label": "Yellow", "light": "#ffd23f", "dark": "#ffd23f", "on": "#1e2a2c" },
+        { "value": "mint", "label": "Mint", "light": "#7fe0b5", "dark": "#7fe0b5", "on": "#1e2a2c" },
+        { "value": "coral", "label": "Coral", "light": "#ff9e80", "dark": "#ff9e80", "on": "#1e2a2c" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "hero", "type": "select", "label": "Opening layout", "default": "split",
+      "options": [
+        { "value": "split", "label": "Portrait beside" },
+        { "value": "stacked", "label": "Portrait above" },
+        { "value": "text", "label": "No portrait" } ] },
+    { "key": "buttons", "type": "select", "label": "Links shown as buttons", "default": "two",
+      "options": [
+        { "value": "two", "label": "First two links" },
+        { "value": "one", "label": "First link" },
+        { "value": "none", "label": "None" } ] },
+    { "key": "show_topics", "type": "boolean", "label": "Show the topic picker", "default": true },
+    { "key": "lessons", "type": "select", "label": "Lesson list", "default": "cards",
+      "options": [
+        { "value": "cards", "label": "Lesson cards" },
+        { "value": "covers", "label": "Cards with covers" },
+        { "value": "rows", "label": "Rows" } ] },
+    { "key": "show_dates", "type": "boolean", "label": "Show dates on lessons", "default": false }
+  ]
+}

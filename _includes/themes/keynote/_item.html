@@ -1,0 +1,16 @@
+{%- comment -%} One entry in the running order. include.h is the title heading level. {%- endcomment -%}
+{%- assign kn_p = include.post -%}
+<article class="kn-item">
+  <a class="kn-item-link" href="{{ kn_p.url | relative_url }}">
+    <p class="kn-meta kn-item-when"><time datetime="{{ kn_p.date | date_to_xmlschema }}">{{ kn_p.date | date: "%b %Y" }}</time>{% if kn_p.tags.size > 0 %}<span class="kn-item-topic">{{ kn_p.tags.first }}</span>{% endif %}</p>
+    <div class="kn-item-text">
+      <h{{ include.h }} class="kn-item-title">{{ kn_p.title }}</h{{ include.h }}>
+      {%- if kn_p.excerpt %}
+      {%- comment -%} Liquid 4.0.3 truncatewords appends "..." to a text of exactly 20 words, so count first. {%- endcomment -%}
+      {%- assign kn_ex = kn_p.excerpt | strip_html | strip -%}
+      {%- assign kn_words = kn_ex | split: " " -%}
+      <p class="kn-item-excerpt">{% if kn_words.size > 20 %}{{ kn_ex | truncatewords: 20 }}{% else %}{{ kn_ex }}{% endif %}</p>
+      {%- endif %}
+    </div>
+  </a>
+</article>

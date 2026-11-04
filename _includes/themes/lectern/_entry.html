@@ -1,0 +1,7 @@
+{%- comment -%} One index line: date in the margin, title, topics after an en dash. include.fmt is the date format. {%- endcomment -%}
+<li class="lec-entry">
+  <time class="lec-date" datetime="{{ include.post.date | date_to_xmlschema }}">{{ include.post.date | date: include.fmt }}</time>
+  <span class="lec-entry-text"><a class="lec-entry-title" href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a>
+  {%- if include.post.canonical_url %} <span class="lec-outlet">in {{ include.post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif %}
+  {%- if include.post.tags.size > 0 %} <span class="lec-entry-tags"><span aria-hidden="true">&ndash;</span> {{ include.post.tags | join: ", " }}</span>{% endif %}</span>
+</li>

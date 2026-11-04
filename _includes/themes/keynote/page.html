@@ -1,0 +1,11 @@
+<div class="ink-page kn-page">
+  <header class="kn-wrap kn-page-head">
+    <h1 class="kn-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="kn-dek">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="kn-read kn-prose">
+    {{ content }}
+  </div>
+</div>

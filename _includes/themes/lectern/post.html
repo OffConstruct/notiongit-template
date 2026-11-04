@@ -1,0 +1,29 @@
+{%- assign lec_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign lec_dek = page.excerpt | strip_html | strip -%}
+{%- assign lec_minutes = content | number_of_words | divided_by: 230 | plus: 1 -%}
+<div class="ink-post lec-post lec-wrap">
+  <article class="lec-article">
+    <header class="lec-post-head">
+      <p class="lec-label lec-kicker"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time><span aria-hidden="true"> &middot; </span><span>{{ lec_minutes }} min read</span></p>
+      <h1 class="lec-post-title">{{ page.title }}</h1>
+      {%- if lec_dek != "" and lec_dek != lec_first %}
+      <p class="lec-dek">{{ lec_dek }}</p>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <figure class="lec-cover"><img src="{{ page.cover_image }}" alt="" loading="lazy"></figure>
+    {%- endif %}
+    <div class="lec-prose lec-body">
+      {% include themes/lectern/_body.html html=content %}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="lec-outlet-note">First published in <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="lec-post-foot">
+      {%- if page.tags.size > 0 %}
+      <p><span class="lec-label">Filed under</span> {% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
+      {%- endif %}
+      <p><a href="{{ '/blog/' | relative_url }}">Back to the writing index</a></p>
+    </footer>
+  </article>
+</div>

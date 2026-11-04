@@ -1,0 +1,89 @@
+{%- assign home = site.data.home -%}
+{%- comment -%} Liquid's blank is not true for "" here, so compare stripped strings. {%- endcomment -%}
+{%- assign lec_name = home.name | strip -%}
+{%- assign lec_tagline = home.tagline | strip -%}
+{%- assign lec_pic = home.profile_picture | strip -%}
+<div class="ink-home lec-home lec-wrap">
+  {%- if home and lec_name != "" %}
+  <header class="lec-id{% if lec_pic != "" %} lec-id--portrait{% endif %}">
+    {%- if lec_pic != "" %}
+    <img class="lec-portrait" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="96" height="96">
+    {%- endif %}
+    <h1 class="lec-name">{{ home.name }}</h1>
+    {%- if lec_tagline != "" %}
+    <p class="lec-tagline">{{ home.tagline }}</p>
+    {%- endif %}
+  </header>
+
+  {%- assign lec_bio_parts = home.bio | markdownify | split: "<h2" -%}
+  {%- assign lec_lead = lec_bio_parts[0] | strip -%}
+  {%- if lec_lead != "" %}
+  <div class="lec-bio lec-lead lec-prose">{{ lec_bio_parts[0] }}</div>
+  {%- endif %}
+
+  {%- comment -%} Top topics by post count: pad counts so a text sort orders them. {%- endcomment -%}
+  {%- capture lec_ranked -%}{% for t in site.tags %}{{ t[1].size | plus: 10000 }}|{{ t[0] }}{% unless forloop.last %};;{% endunless %}{% endfor %}{%- endcapture -%}
+  {%- assign lec_ranked = lec_ranked | split: ";;" | sort | reverse %}
+  {%- if lec_ranked.size > 1 %}
+  <nav class="lec-router" aria-labelledby="lec-router-label">
+    <h2 class="lec-label" id="lec-router-label">Reading by topic</h2>
+    <ul class="lec-router-list">
+      {%- for r in lec_ranked limit: 6 %}
+      {%- assign lec_t = r | split: "|" | last %}
+      <li><a href="{{ '/tags/' | relative_url }}#{{ lec_t | slugify }}">{{ lec_t }}</a></li>
+      {%- endfor %}
+    </ul>
+  </nav>
+  {%- endif %}
+
+  {%- assign lec_featured = site.posts | where: "featured", true %}
+  {%- if lec_featured.size > 0 %}
+  <section class="lec-section" aria-labelledby="lec-featured-label">
+    <h2 class="lec-label" id="lec-featured-label">Required reading</h2>
+    <ul class="lec-featured">
+      {%- for post in lec_featured limit: 3 %}
+      <li>
+        <a class="lec-featured-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        {%- if post.excerpt %}
+        <p class="lec-featured-excerpt">{{ post.excerpt | strip_html | truncate: 180 }}</p>
+        {%- endif %}
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endif %}
+
+  <section class="lec-section" aria-labelledby="lec-writing-label">
+    <h2 class="lec-label" id="lec-writing-label">Writing</h2>
+    {%- if site.posts.size > 0 %}
+    {% include themes/lectern/_years.html limit=8 h="3" %}
+    {%- if site.posts.size > 8 %}
+    <p class="lec-more"><a href="{{ '/blog/' | relative_url }}">The full writing index ({{ site.posts.size }} pieces)</a></p>
+    {%- endif %}
+    {%- else %}
+    <p class="lec-none">Nothing published yet. Posts you publish in Notion will be listed here.</p>
+    {%- endif %}
+  </section>
+
+  {%- if lec_bio_parts.size > 1 %}
+  <section class="lec-bio lec-about lec-prose" aria-label="About {{ home.name }}">
+    {%- for part in lec_bio_parts offset: 1 %}<h2{{ part }}{% endfor %}
+  </section>
+  {%- endif %}
+
+  {%- if home.social_links.size > 0 %}
+  <section class="lec-section lec-elsewhere" aria-label="Elsewhere">
+    <p><span class="lec-elsewhere-k">Elsewhere:</span> {% for link in home.social_links %}<a href="{{ link.url }}">{{ link.name }}</a>{% unless forloop.last %}<span class="lec-sep">, </span>{% endunless %}{% endfor %}</p>
+  </section>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

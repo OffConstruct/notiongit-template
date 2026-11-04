@@ -1,0 +1,13 @@
+{%- assign home = site.data.home -%}
+<footer class="ink-footer ch-footer">
+  <div class="ch-wrap ch-footer-inner">
+    {%- if home.social_links.size > 0 %}
+    <ul class="ch-footer-links" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    <p class="ch-footer-note">&copy; {{ 'now' | date: '%Y' }} {{ site.author.name | default: home.name | default: site.title }}. <a href="{{ '/feed.xml' | relative_url }}">RSS feed</a></p>
+  </div>
+</footer>

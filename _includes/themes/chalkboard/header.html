@@ -1,0 +1,17 @@
+<header class="ink-header ch-header">
+  <div class="ch-wrap ch-header-inner">
+    <a class="ch-brand" href="{{ '/' | relative_url }}">{{ site.data.home.name | default: site.title }}</a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="ch-nav" aria-label="Main navigation">
+      <ul class="ch-nav-list">
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        <li><a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- else %}
+    <p class="ch-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

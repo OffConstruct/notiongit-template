@@ -1,0 +1,15 @@
+<header class="ink-header lec-header">
+  <div class="lec-wrap lec-header-inner">
+    <a class="lec-brand" href="{{ '/' | relative_url }}">{{ site.data.home.name | default: site.title }}</a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="lec-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="lec-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

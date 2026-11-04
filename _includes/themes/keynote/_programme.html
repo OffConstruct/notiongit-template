@@ -1,0 +1,34 @@
+{%- comment -%}
+  Nav pages as a numbered running order. Skips home, the blog, about and
+  contact pages and external links; shown only when two or more remain.
+{%- endcomment -%}
+{%- assign kn_rows = "" | split: "" -%}
+{%- for item in site.data.nav -%}
+{%- assign kn_u = item.url | downcase -%}
+{%- if kn_u == "/" or kn_u contains "about" or kn_u contains "contact" or kn_u contains "://" -%}{% continue %}{%- endif -%}
+{%- assign kn_pg = site.pages | where: "url", item.url | first -%}
+{%- if kn_pg.layout == "blog" or kn_pg.layout == "home" -%}{% continue %}{%- endif -%}
+{%- assign kn_rows = kn_rows | push: item -%}
+{%- endfor -%}
+{%- if kn_rows.size > 1 %}
+<section class="kn-section kn-programme" aria-labelledby="kn-programme-label">
+  <div class="kn-wrap">
+    <h2 class="kn-label" id="kn-programme-label">Programme</h2>
+    <ol class="kn-rows">
+      {%- for item in kn_rows %}
+      {%- assign kn_pg = site.pages | where: "url", item.url | first %}
+      <li class="kn-row">
+        <a class="kn-row-link" href="{{ item.url | relative_url }}">
+          <span class="kn-row-n" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+          <span class="kn-row-title">{{ item.title }}</span>
+          {%- if kn_pg.description %}
+          <span class="kn-row-desc">{{ kn_pg.description }}</span>
+          {%- endif %}
+          <span class="kn-row-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+      {%- endfor %}
+    </ol>
+  </div>
+</section>
+{%- endif -%}

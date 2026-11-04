@@ -1,0 +1,17 @@
+{%- comment -%} The one contact action: a nav page about contact, else the first email link. {%- endcomment -%}
+{%- assign kn_contact_url = "" -%}
+{%- assign kn_contact_label = "" -%}
+{%- for item in site.data.nav -%}
+{%- if kn_contact_url == "" and item.url contains "contact" -%}
+{%- assign kn_contact_url = item.url | relative_url -%}
+{%- assign kn_contact_label = item.title -%}
+{%- endif -%}
+{%- endfor -%}
+{%- for link in site.data.home.social_links -%}
+{%- if kn_contact_url == "" and link.url contains "mailto:" -%}
+{%- assign kn_contact_url = link.url -%}
+{%- assign kn_first = site.data.home.name | split: " " | first -%}
+{%- capture kn_contact_label %}Email {{ kn_first | default: "me" }}{% endcapture -%}
+{%- endif -%}
+{%- endfor -%}
+{%- if kn_contact_url != "" %}<a class="kn-pill {{ include.class }}" href="{{ kn_contact_url }}">{{ kn_contact_label }}</a>{% endif -%}

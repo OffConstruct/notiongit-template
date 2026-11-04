@@ -1,0 +1,51 @@
+<div class="ink-post-list lec-blog lec-wrap">
+  <header class="lec-page-head">
+    <h1 class="lec-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="lec-dek">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <div class="ink-variant" data-variant="grouping:year">
+    {% include themes/lectern/_years.html h="2" %}
+  </div>
+  <div class="ink-variant" data-variant="grouping:tag">
+    {%- assign lec_tags = site.tags | sort %}
+    {%- for lec_tag in lec_tags %}
+    <section class="lec-group">
+      <h2 class="lec-group-name lec-topic">{{ lec_tag[0] }} <span class="lec-count">{{ lec_tag[1].size }}</span></h2>
+      <ol class="lec-list">
+        {%- for post in lec_tag[1] %}
+        {% include themes/lectern/_entry.html post=post fmt="%b %Y" %}
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- endfor %}
+    {%- assign lec_untagged = site.posts | where_exp: "p", "p.tags.size == 0" %}
+    {%- if lec_untagged.size > 0 %}
+    <section class="lec-group">
+      <h2 class="lec-group-name lec-topic">Other notes <span class="lec-count">{{ lec_untagged.size }}</span></h2>
+      <ol class="lec-list">
+        {%- for post in lec_untagged %}
+        {% include themes/lectern/_entry.html post=post fmt="%b %Y" %}
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- endif %}
+  </div>
+  <div class="ink-variant" data-variant="grouping:flat">
+    <ol class="lec-list lec-list--flat" reversed>
+      {%- for post in site.posts %}
+      {% include themes/lectern/_entry.html post=post fmt="%-d %b %Y" %}
+      {%- endfor %}
+    </ol>
+  </div>
+  {%- endif %}
+</div>

@@ -1,0 +1,20 @@
+{%- comment -%} One lesson card. include.post is the post, include.h the heading level, include.n its number counting from the oldest post. {%- endcomment -%}
+{%- assign ch_p = include.post -%}
+<article class="ch-card{% if ch_p.cover_image %} ch-card--cover{% else %} ch-card--text{% endif %}">
+  <a class="ch-card-link" href="{{ ch_p.url | relative_url }}">
+    <div class="ch-card-art{% unless ch_p.cover_image %} ch-card-art--text{% endunless %}" aria-hidden="true">
+      {%- if ch_p.cover_image %}<img src="{{ ch_p.cover_image }}" alt="" loading="lazy">{% else %}<span class="ch-card-topic">{% if ch_p.tags.size > 0 %}{{ ch_p.tags.first }}{% elsif include.n %}{{ include.n }}{% endif %}</span>{% endif -%}
+    </div>
+    <div class="ch-card-body">
+      {%- if include.n or ch_p.tags.size > 0 %}
+      <p class="ch-card-top">{% if include.n %}<span class="ch-card-num">Lesson {{ include.n }}</span>{% endif %}{% if ch_p.tags.size > 0 %}<span class="ch-card-tag">{{ ch_p.tags.first }}</span>{% endif %}</p>
+      {%- endif %}
+      <h{{ include.h | default: 3 }} class="ch-card-title"><span>{{ ch_p.title }}</span></h{{ include.h | default: 3 }}>
+      {%- if ch_p.excerpt %}
+      <span class="ch-card-excerpt">{{ ch_p.excerpt | strip_html | truncate: 150 }}</span>
+      {%- endif %}
+      <time class="ch-date" datetime="{{ ch_p.date | date_to_xmlschema }}">{{ ch_p.date | date: "%-d %b %Y" }}</time>
+      <span class="ch-cue" aria-hidden="true">Read this first</span>
+    </div>
+  </a>
+</article>

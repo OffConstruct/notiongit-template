@@ -1,0 +1,21 @@
+{%- assign home = site.data.home -%}
+{%- assign kn_ftag = home.tagline | strip -%}
+<footer class="ink-footer kn-footer">
+  <div class="kn-wrap kn-footer-inner">
+    <div class="kn-footer-id">
+      <p class="kn-footer-name">{{ home.name | default: site.author.name | default: site.title }}</p>
+      {%- if kn_ftag != "" and page.layout != "home" %}
+      <p class="kn-footer-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+      {% include themes/keynote/_contact.html class="kn-footer-pill" %}
+    </div>
+    {%- if home.social_links.size > 0 %}
+    <ul class="kn-footer-links" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    <p class="kn-footer-note">&copy; {{ 'now' | date: '%Y' }} {{ site.author.name | default: home.name | default: site.title }} &middot; <a href="{{ '/feed.xml' | relative_url }}">RSS feed</a></p>
+  </div>
+</footer>

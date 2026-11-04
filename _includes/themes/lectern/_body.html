@@ -1,0 +1,20 @@
+{%- comment -%}
+  Post body with each footnote copied next to its reference as a sidenote.
+  theme.css shows either the sidenotes or the endnotes, never both.
+{%- endcomment -%}
+{%- assign lec_html = include.html -%}
+{%- if lec_html contains '<div class="footnotes"' -%}
+{%- assign lec_notes = lec_html | split: '<div class="footnotes"' | last | split: '<li id="fn:' -%}
+{%- for lec_note in lec_notes offset: 1 -%}
+{%- assign lec_key = lec_note | split: '"' | first -%}
+{%- assign lec_text = lec_note | split: '<a href="#fnref:' | first | split: 'role="doc-endnote">' | last | replace: '<p>', ' ' | replace: '</p>', ' ' | strip -%}
+{%- capture lec_ref %}<sup id="fnref:{{ lec_key }}" role="doc-noteref">{% endcapture -%}
+{%- if lec_html contains lec_ref -%}
+{%- assign lec_parts = lec_html | split: lec_ref -%}
+{%- capture lec_side %}</sup><span class="lec-sidenote"><span class="lec-sidenote-n">{{ forloop.index }}</span> {{ lec_text }}</span>{% endcapture -%}
+{%- assign lec_after = lec_parts | last | replace_first: '</sup>', lec_side -%}
+{%- assign lec_html = lec_parts | first | append: lec_ref | append: lec_after -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+{{ lec_html }}

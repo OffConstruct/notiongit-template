@@ -1,0 +1,82 @@
+{%- assign home = site.data.home -%}
+{%- comment -%} Liquid's blank is not true for "" here, so compare stripped strings. {%- endcomment -%}
+{%- assign kn_name = home.name | strip -%}
+{%- assign kn_tagline = home.tagline | strip -%}
+{%- assign kn_pic = home.profile_picture | strip -%}
+{%- assign kn_biotext = home.bio | strip -%}
+<div class="ink-home kn-home">
+  {%- if home and kn_name != "" %}
+  {%- assign kn_bio_parts = home.bio | markdownify | split: "<h2" -%}
+  {%- assign kn_lead = kn_bio_parts[0] | strip -%}
+  <section class="kn-band" aria-labelledby="kn-name">
+    <div class="kn-field">
+      {%- if kn_pic != "" %}
+      <img class="kn-portrait" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="420" height="560">
+      {%- else %}
+      <span class="kn-initial" aria-hidden="true">{{ home.name | slice: 0 | upcase }}</span>
+      {%- endif %}
+    </div>
+    <div class="kn-panel">
+      <div class="kn-panel-inner">
+        <h1 class="kn-name" id="kn-name">{{ home.name }}</h1>
+        {%- if kn_tagline != "" %}
+        <p class="kn-promise">{{ home.tagline }}</p>
+        {%- endif %}
+        {%- if kn_lead != "" %}
+        <div class="kn-intro">{{ kn_bio_parts[0] }}</div>
+        {%- endif %}
+      </div>
+    </div>
+  </section>
+
+  {% include themes/keynote/_programme.html %}
+
+  <section class="kn-section kn-writing" aria-labelledby="kn-writing-label">
+    <div class="kn-wrap">
+      <h2 class="kn-label" id="kn-writing-label">Writing</h2>
+      {%- if site.posts.size > 0 %}
+      {%- assign kn_featured = site.posts | where: "featured", true %}
+      {%- assign kn_top = kn_featured.first | default: site.posts.first %}
+      {% include themes/keynote/_lead.html post=kn_top h="3" %}
+      {%- if site.posts.size > 1 %}
+      <div class="kn-order">
+        {%- assign kn_shown = 0 %}
+        {%- for post in site.posts %}
+        {%- if post.url != kn_top.url and kn_shown < 6 %}
+        {% include themes/keynote/_item.html post=post h="3" %}
+        {%- assign kn_shown = kn_shown | plus: 1 %}
+        {%- endif %}
+        {%- endfor %}
+      </div>
+      {%- endif %}
+      {%- if site.posts.size > 7 %}
+      <p class="kn-more"><a href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} pieces of writing <span aria-hidden="true">&rarr;</span></a></p>
+      {%- endif %}
+      {%- else %}
+      <p class="kn-none">Nothing published yet. Posts you publish in Notion will appear here.</p>
+      {%- endif %}
+    </div>
+  </section>
+
+  {%- if kn_bio_parts.size > 1 %}
+  <section class="kn-section kn-about" aria-label="About {{ home.name }}">
+    <div class="kn-wrap kn-bio">
+      {%- for part in kn_bio_parts offset: 1 %}
+      <div class="kn-bio-part kn-prose"><h2{{ part }}</div>
+      {%- endfor %}
+    </div>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="kn-wrap">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

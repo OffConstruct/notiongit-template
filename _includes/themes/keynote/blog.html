@@ -1,0 +1,29 @@
+<div class="ink-post-list kn-blog">
+  <div class="kn-wrap">
+    <header class="kn-page-head">
+      <h1 class="kn-page-title">{{ page.title | default: "Writing" }}</h1>
+      {%- if page.description %}
+      <p class="kn-dek">{{ page.description }}</p>
+      {%- endif %}
+    </header>
+    {%- if site.posts.size == 0 %}
+    {% include empty-state.html
+      kicker="NOTION POSTS"
+      title="Your posts will appear here"
+      copy="Published posts will show up automatically after your first sync completes."
+      note="If nothing appears after a few minutes, run the sync from the Actions tab."
+    %}
+    {%- else %}
+    {%- assign kn_featured = site.posts | where: "featured", true %}
+    {%- assign kn_top = kn_featured.first | default: site.posts.first %}
+    {% include themes/keynote/_lead.html post=kn_top h="2" %}
+    <div class="kn-order">
+      {%- for post in site.posts %}
+      {%- if post.url != kn_top.url %}
+      {% include themes/keynote/_item.html post=post h="2" %}
+      {%- endif %}
+      {%- endfor %}
+    </div>
+    {%- endif %}
+  </div>
+</div>

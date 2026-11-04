@@ -1,0 +1,21 @@
+{%- comment -%} Posts grouped by year, newest first. include.limit caps the count; include.h is the year heading level. {%- endcomment -%}
+{%- assign lec_limit = include.limit | default: site.posts.size -%}
+{%- assign lec_prev = "" -%}
+{%- for post in site.posts limit: lec_limit -%}
+{%- assign lec_y = post.date | date: "%Y" -%}
+{%- if lec_y != lec_prev -%}
+{%- unless forloop.first %}
+  </ol>
+</section>
+{%- endunless %}
+<section class="lec-group">
+  <h{{ include.h }} class="lec-group-name lec-year">{{ lec_y }}</h{{ include.h }}>
+  <ol class="lec-list" reversed>
+{%- assign lec_prev = lec_y -%}
+{%- endif %}
+    {% include themes/lectern/_entry.html post=post fmt="%-d %b" %}
+{%- if forloop.last %}
+  </ol>
+</section>
+{%- endif -%}
+{%- endfor -%}

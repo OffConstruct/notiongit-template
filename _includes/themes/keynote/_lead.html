@@ -1,0 +1,16 @@
+{%- comment -%} The lead story: newest featured post, else the newest post. {%- endcomment -%}
+{%- assign kn_p = include.post -%}
+<article class="kn-lead{% if kn_p.cover_image %} kn-lead--cover{% endif %}">
+  <a class="kn-lead-link" href="{{ kn_p.url | relative_url }}">
+    {%- if kn_p.cover_image %}
+    <div class="kn-lead-img"><img src="{{ kn_p.cover_image }}" alt="" loading="lazy"></div>
+    {%- endif %}
+    <div class="kn-lead-text">
+      <p class="kn-meta"><time datetime="{{ kn_p.date | date_to_xmlschema }}">{{ kn_p.date | date: "%-d %B %Y" }}</time></p>
+      <h{{ include.h }} class="kn-lead-title">{{ kn_p.title }}</h{{ include.h }}>
+      {%- if kn_p.excerpt %}
+      <p class="kn-lead-excerpt">{{ kn_p.excerpt | strip_html | truncate: 220 }}</p>
+      {%- endif %}
+    </div>
+  </a>
+</article>

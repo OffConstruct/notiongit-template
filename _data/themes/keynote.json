@@ -1,0 +1,61 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "keynote",
+  "name": "Keynote",
+  "version": "1.0.0",
+  "summary": "The speaker's programme: a portrait on a color field, a Bodoni promise and a numbered running order.",
+  "description": "Set like a printed event programme. Your portrait sits on a color field beside a dark panel that holds your promise in Bodoni. Your pages follow as a numbered running order, then your writing as a lead story and a two-column list. One contact button. For coaches, speakers and workshop leaders.",
+  "categories": ["educators", "professionals"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "bodoni",
+      "label": "Bodoni Moda and Schibsted Grotesk",
+      "google": "family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400",
+      "stacks": {
+        "body": "\"Schibsted Grotesk\", \"Helvetica Neue\", Arial, system-ui, sans-serif",
+        "display": "\"Bodoni Moda\", Didot, \"Bodoni 72\", \"Libre Bodoni\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f4f0e8", "text": "#16110d", "muted": "#5e554c" },
+    "dark": { "bg": "#16110d", "text": "#f4f0e8", "muted": "#b3a99c" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Bone" },
+        { "value": "dark", "label": "Ink" } ] },
+    { "key": "accent", "type": "color", "label": "Accent", "role": "text", "default": "rust", "custom": false,
+      "presets": [
+        { "value": "rust", "label": "Rust", "light": "#a3461f", "dark": "#e7a37f" },
+        { "value": "plum", "label": "Plum", "light": "#6b2d4f", "dark": "#e3a3c8" },
+        { "value": "forest", "label": "Forest", "light": "#2f5a3a", "dark": "#9fd0a9" },
+        { "value": "gold", "label": "Gold", "light": "#7d5f10", "dark": "#e0c06a" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "panel", "type": "select", "label": "Panel color", "default": "teal",
+      "options": [
+        { "value": "teal", "label": "Deep teal" },
+        { "value": "ink", "label": "Ink" },
+        { "value": "plum", "label": "Plum" },
+        { "value": "none", "label": "No panel" } ] },
+    { "key": "hero", "type": "select", "label": "Portrait position", "default": "left",
+      "options": [
+        { "value": "left", "label": "Portrait left" },
+        { "value": "right", "label": "Portrait right" },
+        { "value": "stacked", "label": "Portrait above" } ] },
+    { "key": "show_programme", "type": "boolean", "label": "List your pages as a programme", "default": true },
+    { "key": "contact_button", "type": "boolean", "label": "Show the contact button", "default": true },
+    { "key": "width", "type": "select", "label": "Reading width", "default": "regular",
+      "options": [
+        { "value": "narrow", "label": "Narrow" },
+        { "value": "regular", "label": "Regular" },
+        { "value": "wide", "label": "Wide" } ] }
+  ]
+}

@@ -1,0 +1,18 @@
+<header class="ink-header kn-header">
+  <div class="kn-wrap kn-header-inner">
+    <a class="kn-brand" href="{{ '/' | relative_url }}">{{ site.data.home.name | default: site.title }}</a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="kn-nav" aria-label="Main navigation">
+      <ul class="kn-nav-list">
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        <li><a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- else %}
+    <p class="kn-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+    {% include themes/keynote/_contact.html class="kn-header-pill" %}
+  </div>
+</header>

@@ -1,0 +1,15 @@
+{%- comment -%} Tags as chips, most used first. Count is padded so a text sort orders them. {%- endcomment -%}
+{%- capture ch_ranked -%}{% for t in site.tags %}{{ t[1].size | plus: 10000 }}|{{ t[0] }}{% unless forloop.last %};;{% endunless %}{% endfor %}{%- endcapture -%}
+{%- assign ch_ranked = ch_ranked | split: ";;" | sort | reverse -%}
+{%- if ch_ranked.size > 2 %}
+<nav class="ch-topics" aria-labelledby="ch-topics-label">
+  <h2 class="ch-label" id="ch-topics-label">Pick a topic</h2>
+  <ul class="ch-topic-list">
+    {%- for r in ch_ranked limit: 16 %}
+    {%- assign ch_t = r | split: "|" | last %}
+    {%- assign ch_n = r | split: "|" | first | minus: 10000 %}
+    <li><a class="ch-chip ch-chip--link" href="{{ '/tags/' | relative_url }}#{{ ch_t | slugify }}">{{ ch_t }} <span class="ch-chip-n">{{ ch_n }}<span class="ch-sr"> {% if ch_n == 1 %}lesson{% else %}lessons{% endif %}</span></span></a></li>
+    {%- endfor %}
+  </ul>
+</nav>
+{%- endif -%}
