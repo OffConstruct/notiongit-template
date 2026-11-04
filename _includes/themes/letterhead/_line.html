@@ -1,0 +1,12 @@
+{%- assign p = include.post -%}
+<li class="lh-line">
+  <a class="lh-line-link" href="{{ p.url | relative_url }}">
+    <span class="lh-n">{{ include.n }}</span>
+    <span class="lh-line-main">
+      <span class="lh-line-row"><span class="lh-t">{{ p.title }}</span><span class="lh-leader" aria-hidden="true"></span><time class="lh-yr" datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%Y" }}</time></span>
+      {%- if p.excerpt and include.excerpt != false %}
+      <span class="lh-ex">{{ p.excerpt | strip_html | truncate: 160 }}</span>
+      {%- endif %}
+    </span>
+  </a>
+</li>

@@ -1,0 +1,107 @@
+{%- assign home = site.data.home -%}
+{%- assign lh_home_name = home.name | strip -%}
+{%- assign lh_home_tagline = home.tagline | strip -%}
+{%- assign lh_home_pic = home.profile_picture | strip -%}
+{%- assign lh_home_bio = home.bio | strip -%}
+<div class="ink-home lh-home lh-grid">
+  {%- if lh_home_name != "" %}
+  {%- if lh_home_pic != "" or home.social_links.size > 0 %}
+  <aside class="lh-margin" aria-label="Correspondence">
+    {%- if lh_home_pic != "" %}
+    <img class="lh-portrait" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="180" height="225">
+    {%- endif %}
+    {%- if home.social_links.size > 0 %}
+    <address class="lh-address">
+      <ul>
+        {%- for link in home.social_links %}
+        {%- assign scheme = link.url | slice: 0, 7 %}
+        <li><a href="{{ link.url }}">{% if scheme == "mailto:" %}{{ link.url | remove_first: "mailto:" }}{% else %}{{ link.name }}{% endif %}</a></li>
+        {%- endfor %}
+      </ul>
+    </address>
+    {%- endif %}
+  </aside>
+  {%- endif %}
+
+  <div class="lh-body">
+    {%- if lh_home_bio != "" %}
+    <section class="lh-section" aria-labelledby="lh-preface">
+      <h2 class="lh-label" id="lh-preface">Preface</h2>
+      <div class="lh-prose lh-bio">{{ home.bio | markdownify }}</div>
+    </section>
+    {%- endif %}
+
+    {%- assign blog_page = site.pages | where: "layout", "blog" | first %}
+    {%- assign featured = site.posts | where: "featured", true %}
+    {%- assign n = 0 %}
+    {%- assign placed = false %}
+    {%- capture toc %}
+      {%- for item in site.data.nav %}
+      {%- if item.url == "/" %}{% continue %}{% endif %}
+      {%- assign n = n | plus: 1 %}
+      {%- assign pg = site.pages | where: "url", item.url | first %}
+      <li class="lh-entry">
+        <a class="lh-line-link" href="{{ item.url | relative_url }}"><span class="lh-n">{{ n }}</span><span class="lh-line-main"><span class="lh-line-row"><span class="lh-t">{{ item.title }}</span></span>{% if pg.description %}<span class="lh-ex">{{ pg.description }}</span>{% endif %}</span></a>
+        {%- if blog_page and item.url == blog_page.url and featured.size > 0 %}
+        {%- assign placed = true %}
+        <ol class="lh-sub">
+          {%- for post in featured %}
+          {%- capture sub %}{{ n }}.{{ forloop.index }}{% endcapture %}
+          {% include themes/letterhead/_line.html post=post n=sub excerpt=false %}
+          {%- endfor %}
+        </ol>
+        {%- endif %}
+      </li>
+      {%- endfor %}
+      {%- if placed == false and featured.size > 0 %}
+      {%- assign n = n | plus: 1 %}
+      <li class="lh-entry">
+        <span class="lh-line-link lh-line-static"><span class="lh-n">{{ n }}</span><span class="lh-line-main"><span class="lh-line-row"><span class="lh-t">Selected writing</span></span></span></span>
+        <ol class="lh-sub">
+          {%- for post in featured %}
+          {%- capture sub %}{{ n }}.{{ forloop.index }}{% endcapture %}
+          {% include themes/letterhead/_line.html post=post n=sub excerpt=false %}
+          {%- endfor %}
+        </ol>
+      </li>
+      {%- endif %}
+    {%- endcapture %}
+    {%- assign toc_s = toc | strip %}
+    {%- if toc_s != "" %}
+    <section class="lh-section" aria-labelledby="lh-contents">
+      <h2 class="lh-label" id="lh-contents">Contents</h2>
+      <ol class="lh-toc">{{ toc }}</ol>
+    </section>
+    {%- endif %}
+
+    {%- assign recent = site.posts | where_exp: "p", "p.featured != true" %}
+    <section class="lh-section" aria-labelledby="lh-recent">
+      <h2 class="lh-label" id="lh-recent">Recent</h2>
+      {%- if recent.size > 0 %}
+      <ol class="lh-index">
+        {%- for post in recent limit: 5 %}
+        {%- capture day %}{{ post.date | date: "%-d %b" }}{% endcapture %}
+        {% include themes/letterhead/_line.html post=post n=day %}
+        {%- endfor %}
+      </ol>
+      <p class="lh-more"><a href="{{ blog_page.url | default: '/blog/' | relative_url }}">All {{ site.posts.size }} pieces, newest first</a></p>
+      {%- elsif site.posts.size > 0 %}
+      <p class="lh-more"><a href="{{ blog_page.url | default: '/blog/' | relative_url }}">All {{ site.posts.size }} pieces, newest first</a></p>
+      {%- else %}
+      <p class="lh-none">Nothing published yet. Writing you publish in Notion will be listed here.</p>
+      {%- endif %}
+    </section>
+  </div>
+  {%- else %}
+  <div class="lh-body">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

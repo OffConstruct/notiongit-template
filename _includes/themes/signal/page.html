@@ -1,0 +1,13 @@
+<div class="ink-page sg-page sg-wrap">
+  <header class="sg-page-head sg-grid">
+    <h1 class="sg-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="sg-page-desc">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="sg-grid">
+    <div class="page-content sg-prose sg-col-text">
+      {{ content | replace: '<table>', '<div class="sg-table" role="region" aria-label="Table" tabindex="0"><table>' | replace: '</table>', '</table></div>' }}
+    </div>
+  </div>
+</div>

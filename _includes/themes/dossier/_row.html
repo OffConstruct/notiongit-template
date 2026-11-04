@@ -1,0 +1,22 @@
+{%- assign p = include.post -%}
+{%- assign h = include.h | default: "h3" -%}
+<li class="dossier-item{% if p.featured %} is-featured{% endif %}{% if p.cover_image %} has-cover{% endif %}">
+  <a class="dossier-item-link" href="{{ p.url | relative_url }}">
+    <span class="dossier-date"><time datetime="{{ p.date | date_to_xmlschema }}"><span class="dossier-dy">{{ p.date | date: "%Y" }}</span><span class="dossier-dm">-{{ p.date | date: "%m" }}</span><span class="dossier-dd">-{{ p.date | date: "%d" }}</span></time></span>
+    <span class="dossier-item-body">
+      <{{ h }} class="dossier-item-title">{% if p.featured %}<span class="dossier-dot" aria-hidden="true"></span>{% endif %}{{ p.title }}</{{ h }}>
+      {%- if p.excerpt %}
+      <span class="dossier-item-excerpt">{{ p.excerpt | strip_html | truncate: 180 }}</span>
+      {%- endif %}
+      {%- if p.tags.size > 0 or p.canonical_url %}
+      <span class="dossier-item-meta">
+        {%- if p.tags.size > 0 %}<span class="dossier-tags">{{ p.tags | join: " / " }}</span>{% endif %}
+        {%- if p.canonical_url %}<span class="dossier-src">{{ p.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif %}
+      </span>
+      {%- endif %}
+    </span>
+    {%- if p.cover_image %}
+    <span class="dossier-thumb"><img src="{{ p.cover_image }}" alt="" loading="lazy" width="96" height="72"></span>
+    {%- endif %}
+  </a>
+</li>

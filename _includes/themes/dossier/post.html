@@ -1,0 +1,43 @@
+<div class="ink-post dossier-post">
+  <article class="post">
+    <header class="dossier-post-head">
+      <p class="dossier-crumb"><a href="{{ '/blog/' | relative_url }}">Writing</a></p>
+      <h1 class="dossier-post-title">{{ page.title }}</h1>
+      {%- if page.excerpt and page.excerpt != "" %}
+      {%- assign lead_text = page.excerpt | strip_html | strip %}
+      {%- assign first_p = content | split: "</p>" | first | strip_html | strip %}
+      {%- if lead_text != first_p %}
+      <p class="dossier-post-dek">{{ lead_text }}</p>
+      {%- endif %}
+      {%- endif %}
+    </header>
+    <dl class="dossier-spec">
+      <div><dt>Date</dt><dd><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time></dd></div>
+      <div><dt>Reading</dt><dd>{{ content | number_of_words | divided_by: 230 | plus: 1 }} min</dd></div>
+      {%- if page.tags.size > 0 %}
+      <div><dt>Tags</dt><dd>{% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %} / {% endunless %}{% endfor %}</dd></div>
+      {%- endif %}
+      {%- if page.featured %}
+      <div><dt>Status</dt><dd><span class="dossier-dot" aria-hidden="true"></span>Featured</dd></div>
+      {%- endif %}
+      {%- if page.canonical_url %}
+      <div><dt>Source</dt><dd><a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a></dd></div>
+      {%- endif %}
+    </dl>
+    {%- if page.cover_image %}
+    <img class="dossier-cover" src="{{ page.cover_image }}" alt="">
+    {%- endif %}
+    <div class="post-content dossier-prose">
+      {{ content | replace: '<table>', '<div class="dossier-table" role="region" aria-label="Table" tabindex="0"><table>' | replace: '</table>', '</table></div>' }}
+    </div>
+    <footer class="dossier-post-foot">
+      {%- if page.previous %}
+      <a class="dossier-adj" href="{{ page.previous.url | relative_url }}"><span class="dossier-adj-k">Previous</span>{{ page.previous.title }}</a>
+      {%- endif %}
+      {%- if page.next %}
+      <a class="dossier-adj dossier-adj--next" href="{{ page.next.url | relative_url }}"><span class="dossier-adj-k">Next</span>{{ page.next.title }}</a>
+      {%- endif %}
+      <a class="dossier-adj dossier-adj--all" href="{{ '/blog/' | relative_url }}"><span class="dossier-adj-k">Index</span>All writing</a>
+    </footer>
+  </article>
+</div>

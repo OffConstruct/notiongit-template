@@ -1,0 +1,2 @@
+{%- assign bn = include.n | plus: 0 -%}
+<h2 class="sg-bar{% if include.ink %} sg-bar--ink{% endif %}" id="{{ include.id }}"><span class="sg-bar-n" aria-hidden="true">{% if bn < 10 %}0{% endif %}{{ bn }}</span><span class="sg-bar-t">{{ include.title }}</span></h2>

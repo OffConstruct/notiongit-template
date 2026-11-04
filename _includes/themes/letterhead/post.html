@@ -1,0 +1,45 @@
+{%- assign lh_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<div class="ink-post lh-post">
+  <article class="post lh-grid">
+    <div class="lh-margin lh-margin--meta">
+      <p class="lh-dateline"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time></p>
+      <p class="lh-reading">{{ content | number_of_words | divided_by: 230 | plus: 1 }} minute read</p>
+      {%- if page.tags.size > 0 %}
+      <p class="lh-filed">Filed under {% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
+      {%- endif %}
+    </div>
+    <div class="lh-body">
+      <header class="lh-post-head">
+        <h1 class="lh-title">{{ page.title }}</h1>
+        {%- if page.excerpt and page.excerpt != "" %}
+        {%- assign lead_text = page.excerpt | strip_html | strip %}
+        {%- assign first_p = content | split: "</p>" | first | strip_html | strip %}
+        {%- if lead_text != first_p %}
+        <p class="lh-dek">{{ lead_text }}</p>
+        {%- endif %}
+        {%- endif %}
+      </header>
+      {%- if page.cover_image %}
+      <img class="lh-cover" src="{{ page.cover_image }}" alt="">
+      {%- endif %}
+      <div class="post-content lh-prose">
+        {{ content | replace: '<table>', '<div class="lh-table" role="region" aria-label="Table" tabindex="0"><table>' | replace: '</table>', '</table></div>' }}
+      </div>
+      <footer class="lh-sign">
+        <p class="lh-signature"><span class="lh-mark" aria-hidden="true">&sect;</span> {{ lh_name }}</p>
+        {%- if page.canonical_url %}
+        <p class="lh-canon">First published in <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+        {%- endif %}
+        <nav class="lh-adj" aria-label="More writing">
+          {%- if page.previous %}
+          <a href="{{ page.previous.url | relative_url }}"><span class="lh-label">Earlier</span> {{ page.previous.title }}</a>
+          {%- endif %}
+          {%- if page.next %}
+          <a href="{{ page.next.url | relative_url }}"><span class="lh-label">Later</span> {{ page.next.title }}</a>
+          {%- endif %}
+          <a href="{{ '/blog/' | relative_url }}"><span class="lh-label">Contents</span> All writing</a>
+        </nav>
+      </footer>
+    </div>
+  </article>
+</div>

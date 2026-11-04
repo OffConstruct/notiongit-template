@@ -1,0 +1,28 @@
+<div class="ink-post-list lh-blog lh-grid">
+  <div class="lh-margin lh-margin--meta">
+    {%- if site.posts.size > 0 %}
+    <p class="lh-label">{{ site.posts.size }} {% if site.posts.size == 1 %}piece{% else %}pieces{% endif %}</p>
+    {%- endif %}
+  </div>
+  <div class="lh-body">
+    <h1 class="lh-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="lh-dek">{{ page.description }}</p>
+    {%- endif %}
+    {%- if site.posts.size == 0 %}
+    {% include empty-state.html
+      kicker="NOTION POSTS"
+      title="Your posts will appear here"
+      copy="Published posts will show up automatically after your first sync completes."
+      note="If nothing appears after a few minutes, run the sync from the Actions tab."
+    %}
+    {%- else %}
+    <ol class="lh-index lh-index--all">
+      {%- for post in site.posts %}
+      {%- capture num %}{{ site.posts.size | minus: forloop.index0 }}{% endcapture %}
+      {% include themes/letterhead/_line.html post=post n=num %}
+      {%- endfor %}
+    </ol>
+    {%- endif %}
+  </div>
+</div>

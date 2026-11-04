@@ -1,0 +1,24 @@
+<header class="ink-header sg-head">
+  <div class="sg-wrap sg-head-inner">
+    {%- if page.layout != "home" %}
+    <a class="sg-mark" href="{{ '/' | relative_url }}">{{ site.data.home.name | default: site.author.name | default: site.title }}</a>
+    {%- endif %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="sg-nav" aria-label="Main navigation">
+      <ul>
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        {%- assign is_active = false %}
+        {%- if page.url == item_url %}{% assign is_active = true %}{% endif %}
+        {%- if page.url contains item.url and item.url != "/" %}{% assign is_active = true %}{% endif %}
+        <li{% if forloop.last %} class="sg-nav-last"{% endif %}><a href="{{ item_url }}"{% if is_active %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- else %}
+    <div class="site-nav-empty" role="status">
+      <span>Navigation will appear after the first sync.</span>
+    </div>
+    {%- endif %}
+  </div>
+</header>

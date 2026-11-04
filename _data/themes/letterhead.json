@@ -1,0 +1,83 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "letterhead",
+  "name": "Letterhead",
+  "version": "1.0.0",
+  "summary": "A well-set letter: Newsreader on chamois, a preface, and a numbered table of contents.",
+  "description": "A quiet, print-like site for lawyers, doctors and senior advisers. Your name heads the page like a letterhead, your bio reads as a preface, and your pages and featured writing become a numbered table of contents with dotted leaders. One serif, no bold, one amber rule.",
+  "categories": ["professionals"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "newsreader",
+      "label": "Newsreader",
+      "google": "family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400",
+      "stacks": {
+        "body": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "display": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+      }
+    },
+    {
+      "value": "garamond",
+      "label": "EB Garamond",
+      "google": "family=EB+Garamond:ital,wght@0,400;1,400",
+      "stacks": {
+        "body": "\"EB Garamond\", Garamond, \"Iowan Old Style\", Georgia, serif",
+        "display": "\"EB Garamond\", Garamond, \"Iowan Old Style\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+      }
+    },
+    {
+      "value": "literata",
+      "label": "Literata",
+      "google": "family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400",
+      "stacks": {
+        "body": "Literata, \"Iowan Old Style\", Georgia, serif",
+        "display": "Literata, \"Iowan Old Style\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f0ede4", "text": "#1b1b1b", "muted": "#5a6352" },
+    "dark": { "bg": "#1c1b18", "text": "#e8e4d9", "muted": "#a9b29e" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Ink for links and rule", "role": "text", "default": "amber", "custom": true,
+      "presets": [
+        { "value": "amber", "label": "Amber", "light": "#7a4623", "dark": "#c98a5c" },
+        { "value": "oxblood", "label": "Oxblood", "light": "#7a1f2b", "dark": "#d9868e" },
+        { "value": "forest", "label": "Forest", "light": "#2f4f3a", "dark": "#93bb9f" },
+        { "value": "ink", "label": "Ink only", "light": "#1b1b1b", "dark": "#e8e4d9" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Typeface", "default": "newsreader" },
+    { "key": "ground", "type": "select", "label": "Paper (light mode)", "default": "chamois",
+      "options": [
+        { "value": "chamois", "label": "Chamois" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "white", "label": "White" } ] },
+    { "key": "letterhead_align", "type": "select", "label": "Letterhead", "default": "left",
+      "options": [
+        { "value": "left", "label": "Name left, menu right" },
+        { "value": "centered", "label": "Centered" } ] },
+    { "key": "portrait", "type": "select", "label": "Portrait", "default": "margin",
+      "options": [
+        { "value": "margin", "label": "In the margin" },
+        { "value": "hidden", "label": "Hidden" } ] },
+    { "key": "index_marker", "type": "select", "label": "Contents markers", "default": "numbered",
+      "options": [
+        { "value": "numbered", "label": "Numbers and years" },
+        { "value": "year", "label": "Years only" },
+        { "value": "none", "label": "Titles only" } ] },
+    { "key": "justify", "type": "boolean", "label": "Justified text", "default": false }
+  ]
+}

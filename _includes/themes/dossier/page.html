@@ -1,0 +1,11 @@
+<div class="ink-page dossier-page">
+  <header class="dossier-page-head">
+    <h1 class="dossier-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="dossier-page-desc">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="page-content dossier-prose">
+    {{ content | replace: '<table>', '<div class="dossier-table" role="region" aria-label="Table" tabindex="0"><table>' | replace: '</table>', '</table></div>' }}
+  </div>
+</div>

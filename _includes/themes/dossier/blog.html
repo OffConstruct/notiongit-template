@@ -1,0 +1,31 @@
+<div class="ink-post-list dossier-blog">
+  <header class="dossier-page-head">
+    <h1 class="dossier-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="dossier-page-desc">{{ page.description }}</p>
+    {%- endif %}
+    {%- if site.posts.size > 0 %}
+    <p class="dossier-count">{{ site.posts.size }} {% if site.posts.size == 1 %}entry{% else %}entries{% endif %}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for y in years %}
+  <section class="dossier-row" aria-labelledby="dossier-y{{ y.name }}">
+    <h2 class="dossier-label" id="dossier-y{{ y.name }}">{{ y.name }}</h2>
+    <ol class="dossier-list dossier-cell">
+      {%- for post in y.items %}
+      {% include themes/dossier/_row.html post=post %}
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

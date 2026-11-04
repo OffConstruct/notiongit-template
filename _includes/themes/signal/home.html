@@ -1,0 +1,102 @@
+{%- assign home = site.data.home -%}
+{%- assign sg_name = home.name | strip -%}
+{%- assign sg_tagline = home.tagline | strip -%}
+{%- assign sg_profile_picture = home.profile_picture | strip -%}
+{%- assign sg_bio = home.bio | strip -%}
+<div class="ink-home sg-home">
+  {%- if sg_name != "" %}
+  <section class="sg-plate sg-wrap" aria-label="Introduction">
+    <h1 class="sg-name">{{ home.name }}</h1>
+    <div class="sg-grid sg-plate-row">
+      {%- if sg_tagline != "" %}
+      <p class="sg-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+      {%- if sg_profile_picture != "" %}
+      <img class="sg-portrait" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="240" height="300">
+      {%- endif %}
+    </div>
+  </section>
+
+  {%- assign sec = 0 %}
+  {%- if sg_bio != "" %}
+  {%- assign sec = sec | plus: 1 %}
+  <section class="sg-sec sg-wrap" aria-labelledby="sg-about">
+    {% include themes/signal/_bar.html id="sg-about" n=sec title="Profile" %}
+    <div class="sg-bio sg-prose">{{ home.bio | markdownify }}</div>
+  </section>
+  {%- endif %}
+
+  {%- assign featured = site.posts | where: "featured", true %}
+  {%- if featured.size > 0 %}
+  {%- assign sec = sec | plus: 1 %}
+  <section class="sg-sec sg-wrap" aria-labelledby="sg-selected">
+    {% include themes/signal/_bar.html id="sg-selected" n=sec title="Selected" %}
+    <ol class="sg-sel">
+      {%- for post in featured %}
+      <li>
+        <a class="sg-sel-row sg-grid" href="{{ post.url | relative_url }}">
+          <span class="sg-sel-media">{% if post.cover_image %}<img src="{{ post.cover_image }}" alt="" loading="lazy" width="360" height="240">{% else %}<span class="sg-sel-num" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>{% endif %}</span>
+          <span class="sg-sel-text">
+            <span class="sg-sel-title">{{ post.title }}</span>
+            {%- if post.excerpt %}
+            <span class="sg-sel-ex">{{ post.excerpt | strip_html | truncate: 200 }}</span>
+            {%- endif %}
+          </span>
+          <span class="sg-sel-yr"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time></span>
+        </a>
+      </li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endif %}
+
+  {%- assign sec = sec | plus: 1 %}
+  <section class="sg-sec sg-wrap" aria-labelledby="sg-writing">
+    {% include themes/signal/_bar.html id="sg-writing" n=sec title="Writing" %}
+    {%- if site.posts.size > 0 %}
+    {% include themes/signal/_timetable.html posts=site.posts limit=8 %}
+    {%- if site.posts.size > 8 %}
+    <p class="sg-more"><a href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} posts</a></p>
+    {%- endif %}
+    {%- else %}
+    <p class="sg-none">No posts yet. Posts you publish in Notion are listed here after the next sync.</p>
+    {%- endif %}
+  </section>
+
+  {%- if home.social_links.size > 0 %}
+  {%- assign sec = sec | plus: 1 %}
+  {%- assign cta = nil %}
+  {%- for link in home.social_links %}
+  {%- assign u = link.url | downcase %}
+  {%- assign head7 = u | slice: 0, 7 %}
+  {%- assign tail4 = u | slice: -4, 4 %}
+  {%- if head7 == "mailto:" or tail4 == ".pdf" %}{% assign cta = link %}{% break %}{% endif %}
+  {%- endfor %}
+  <section class="sg-sec sg-contact sg-wrap" aria-labelledby="sg-contact">
+    {% include themes/signal/_bar.html id="sg-contact" n=sec title="Contact" ink=true %}
+    <div class="sg-grid sg-contact-row">
+      {%- if cta %}
+      <p class="sg-cta-wrap"><a class="sg-cta" href="{{ cta.url }}">{% if cta.url contains "mailto:" %}{{ cta.url | remove_first: "mailto:" }}{% else %}{{ cta.name }}{% endif %}</a></p>
+      {%- endif %}
+      <ul class="sg-links">
+        {%- for link in home.social_links %}
+        {%- if cta and link.url == cta.url %}{% continue %}{% endif %}
+        <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+    </div>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="sg-wrap">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

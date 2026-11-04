@@ -1,0 +1,16 @@
+<div class="sg-tt">
+  <div class="sg-tt-head sg-tt-grid" aria-hidden="true"><span>No.</span><span>Title</span><span class="sg-tt-tags">Tags</span><span class="sg-tt-yr">Year</span></div>
+  <ol class="sg-tt-list">
+    {%- for post in include.posts limit: include.limit %}
+    {%- assign num = site.posts.size | minus: forloop.index0 %}
+    <li>
+      <a class="sg-tt-row sg-tt-grid" href="{{ post.url | relative_url }}">
+        <span class="sg-tt-n">{% if num < 100 %}0{% endif %}{% if num < 10 %}0{% endif %}{{ num }}</span>
+        <span class="sg-tt-title">{{ post.title }}</span>
+        <span class="sg-tt-tags">{{ post.tags | join: ", " }}</span>
+        <span class="sg-tt-yr"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time></span>
+      </a>
+    </li>
+    {%- endfor %}
+  </ol>
+</div>

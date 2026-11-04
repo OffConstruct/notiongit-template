@@ -1,0 +1,33 @@
+{%- assign lh_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<header class="ink-header lh-head">
+  <div class="lh-wrap lh-head-inner">
+    <div class="lh-ident">
+      {%- if page.layout == "home" %}
+      <h1 class="lh-name">{{ lh_name }}</h1>
+      {%- else %}
+      <a class="lh-name" href="{{ '/' | relative_url }}">{{ lh_name }}</a>
+      {%- endif %}
+      {%- assign lh_head_tag = site.data.home.tagline | strip %}
+      {%- if lh_head_tag != "" %}
+      <p class="lh-tagline">{{ site.data.home.tagline }}</p>
+      {%- endif %}
+    </div>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="lh-nav" aria-label="Main navigation">
+      <ul>
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        {%- assign is_active = false %}
+        {%- if page.url == item_url %}{% assign is_active = true %}{% endif %}
+        {%- if page.url contains item.url and item.url != "/" %}{% assign is_active = true %}{% endif %}
+        <li><a href="{{ item_url }}"{% if is_active %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- else %}
+    <div class="site-nav-empty" role="status">
+      <span>Navigation will appear after the first sync.</span>
+    </div>
+    {%- endif %}
+  </div>
+</header>

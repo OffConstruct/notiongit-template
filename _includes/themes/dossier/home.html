@@ -1,0 +1,96 @@
+{%- assign home = site.data.home -%}
+{%- assign ds_name = home.name | strip -%}
+{%- assign ds_tagline = home.tagline | strip -%}
+{%- assign ds_profile_picture = home.profile_picture | strip -%}
+{%- assign ds_bio = home.bio | strip -%}
+<div class="ink-home dossier-home">
+  {%- if ds_name != "" %}
+  <aside class="dossier-id" aria-label="Profile">
+    <div class="dossier-id-inner">
+      {%- if ds_profile_picture != "" %}
+      <img class="dossier-portrait" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="160" height="160">
+      {%- endif %}
+      <h1 class="dossier-name">{{ home.name }}</h1>
+      {%- if ds_tagline != "" %}
+      <p class="dossier-role">{{ home.tagline }}</p>
+      {%- endif %}
+      {%- if home.social_links.size > 0 %}
+      <dl class="dossier-contact">
+        {%- for link in home.social_links %}
+        {%- assign shown = link.url | remove_first: "mailto:" | remove_first: "https://" | remove_first: "http://" | remove_first: "www." %}
+        {%- assign ext = link.url | split: "." | last | downcase %}
+        {%- if ext == "pdf" %}{% assign shown = "PDF" %}{% endif %}
+        <div class="dossier-contact-row">
+          <dt>{{ link.name }}</dt>
+          <dd><a href="{{ link.url }}">{{ shown | truncate: 34 }}</a></dd>
+        </div>
+        {%- endfor %}
+      </dl>
+      {%- endif %}
+    </div>
+  </aside>
+
+  <div class="dossier-sheet">
+    {%- if ds_bio != "" %}
+    {%- assign bio_html = home.bio | markdownify %}
+    {%- assign parts = bio_html | split: "<h2" %}
+    {%- assign lead = parts[0] | strip %}
+    {%- if lead != "" %}
+    <section class="dossier-row" aria-labelledby="dossier-profile">
+      <h2 class="dossier-label" id="dossier-profile">Profile</h2>
+      <div class="dossier-cell dossier-prose dossier-lead">{{ parts[0] }}</div>
+    </section>
+    {%- endif %}
+    {%- for part in parts offset: 1 %}
+    {%- assign bits = part | split: "</h2>" %}
+    {%- assign head = bits[0] %}
+    {%- assign body = part | remove_first: head | remove_first: "</h2>" %}
+    <section class="dossier-row">
+      <h2 class="dossier-label"{{ head }}</h2>
+      <div class="dossier-cell dossier-prose">{{ body }}</div>
+    </section>
+    {%- endfor %}
+    {%- endif %}
+
+    {%- assign featured = site.posts | where: "featured", true %}
+    {%- if featured.size > 0 %}
+    <section class="dossier-row" aria-labelledby="dossier-featured">
+      <h2 class="dossier-label" id="dossier-featured">Featured</h2>
+      <ol class="dossier-list dossier-cell" reversed>
+        {%- for post in featured %}
+        {% include themes/dossier/_row.html post=post %}
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- endif %}
+
+    <section class="dossier-row" aria-labelledby="dossier-log">
+      <h2 class="dossier-label" id="dossier-log">Log</h2>
+      <div class="dossier-cell">
+        {%- assign log = site.posts | where_exp: "p", "p.featured != true" %}
+        {%- if log.size > 0 %}
+        <ol class="dossier-list" reversed>
+          {%- for post in log limit: 6 %}
+          {% include themes/dossier/_row.html post=post %}
+          {%- endfor %}
+        </ol>
+        <p class="dossier-more"><a href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} entries</a></p>
+        {%- elsif site.posts.size > 0 %}
+        <p class="dossier-more"><a href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} entries</a></p>
+        {%- else %}
+        <p class="dossier-none">No entries yet. Posts you publish in Notion appear here after the next sync.</p>
+        {%- endif %}
+      </div>
+    </section>
+  </div>
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

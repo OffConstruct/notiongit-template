@@ -1,0 +1,14 @@
+{%- assign home = site.data.home -%}
+<footer class="ink-footer lh-foot">
+  <div class="lh-wrap lh-foot-inner">
+    <p class="lh-foot-name">{{ home.name | default: site.author.name | default: site.title }}</p>
+    {%- if home.social_links.size > 0 %}
+    <ul class="lh-foot-links" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    <p class="lh-foot-note">&copy; {{ 'now' | date: '%Y' }}. Written in Notion, published with Jekyll.</p>
+  </div>
+</footer>

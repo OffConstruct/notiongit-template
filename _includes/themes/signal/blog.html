@@ -1,0 +1,19 @@
+<div class="ink-post-list sg-blog sg-wrap">
+  <header class="sg-page-head sg-grid">
+    <h1 class="sg-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="sg-page-desc">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <h2 class="sg-bar sg-bar--count"><span class="sg-bar-n">{{ site.posts.size }}</span><span class="sg-bar-t">{% if site.posts.size == 1 %}Post{% else %}Posts{% endif %}</span></h2>
+  {% include themes/signal/_timetable.html posts=site.posts limit=1000 %}
+  {%- endif %}
+</div>
