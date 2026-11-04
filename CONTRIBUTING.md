@@ -7,21 +7,27 @@ Notion data.
 
 ## Development setup
 
-Use Ruby and Bundler locally. The CI build currently uses Ruby 3.1.
+You need `bash`, `python3` (3.10 or later), `git` and Docker. Jekyll runs in a
+Docker image built from `scripts/themes/Dockerfile` (the GitHub Pages gem set),
+so there is no need for a local Ruby; `scripts/build-theme --native` uses a
+local Ruby and Bundler instead if you have them. CI builds with Ruby 3.1.
+
+Before you open a pull request, run:
 
 ```sh
-bundle install
 ./scripts/test-hygiene.sh
 ./scripts/check-hygiene.sh
 ./scripts/check-neutral-config.sh
-bundle exec jekyll build
+./scripts/test-check-themes.sh
+python3 scripts/check-themes.py
+./scripts/build-theme --all
 git diff --check
 git status --short
 ```
 
-The build writes `_site/`, which is ignored and must not be committed. Review
-the final `git status --short` output and ensure no generated or unexpected
-files were added. The cold-clone procedure in
+`build-theme --all` builds every theme with the fixture site and deletes each
+build once it passes. Review the final `git status --short` output and ensure
+no generated or unexpected files were added. The cold-clone procedure in
 [`docs/cold-clone-acceptance-test.md`](docs/cold-clone-acceptance-test.md)
 covers template generation and GitHub Pages behavior; it requires an
 authenticated `gh` installation and should only use disposable repositories.
@@ -37,7 +43,9 @@ content or fixtures to them:
 - `_data/nav.yml`
 
 Keep only the existing `.gitkeep` placeholders in an otherwise clean
-checkout. Do not add `CNAME`, personal posts or pages, populated generated
+checkout. The one exception is theme manifests at `_data/themes/<id>.json`,
+which the sync never writes or deletes. Theme fixtures live in
+`scripts/themes/fixtures/`. Do not add `CNAME`, personal posts or pages, populated generated
 data, private workspace content, expiring Notion-hosted image URLs, tokens,
 private keys, or private assistant configuration.
 
@@ -45,6 +53,17 @@ The browser runtime is deliberately pure HTML and CSS. Do not add client-side
 JavaScript. Jekyll extensions must be available in GitHub Pages safe mode and
 must be declared through the `github-pages`-compatible dependency set in the
 `Gemfile`; do not add custom Ruby plugins.
+
+## Themes
+
+Each look is a theme: a manifest in `_data/themes/`, a stylesheet in
+`assets/themes/<id>/`, and optional slot templates in `_includes/themes/<id>/`.
+Start with [`THEMES.md`](THEMES.md), then follow
+[`docs/themes/authoring.md`](docs/themes/authoring.md). A change to one theme
+is done when the checklist in step 8 of that guide passes. A change to shared
+files (layouts, `_includes/`, `scripts/`, the schema) must also pass every
+command under "Development setup" above. The `classic` theme is the default;
+its look must not change.
 
 ## Bumping a pinned action
 

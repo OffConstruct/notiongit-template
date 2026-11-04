@@ -2,6 +2,13 @@
 
 This repository is your website. Edit the content in Notion; GitHub Actions
 copies published pages and posts here, and GitHub Pages publishes the result.
+The site's look is a theme, chosen in the `inkdrafts:` block of `_config.yml`;
+see [`THEMES.md`](THEMES.md) for the themes and how they work.
+
+**Building or changing a theme, as a person or a coding agent? Start at
+[`THEMES.md`](THEMES.md).** This template keeps no `AGENTS.md` or
+`CLAUDE.md` (the hygiene scan forbids assistant files, so none reach the
+sites generated from it); `THEMES.md` is the entry point instead.
 
 The reusable template code is released under the [MIT License](LICENSE). See
 [`CONTRIBUTING.md`](CONTRIBUTING.md) for maintainer setup, generated-file
