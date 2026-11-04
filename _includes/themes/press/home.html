@@ -1,0 +1,97 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home pr-home">
+  {%- if home and home.name and home.name != "" %}
+  {%- assign pr_bio = home.bio | markdownify -%}
+  {%- assign pr_parts = pr_bio | split: "<h2" -%}
+  {%- assign pr_lead = pr_parts[0] | strip -%}
+  <section class="pr-cover" aria-labelledby="pr-name">
+    <div class="pr-cover-main">
+      <h1 class="pr-name" id="pr-name">{{ home.name }}</h1>
+      <span class="pr-rule" aria-hidden="true"></span>
+      {%- if home.tagline and home.tagline != "" %}
+      <p class="pr-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+      {%- if pr_lead != "" %}
+      <div class="pr-lead">{{ pr_lead }}</div>
+      {%- endif %}
+    </div>
+    {%- assign pr_side = false %}
+    {%- if home.profile_picture and home.profile_picture != "" %}{% assign pr_side = true %}{% endif %}
+    {%- if home.social_links.size > 0 %}{% assign pr_side = true %}{% endif %}
+    {%- if pr_side %}
+    <div class="pr-cover-side">
+      {%- if home.profile_picture and home.profile_picture != "" %}
+      <div class="pr-portrait"><img src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="112" height="112" loading="eager"></div>
+      {%- endif %}
+      {%- if home.social_links.size > 0 %}
+      <ul class="pr-linkrows" aria-label="Elsewhere">
+        {%- for link in home.social_links %}
+        <li><a class="pr-linkrow" href="{{ link.url }}"><span>{{ link.name }}</span><span class="pr-arrow" aria-hidden="true">&rarr;</span></a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+    {%- endif %}
+  </section>
+
+  {%- assign pr_featured = site.posts | where: "featured", true %}
+  {%- if pr_featured.size > 0 %}
+  <div class="ink-variant" data-variant="selected:spines">
+    <section class="pr-section" aria-label="Selected">
+      <h2 class="pr-label">Selected</h2>
+      {% include themes/press/_spines.html posts=pr_featured size="thick" %}
+    </section>
+  </div>
+  <div class="ink-variant" data-variant="selected:feature">
+    {%- assign pr_lead_post = pr_featured | first %}
+    <section class="pr-section pr-feature" aria-label="Selected">
+      <h2 class="pr-label">Selected</h2>
+      <article class="pr-feature-body">
+        <a class="pr-feature-cover" href="{{ pr_lead_post.url | relative_url }}" tabindex="-1" aria-hidden="true">
+          {% include themes/press/_book.html title=pr_lead_post.title image=pr_lead_post.cover_image %}
+        </a>
+        <div class="pr-feature-text">
+          <p class="pr-kicker"><time datetime="{{ pr_lead_post.date | date_to_xmlschema }}">{{ pr_lead_post.date | date: "%B %Y" }}</time></p>
+          <h3 class="pr-feature-title"><a href="{{ pr_lead_post.url | relative_url }}">{{ pr_lead_post.title }}</a></h3>
+          {%- if pr_lead_post.excerpt %}
+          <p class="pr-feature-dek">{{ pr_lead_post.excerpt | strip_html | strip | truncate: 220 }}</p>
+          {%- endif %}
+          {%- if pr_featured.size > 1 %}
+          <p class="pr-feature-more">Also: {% for post in pr_featured offset: 1 %}<a href="{{ post.url | relative_url }}">{{ post.title }}</a>{% unless forloop.last %}; {% endunless %}{% endfor %}</p>
+          {%- endif %}
+        </div>
+      </article>
+    </section>
+  </div>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  <section class="pr-section" aria-label="All writing">
+    <h2 class="pr-label">All writing</h2>
+    {% include themes/press/_spines.html posts=site.posts size="thin" %}
+  </section>
+  {%- endif %}
+
+  {%- if pr_parts.size > 1 %}
+  <section class="pr-section pr-endpaper" aria-label="About">
+    {%- for part in pr_parts offset: 1 %}
+    {%- assign pr_head = part | split: "</h2>" | first | prepend: "<h2" | append: "</h2>" | strip_html | strip -%}
+    {%- assign pr_head_len = part | split: "</h2>" | first | size | plus: 5 -%}
+    <div class="pr-endpaper-part">
+      <h2 class="pr-label">{{ pr_head }}</h2>
+      <div class="pr-endpaper-body">{{ part | slice: pr_head_len, part.size }}</div>
+    </div>
+    {%- endfor %}
+  </section>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

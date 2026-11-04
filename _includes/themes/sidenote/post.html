@@ -1,0 +1,39 @@
+{%- assign sn_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign sn_dek = page.excerpt | strip_html | strip -%}
+{%- assign sn_words = content | number_of_words -%}
+<div class="ink-post sn-post">
+  <article class="sn-article">
+    <header class="sn-row sn-posthead">
+      <div class="sn-t">
+        <h1 class="sn-posttitle">{{ page.title }}</h1>
+        {%- if sn_dek != "" and sn_dek != sn_first %}
+        <p class="sn-dek">{{ sn_dek }}</p>
+        {%- endif %}
+      </div>
+      <div class="sn-r sn-postmeta">
+        <p><time class="sn-fig" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time></p>
+        <p><span class="sn-fig">{{ sn_words | divided_by: 230 | plus: 1 }}</span> min read</p>
+        {%- if page.tags.size > 0 %}
+        <p class="sn-tags">{% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
+        {%- endif %}
+        {%- if content contains 'class="footnotes"' %}
+        <p><a href="#fn:1">Read the notes</a></p>
+        {%- endif %}
+        {%- if page.canonical_url %}
+        <p>First published in <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a></p>
+        {%- endif %}
+      </div>
+    </header>
+    {%- if page.cover_image %}
+    <figure class="sn-row sn-cover"><img class="sn-tr" src="{{ page.cover_image }}" alt="" loading="lazy"></figure>
+    {%- endif %}
+    <div class="sn-row sn-body">
+      <div class="sn-t sn-prose">
+        {{ content }}
+      </div>
+    </div>
+    <footer class="sn-row sn-postfoot">
+      <p class="sn-t"><a href="{{ '/blog/' | relative_url }}">All writing</a><span class="sn-sep" aria-hidden="true"> · </span><a href="{{ '/' | relative_url }}">Home</a></p>
+    </footer>
+  </article>
+</div>

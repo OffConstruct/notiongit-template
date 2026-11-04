@@ -1,0 +1,97 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home sn-home">
+  {%- if home and home.name and home.name != "" %}
+  {%- assign sn_bio = home.bio | markdownify -%}
+  {%- assign sn_parts = sn_bio | split: "<h2" -%}
+  {%- assign sn_lead = sn_parts[0] | strip -%}
+  <header class="sn-row sn-titleblock">
+    <div class="sn-t">
+      <h1 class="sn-name">{{ home.name }}</h1>
+      {%- if home.tagline and home.tagline != "" %}
+      <p class="sn-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+    </div>
+    {%- if home.profile_picture and home.profile_picture != "" %}
+    <div class="sn-r sn-portrait-wrap">
+      <img class="sn-portrait" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="96" height="96" loading="lazy">
+    </div>
+    {%- endif %}
+  </header>
+
+  {%- if sn_lead != "" or home.social_links.size > 0 %}
+  <section class="sn-row sn-abstract" aria-labelledby="sn-abstract-label">
+    <h2 class="sn-l sn-label" id="sn-abstract-label">{% if sn_lead != "" %}Abstract{% else %}Elsewhere{% endif %}</h2>
+    {%- if sn_lead != "" %}
+    <div class="sn-t sn-lead">{{ sn_lead }}</div>
+    {%- endif %}
+    {%- if home.social_links.size > 0 %}
+    <ul class="sn-r sn-links" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
+  {%- for part in sn_parts offset: 1 %}
+  {%- assign sn_head = part | split: "</h2>" | first | prepend: "<h2" | append: "</h2>" | strip_html | strip -%}
+  {%- assign sn_head_len = part | split: "</h2>" | first | size | plus: 5 -%}
+  {%- assign sn_body = part | slice: sn_head_len, part.size -%}
+  <section class="sn-row sn-bio-section" aria-labelledby="sn-bio-{{ forloop.index }}">
+    <h2 class="sn-l sn-label" id="sn-bio-{{ forloop.index }}">{{ sn_head }}</h2>
+    <div class="sn-t sn-prose">{{ sn_body }}</div>
+  </section>
+  {%- endfor %}
+
+  {%- assign sn_featured = site.posts | where: "featured", true %}
+  {%- if sn_featured.size > 0 %}
+  <section class="sn-row sn-selected" aria-labelledby="sn-selected-label">
+    <h2 class="sn-l sn-label" id="sn-selected-label">Selected</h2>
+    <ol class="sn-tr sn-ledger sn-ledger--selected">
+      {%- for post in sn_featured %}
+      <li class="sn-entry">
+        <div class="sn-entry-main">
+          <a class="sn-entry-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          {%- if post.excerpt %}
+          <p class="sn-sub">{{ post.excerpt | strip_html | strip | truncate: 160 }}</p>
+          {%- endif %}
+        </div>
+        <p class="sn-note"><time class="sn-day sn-fig" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time>{% if post.tags.size > 0 %}<span class="sn-tags">{% for tag in post.tags %}{{ tag }}{% unless forloop.last %}, {% endunless %}{% endfor %}</span>{% endif %}</p>
+      </li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  <div class="sn-writing" role="region" aria-labelledby="sn-writing-label">
+    <h2 class="sn-row sn-section-head" id="sn-writing-label"><span class="sn-l sn-label">Writing</span></h2>
+    {% include themes/sidenote/_ledger.html %}
+  </div>
+  {%- endif %}
+
+  {%- assign sn_elsewhere = "" | split: "" %}
+  {%- for item in site.data.nav %}
+  {%- unless item.url == "/" %}
+  {%- assign sn_p = site.pages | where: "url", item.url | first %}
+  {%- unless sn_p.layout == "blog" %}{% assign sn_elsewhere = sn_elsewhere | push: item %}{% endunless %}
+  {%- endunless %}
+  {%- endfor %}
+  {%- if sn_elsewhere.size > 0 %}
+  <nav class="sn-row sn-elsewhere" aria-label="More on this site">
+    <p class="sn-l sn-label" aria-hidden="true">See also</p>
+    <p class="sn-t">{% for item in sn_elsewhere %}<a href="{{ item.url | relative_url }}">{{ item.title }}</a>{% unless forloop.last %}<span class="sn-sep" aria-hidden="true"> · </span>{% endunless %}{% endfor %}</p>
+  </nav>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

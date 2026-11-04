@@ -1,0 +1,19 @@
+<header class="ink-header pr-header">
+  <div class="pr-header-inner">
+    <a class="pr-lockup" href="{{ '/' | relative_url }}">
+      <span class="pr-lockup-name">{{ site.data.home.name | default: site.title }}</span>
+    </a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="pr-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item.url or item.url != "/" and page.url contains item.url %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <nav class="pr-nav" aria-label="Main navigation">
+      <span class="pr-nav-empty" role="status">Navigation will appear after the first sync.</span>
+    </nav>
+    {%- endif %}
+  </div>
+</header>

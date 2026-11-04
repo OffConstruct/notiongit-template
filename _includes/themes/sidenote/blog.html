@@ -1,0 +1,22 @@
+<div class="ink-post-list sn-blog">
+  <header class="sn-row sn-pagehead">
+    <div class="sn-t">
+      <h1 class="sn-pagetitle">{{ page.title | default: "Writing" }}</h1>
+      {%- if page.description %}
+      <p class="sn-dek">{{ page.description }}</p>
+      {%- endif %}
+    </div>
+  </header>
+  {%- if site.posts.size == 0 %}
+  <div class="sn-row"><div class="sn-t">
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  </div></div>
+  {%- else %}
+  {% include themes/sidenote/_ledger.html level="h2" %}
+  {%- endif %}
+</div>

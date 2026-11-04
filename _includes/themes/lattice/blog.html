@@ -1,0 +1,32 @@
+<div class="ink-post-list lt-blog">
+  <header class="lt-pagehead">
+    <h1 class="lt-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="lt-dek">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign lt_tags = site.tags | sort %}
+  {%- if lt_tags.size > 0 %}
+  <nav class="lt-tagrow" aria-label="Tags">
+    {%- for t in lt_tags %}
+    <a href="{{ '/tags/' | relative_url }}#{{ t[0] | slugify }}">{{ t[0] }} <span class="lt-count">{{ t[1].size }}</span></a>
+    {%- endfor %}
+  </nav>
+  {%- endif %}
+  {%- assign lt_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for y in lt_years %}
+  <section class="lt-section lt-year" aria-labelledby="lt-year-{{ y.name }}">
+    <h2 class="lt-head lt-head--plain" id="lt-year-{{ y.name }}">{{ y.name }} <span class="lt-count">{{ y.items.size }}</span></h2>
+    {% include themes/lattice/_table.html posts=y.items caption=y.name %}
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

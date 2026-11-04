@@ -1,0 +1,15 @@
+{%- comment -%} Spine rows. include.posts is the list; include.size is "thick" (Selected) or "thin" (All writing). {%- endcomment -%}
+<ol class="pr-spines pr-spines--{{ include.size | default: 'thin' }}">
+  {%- for post in include.posts %}
+  <li>
+    <a class="pr-spine" href="{{ post.url | relative_url }}">
+      <span class="pr-spine-title">{{ post.title }}</span>
+      <span class="pr-spine-meta">
+        {%- if include.size == "thick" and post.tags.size > 0 %}<span class="pr-spine-tags">{{ post.tags | join: ", " }}</span>{% endif -%}
+        {%- if post.canonical_url %}<span class="pr-spine-tags">in {{ post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif -%}
+        <time class="pr-spine-year" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time>
+      </span>
+    </a>
+  </li>
+  {%- endfor %}
+</ol>

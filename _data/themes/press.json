@@ -1,0 +1,61 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "press",
+  "name": "Press",
+  "version": "1.0.0",
+  "summary": "The site as a cloth-bound book: a foil-printed cover home and bone paper reading pages.",
+  "description": "The home is a book cover: one cloth color printed in one foil ink, a large Caslon name, link rows and featured posts as spine bands. Posts open on bone paper beside a typographic cover panel. Works with no images at all. For researchers who want to be remembered.",
+  "categories": ["researchers", "writers"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "caslon",
+      "label": "Libre Caslon and Literata",
+      "google": "family=Libre+Caslon+Display&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400",
+      "stacks": {
+        "body": "Literata, \"Iowan Old Style\", \"Palatino Linotype\", Georgia, serif",
+        "display": "\"Libre Caslon Display\", \"Big Caslon\", \"Iowan Old Style\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f1ecde", "text": "#1a1a18", "muted": "#686250" },
+    "dark": { "bg": "#1b1a17", "text": "#ebe3d0", "muted": "#a89e86" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Reading pages", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Bone paper" },
+        { "value": "dark", "label": "Dark paper" } ] },
+    { "key": "accent", "type": "color", "label": "Link ink on paper", "role": "text", "default": "sienna", "custom": true,
+      "presets": [
+        { "value": "sienna", "label": "Sienna", "light": "#a04a2a", "dark": "#e39a78" },
+        { "value": "teal", "label": "Deep teal", "light": "#1b4b5a", "dark": "#8cc7d4" },
+        { "value": "olive", "label": "Olive", "light": "#5a5f1f", "dark": "#c9cf7f" },
+        { "value": "ink", "label": "Ink only", "light": "#1a1a18", "dark": "#ebe3d0" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "cloth", "type": "select", "label": "Cover cloth and foil", "default": "olive",
+      "options": [
+        { "value": "olive", "label": "Olive cloth, gold foil" },
+        { "value": "aubergine", "label": "Aubergine, gold foil" },
+        { "value": "oxblood", "label": "Oxblood, bone foil" },
+        { "value": "navy", "label": "Navy, gold foil" },
+        { "value": "verdigris", "label": "Navy, verdigris foil" },
+        { "value": "bone", "label": "Bone cloth, bronze ink" } ] },
+    { "key": "cover_panel", "type": "select", "label": "Cover beside posts", "default": "typographic",
+      "options": [
+        { "value": "typographic", "label": "Typographic cover" },
+        { "value": "image", "label": "Cover image when set" },
+        { "value": "off", "label": "No cover" } ] },
+    { "key": "selected", "type": "select", "label": "Selected writing", "default": "spines",
+      "options": [
+        { "value": "spines", "label": "Spine bands" },
+        { "value": "feature", "label": "One feature" } ] },
+    { "key": "avatar", "type": "boolean", "label": "Foil portrait on the cover", "default": true }
+  ]
+}

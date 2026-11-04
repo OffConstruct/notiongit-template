@@ -1,0 +1,12 @@
+<div class="ink-page pr-page">
+  <header class="pr-article-head">
+    <h1 class="pr-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="pr-standfirst">{{ page.description }}</p>
+    {%- endif %}
+    <span class="pr-rule" aria-hidden="true"></span>
+  </header>
+  <div class="pr-body">
+    {{ content }}
+  </div>
+</div>

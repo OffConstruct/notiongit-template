@@ -1,0 +1,34 @@
+name: "Rowan Vale"
+tagline: "Postdoctoral researcher in coastal hydrology. I study how harbours breathe."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "Scholar"
+    url: "https://scholar.example.org/citations?user=rowanvale"
+  - name: "ORCID"
+    url: "https://orcid.example.org/0000-0001-0000-0000"
+  - name: "GitHub"
+    url: "https://github.example/rowanvale"
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "CV"
+    url: "{{FIXTURES}}/rowan-vale-cv.pdf"
+bio: |
+  I study how coastal aquifers respond to tides and storms, pairing a century of
+  hand-copied harbour records with a small network of new sensors. I am a
+  postdoctoral fellow at the North Coast Institute for Marine Science, working
+  with the Estuaries Group. Read the [notes]({{BASEURL}}/blog/) or the
+  [publications]({{BASEURL}}/publications/).
+
+  ## Research
+
+  My thesis reconstructed groundwater levels under a tidal town from 1890 to
+  1910 using the harbour office's own tide tables. Current work asks how those
+  levels change when the sea wall is repaired, and who notices first.
+
+  ## Details
+
+  - Position: Postdoctoral fellow, Estuaries Group
+  - PhD: Hydrology, 2024
+  - Office: Room 4.12, the old customs house
+  - Contact: [rowan@example.com](mailto:rowan@example.com)
+notion_id: "fixture-home"

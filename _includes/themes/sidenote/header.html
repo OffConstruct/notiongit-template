@@ -1,0 +1,17 @@
+<header class="ink-header sn-header">
+  <div class="sn-header-inner">
+    <a class="sn-wordmark" href="{{ '/' | relative_url }}">{{ site.data.home.name | default: site.title }}</a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="sn-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item.url or item.url != "/" and page.url contains item.url %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <nav class="sn-nav" aria-label="Main navigation">
+      <span class="sn-nav-empty" role="status">Navigation will appear after the first sync.</span>
+    </nav>
+    {%- endif %}
+  </div>
+</header>

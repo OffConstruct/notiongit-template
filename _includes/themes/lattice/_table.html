@@ -1,0 +1,16 @@
+{%- comment -%} Ruled writing table. include.posts; include.caption for screen readers. {%- endcomment -%}
+<table class="lt-table">
+  <caption class="lt-visually-hidden">{{ include.caption | default: "Writing" }}</caption>
+  <thead>
+    <tr><th scope="col" class="lt-col-date">Date</th><th scope="col">Title</th><th scope="col" class="lt-col-tags">Tags</th></tr>
+  </thead>
+  <tbody>
+    {%- for post in include.posts %}
+    <tr>
+      <td class="lt-col-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time></td>
+      <td class="lt-col-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a>{% if post.canonical_url %} <span class="lt-outlet">{{ post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif %}</td>
+      <td class="lt-col-tags">{% if post.tags.size > 0 %}<span class="lt-tags">{{ post.tags | join: " · " }}</span>{% endif %}</td>
+    </tr>
+    {%- endfor %}
+  </tbody>
+</table>

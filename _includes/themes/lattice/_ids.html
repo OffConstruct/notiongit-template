@@ -1,0 +1,15 @@
+{%- comment -%} Identifier rows: the label in mono, the handle itself as the link text. {%- endcomment -%}
+<dl class="lt-ids">
+  {%- for link in include.links %}
+  {%- assign lt_u = link.url | strip %}
+  {%- if lt_u contains "://" %}{% assign lt_v = lt_u | split: "://" | last | remove_first: "www." %}
+  {%- elsif lt_u contains "mailto:" %}{% assign lt_v = lt_u | remove_first: "mailto:" %}
+  {%- else %}{% assign lt_v = lt_u | split: "/" | last %}{% endif %}
+  {%- assign lt_end = lt_v | slice: -1, 1 %}
+  {%- if lt_end == "/" %}{% assign lt_len = lt_v | size | minus: 1 %}{% assign lt_v = lt_v | slice: 0, lt_len %}{% endif %}
+  <div class="lt-id">
+    <dt>{{ link.name }}</dt>
+    <dd><a href="{{ link.url }}">{{ lt_v | default: link.name | truncate: 48 }}</a></dd>
+  </div>
+  {%- endfor %}
+</dl>

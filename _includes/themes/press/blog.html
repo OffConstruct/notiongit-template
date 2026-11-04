@@ -1,0 +1,25 @@
+<div class="ink-post-list pr-blog">
+  <header class="pr-blog-head">
+    <h1 class="pr-pagetitle">{{ page.title | default: "Writing" }}</h1>
+    <span class="pr-rule" aria-hidden="true"></span>
+    {%- if page.description %}
+    <p class="pr-tagline">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign pr_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for y in pr_years %}
+  <div class="pr-section pr-yeargroup">
+    <h2 class="pr-label">{{ y.name }}</h2>
+    {% include themes/press/_spines.html posts=y.items size="thick" %}
+  </div>
+  {%- endfor %}
+  {%- endif %}
+</div>

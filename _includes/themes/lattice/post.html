@@ -1,0 +1,35 @@
+{%- assign lt_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign lt_dek = page.excerpt | strip_html | strip -%}
+{%- assign lt_author = site.data.home.name | default: site.author.name | default: site.title -%}
+{%- assign lt_cite_url = page.url | absolute_url -%}
+{%- if page.canonical_url %}{% assign lt_cite_url = page.canonical_url %}{% endif -%}
+<article class="ink-post lt-post">
+  <header class="lt-pagehead">
+    <p class="lt-crumb"><a href="{{ '/blog/' | relative_url }}">All writing</a></p>
+    <h1 class="lt-title">{{ page.title }}</h1>
+    {%- if lt_dek != "" and lt_dek != lt_first %}
+    <p class="lt-dek">{{ lt_dek }}</p>
+    {%- endif %}
+    <dl class="lt-byline">
+      <div><dt>Author</dt><dd>{{ lt_author }}</dd></div>
+      <div><dt>Published</dt><dd><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time></dd></div>
+      <div><dt>Reading</dt><dd>{{ content | number_of_words | divided_by: 230 | plus: 1 }} min</dd></div>
+      {%- if page.tags.size > 0 %}
+      <div><dt>Tags</dt><dd>{% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</dd></div>
+      {%- endif %}
+      {%- if page.canonical_url %}
+      <div><dt>First published</dt><dd><a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a></dd></div>
+      {%- endif %}
+    </dl>
+  </header>
+  {%- if page.cover_image %}
+  <figure class="lt-cover"><img src="{{ page.cover_image }}" alt="" loading="lazy"></figure>
+  {%- endif %}
+  <div class="lt-prose">
+    {{ content }}
+  </div>
+  <footer class="lt-cite">
+    <h2 class="lt-cite-label">Cite this</h2>
+    <p class="lt-cite-text">{{ lt_author }} ({{ page.date | date: "%Y" }}). {{ page.title }}. {{ lt_cite_url }}</p>
+  </footer>
+</article>

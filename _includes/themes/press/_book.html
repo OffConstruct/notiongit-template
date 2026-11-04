@@ -1,0 +1,11 @@
+{%- comment -%} A 3:4 cover object: the image when set and allowed, else type on cloth. {%- endcomment -%}
+<figure class="pr-book{% if include.image %} pr-book--image{% endif %}" aria-hidden="true">
+  {%- if include.image %}
+  <img class="pr-book-img" src="{{ include.image }}" alt="" loading="lazy">
+  {%- endif %}
+  <div class="pr-book-type">
+    <span class="pr-book-title">{{ include.title }}</span>
+    <span class="pr-book-rule"></span>
+    <span class="pr-book-author">{{ site.data.home.name | default: site.title }}</span>
+  </div>
+</figure>

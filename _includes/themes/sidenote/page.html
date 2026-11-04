@@ -1,0 +1,15 @@
+<div class="ink-page sn-page">
+  <header class="sn-row sn-pagehead">
+    <div class="sn-t">
+      <h1 class="sn-pagetitle">{{ page.title }}</h1>
+      {%- if page.description %}
+      <p class="sn-dek">{{ page.description }}</p>
+      {%- endif %}
+    </div>
+  </header>
+  <div class="sn-row sn-body">
+    <div class="sn-t sn-prose">
+      {{ content }}
+    </div>
+  </div>
+</div>

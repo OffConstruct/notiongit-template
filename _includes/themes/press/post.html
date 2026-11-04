@@ -1,0 +1,31 @@
+{%- assign pr_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign pr_dek = page.excerpt | strip_html | strip -%}
+<div class="ink-post pr-post">
+  <div class="pr-post-grid">
+    <aside class="pr-panel">
+      {% include themes/press/_book.html title=page.title image=page.cover_image %}
+    </aside>
+    <article class="pr-article">
+      <header class="pr-article-head">
+        <p class="pr-kicker"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time> &middot; {{ content | number_of_words | divided_by: 230 | plus: 1 }} min read</p>
+        <h1 class="pr-title">{{ page.title }}</h1>
+        {%- if pr_dek != "" and pr_dek != pr_first %}
+        <p class="pr-standfirst">{{ pr_dek }}</p>
+        {%- endif %}
+        <span class="pr-rule" aria-hidden="true"></span>
+      </header>
+      <div class="pr-body">
+        {{ content }}
+      </div>
+      <footer class="pr-colophon">
+        {%- if page.canonical_url %}
+        <p><span class="pr-colophon-label">First published</span> <a href="{{ page.canonical_url }}"><i>{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</i></a></p>
+        {%- endif %}
+        {%- if page.tags.size > 0 %}
+        <p><span class="pr-colophon-label">Filed under</span> {% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
+        {%- endif %}
+        <p><span class="pr-colophon-label">Back to</span> <a href="{{ '/blog/' | relative_url }}">all writing</a></p>
+      </footer>
+    </article>
+  </div>
+</div>
