@@ -1,0 +1,9 @@
+{%- assign href = include.post.url | relative_url -%}
+{%- if include.post.canonical_url -%}{%- assign href = include.post.canonical_url -%}{%- endif -%}
+<a class="ink-post-item" href="{{ href }}">
+  <span class="post-meta"><time datetime="{{ include.post.date | date_to_xmlschema }}">{{ include.post.date | date: "%b %-d, %Y" }}</time></span>
+  <h2 class="post-card-title">{{ include.post.title }}</h2>
+  {%- if include.post.excerpt %}
+  <p class="post-excerpt">{{ include.post.excerpt | strip_html | truncate: 200 }}</p>
+  {%- endif %}
+</a>

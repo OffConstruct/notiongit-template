@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+#
+# Scaffolds a new theme from scripts/themes/skeleton/ into the three paths the
+# theme owns. The result passes scripts/check-themes.py and builds as is.
+#
+# Usage:
+#   scripts/new-theme <id> --name "Name" --category <category> [--slots home,blog,post]
+#                          [--root DIR]
+#
+# Slots: header footer home blog post-item post page tags.
+
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+skeleton="$repo_root/scripts/themes/skeleton"
+
+usage() {
+  sed -n '6,10p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2
+  exit 2
+}
+
+id=""
+name=""
+category=""
+slots=""
+root="$repo_root"
+while (( $# > 0 )); do
+  case "$1" in
+    --name) name="${2:?--name needs a value}"; shift 2 ;;
+    --category) category="${2:?--category needs a value}"; shift 2 ;;
+    --slots) slots="${2?--slots needs a value}"; shift 2 ;;
+    --root) root="${2:?--root needs a directory}"; shift 2 ;;
+    -h|--help) usage ;;
+    -*) echo "new-theme: unknown option $1" >&2; usage ;;
+    *) [[ -z "$id" ]] || usage; id="$1"; shift ;;
+  esac
+done
+[[ -n "$id" && -n "$name" && -n "$category" ]] || usage
+
+python3 - "$skeleton" "$root" "$id" "$name" "$category" "$slots" <<'PY'
+import json, pathlib, re, sys
+
+skeleton, root, theme_id, name, category, slot_arg = sys.argv[1:]
+skeleton, root = pathlib.Path(skeleton), pathlib.Path(root)
+
+schema = json.loads((skeleton.parent / "theme.schema.json").read_text())
+reserved = {"size", "first", "last", "empty", "blank", "nil", "default", "none", "themes",
+            "ink", "preview", "previews", "assets", "custom", "all", "new"}
+slots_known = ["header", "footer", "home", "blog", "post-item", "post", "page", "tags"]
+categories = schema["$defs"]["category"]["enum"]
+
+def die(msg):
+    sys.exit(f"new-theme: {msg}")
+
+if not re.fullmatch(r"[a-z]{2,24}", theme_id):
+    die(f"'{theme_id}' is not a valid id (^[a-z]{{2,24}}$)")
+if theme_id in reserved:
+    die(f"'{theme_id}' is reserved")
+if not re.fullmatch(r"[A-Za-z][A-Za-z0-9 .'-]{0,23}", name):
+    die("--name must be 1-24 characters, start with a letter, and use letters, digits, space . ' -")
+if category not in categories:
+    die(f"--category must be one of: {' '.join(categories)}")
+slots = [s for s in slot_arg.split(",") if s]
+for s in slots:
+    if s not in slots_known:
+        die(f"unknown slot '{s}'; slots are {' '.join(slots_known)}")
+
+targets = [root / "_data" / "themes" / f"{theme_id}.json",
+           root / "assets" / "themes" / theme_id,
+           root / "_includes" / "themes" / theme_id]
+for t in targets:
+    if t.exists():
+        die(f"{t.relative_to(root)} already exists")
+
+themes_dir = root / "_data" / "themes"
+if themes_dir.is_dir():
+    for other in themes_dir.glob("*.json"):
+        try:
+            other_name = json.loads(other.read_text()).get("name", "")
+        except (OSError, ValueError):
+            continue
+        if isinstance(other_name, str) and other_name.lower() == name.lower():
+            die(f"name '{name}' is already used by {other.relative_to(root)}")
+
+def fill(text):
+    return text.replace("__ID__", theme_id).replace("__NAME__", name).replace("__CATEGORY__", category)
+
+manifest = json.loads(fill((skeleton / "manifest.json").read_text()))
+manifest["slots"] = [s for s in slots_known if s in slots]
+targets[0].parent.mkdir(parents=True, exist_ok=True)
+text = json.dumps(manifest, indent=2, ensure_ascii=False) + "\n"
+targets[0].write_text(text)
+
+targets[1].mkdir(parents=True)
+(targets[1] / "theme.css").write_text(fill((skeleton / "theme.css").read_text()))
+
+if slots:
+    targets[2].mkdir(parents=True)
+    for s in manifest["slots"]:
+        (targets[2] / f"{s}.html").write_text(fill((skeleton / "slots" / f"{s}.html").read_text()))
+
+for t in targets:
+    if t.exists():
+        print(f"created {t.relative_to(root)}")
+PY
+
+cat <<EOF
+
+Next steps (docs/themes/authoring.md):
+  python3 scripts/check-themes.py --theme $id
+  scripts/build-theme $id
+  scripts/screenshot-theme $id --out /tmp/$id-shots
+  scripts/build-theme $id --preview --serve 4000
+EOF

@@ -1,0 +1,17 @@
+<header class="ink-header site-header">
+  <div class="container header-inner">
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="site-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <div class="site-nav-empty" role="status">
+      <span class="site-nav-empty-title">{{ site.title }}</span>
+      <span>Navigation will appear after the first sync.</span>
+    </div>
+    {%- endif %}
+  </div>
+</header>

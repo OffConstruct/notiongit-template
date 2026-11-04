@@ -1,0 +1,23 @@
+<div class="ink-tags container">
+  <h1 class="page-title">Tags</h1>
+  {%- assign tags_list = site.tags | sort %}
+  {%- if tags_list.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION TAGS"
+    title="Your tags will appear here"
+    copy="Tags from your published posts will be collected here automatically."
+  %}
+  {%- else %}
+  {%- for tag in tags_list %}
+  <section class="tag-group" id="{{ tag[0] | slugify }}">
+    <h2 class="tag-group-name">{{ tag[0] }} <span class="tag-count">{{ tag[1].size }}</span></h2>
+    <div class="tag-posts">
+      {%- assign sorted_posts = tag[1] | sort: 'date' | reverse %}
+      {%- for post in sorted_posts %}
+      <a class="tag-post-link" href="{{ post.url | relative_url }}"><span class="tag-post-date">{{ post.date | date: "%b %-d, %Y" }}</span> <span>{{ post.title }}</span></a>
+      {%- endfor %}
+    </div>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

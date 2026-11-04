@@ -1,0 +1,34 @@
+name: "Rowan Vale"
+tagline: "Essays, field notes and small repairs from a harbour town."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "GitHub"
+    url: "https://github.example/rowanvale"
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "CV"
+    url: "{{FIXTURES}}/rowan-vale-cv.pdf"
+  - name: "Mastodon"
+    url: "https://social.example/@rowanvale"
+  - name: "RSS"
+    url: "{{BASEURL}}/feed.xml"
+bio: |
+  I write about tides, tools and the slow work of keeping things running. Most of
+  what I publish starts as a note in a pocket book and ends up here, a little
+  longer and a little more careful. Read the [archive]({{BASEURL}}/blog/) or start with
+  [what I am doing now]({{BASEURL}}/now/).
+
+  ## About
+
+  I grew up between a boatyard and a public library, and I still split my week
+  the same way: mornings at the desk, afternoons fixing whatever is broken.
+  My essays have appeared in [The Salt Review](https://magazine.example.org/) and
+  in the anthology *Low Water*.
+
+  ## Details
+
+  - Based in: a harbour town on the north coast
+  - Writing: essays, field notes, the occasional review
+  - Currently: a book about repair, due next spring
+  - Contact: [rowan@example.com](mailto:rowan@example.com)
+notion_id: "fixture-home"

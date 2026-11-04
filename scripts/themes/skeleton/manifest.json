@@ -1,0 +1,42 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "__ID__",
+  "name": "__NAME__",
+  "version": "0.1.0",
+  "summary": "Replace with one line for the gallery card, 10 to 120 characters.",
+  "description": "Replace with two or three sentences for the theme's detail page: what the home page looks like, how posts are listed, and who the theme is for.",
+  "categories": ["__CATEGORY__"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": [],
+  "fonts": [
+    {
+      "value": "system",
+      "label": "System fonts",
+      "google": null,
+      "stacks": {
+        "body": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "display": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#fbfaf7", "text": "#1d1c1a", "muted": "#5f5b53" },
+    "dark": { "bg": "#161513", "text": "#ece9e2", "muted": "#a8a397" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent", "role": "text", "default": "blue", "custom": true,
+      "presets": [
+        { "value": "blue", "label": "Blue", "light": "#2f5d8a", "dark": "#8fb8e0" },
+        { "value": "red", "label": "Red", "light": "#a63d2f", "dark": "#e8917f" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "measure", "type": "range", "label": "Line length", "min": 30, "max": 40, "step": 2, "unit": "em", "default": 34 }
+  ]
+}

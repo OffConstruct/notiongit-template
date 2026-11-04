@@ -1,0 +1,306 @@
+#!/usr/bin/env bash
+#
+# Builds the template with fixture content and one theme selected, in a
+# private temp directory. The repository itself is never written: the source
+# tree is a copy of the tracked and untracked (non-ignored) files, fixtures
+# are copied into that copy only, and Jekyll runs in a throwaway container.
+# Safe to run many times in parallel.
+#
+# Usage:
+#   scripts/build-theme <id> [--tweaks k=v[,k=v...]] [--preview] [--baseurl /x]
+#                            [--fixtures-base URL] [--out DIR] [--serve PORT]
+#                            [--native] [--keep]
+#   scripts/build-theme --all [--native] [--out DIR]
+#   scripts/build-theme --prepare        build the Docker image once, then exit
+#
+# The last stdout line is the built site directory. See docs/themes/authoring.md.
+
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+fixtures_root="$repo_root/scripts/themes/fixtures"
+
+usage() {
+  sed -n '9,16p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2
+  exit 2
+}
+
+id=""
+tweaks=""
+preview=false
+baseurl=""
+fixtures_base=""
+out=""
+serve=""
+native=false
+keep=false
+all=false
+prepare=false
+
+while (( $# > 0 )); do
+  case "$1" in
+    --tweaks) tweaks="${2:?--tweaks needs a value}"; shift 2 ;;
+    --tweaks=*) tweaks="${1#*=}"; shift ;;
+    --preview) preview=true; shift ;;
+    --baseurl) baseurl="${2?--baseurl needs a value}"; shift 2 ;;
+    --baseurl=*) baseurl="${1#*=}"; shift ;;
+    --fixtures-base) fixtures_base="${2:?--fixtures-base needs a value}"; shift 2 ;;
+    --fixtures-base=*) fixtures_base="${1#*=}"; shift ;;
+    --out) out="${2:?--out needs a directory}"; shift 2 ;;
+    --out=*) out="${1#*=}"; shift ;;
+    --serve) serve="${2:?--serve needs a port}"; shift 2 ;;
+    --serve=*) serve="${1#*=}"; shift ;;
+    --native) native=true; shift ;;
+    --keep) keep=true; shift ;;
+    --all) all=true; shift ;;
+    --prepare) prepare=true; shift ;;
+    -h|--help) usage ;;
+    -*) echo "build-theme: unknown option $1" >&2; usage ;;
+    *)
+      [[ -z "$id" ]] || { echo "build-theme: only one theme id may be given" >&2; usage; }
+      id="$1"; shift ;;
+  esac
+done
+
+baseurl="${baseurl%/}"
+if [[ -n "$baseurl" && "$baseurl" != /* ]]; then
+  echo "build-theme: --baseurl must start with /" >&2
+  exit 2
+fi
+
+image_tag() {
+  echo "inkdrafts-template-jekyll:$(cat "$repo_root/Gemfile" "$repo_root/scripts/themes/Dockerfile" | sha256sum | cut -c1-12)"
+}
+
+# Builds the image once; concurrent first runs wait on the lock and then find
+# the tag already present.
+ensure_image() {
+  local tag="$1" lock_dir ctx
+  docker image inspect "$tag" > /dev/null 2>&1 && return 0
+  lock_dir="${XDG_CACHE_HOME:-$HOME/.cache}/inkdrafts"
+  mkdir -p "$lock_dir"
+  (
+    flock 9
+    if ! docker image inspect "$tag" > /dev/null 2>&1; then
+      ctx="$(mktemp -d "${TMPDIR:-/tmp}/inkdrafts-image.XXXXXX")"
+      trap 'rm -rf "$ctx"' EXIT
+      cp "$repo_root/Gemfile" "$repo_root/scripts/themes/Dockerfile" "$ctx/"
+      echo "build-theme: building $tag (first run only)" >&2
+      docker build -q -t "$tag" "$ctx" > /dev/null
+    fi
+  ) 9> "$lock_dir/image.lock"
+}
+
+if $prepare; then
+  ensure_image "$(image_tag)"
+  echo "$(image_tag)"
+  exit 0
+fi
+
+if $all; then
+  [[ -z "$id" ]] || { echo "build-theme: --all takes no theme id" >&2; usage; }
+  [[ -z "$serve" && -z "$tweaks" ]] || { echo "build-theme: --all cannot be combined with --serve or --tweaks" >&2; usage; }
+  status=0
+  for manifest in "$repo_root"/_data/themes/*.json; do
+    theme="$(basename "$manifest" .json)"
+    args=("$theme")
+    $native && args+=(--native)
+    $preview && args+=(--preview)
+    [[ -n "$out" ]] && args+=(--out "$out/$theme")
+    echo "== $theme" >&2
+    if ! out_dir="$("${BASH_SOURCE[0]}" "${args[@]}" | tail -n1)"; then
+      status=1
+      continue
+    fi
+    # Without --out, --all is a check: drop each build once it has passed.
+    [[ -z "$out" ]] && rm -rf "$(dirname "$out_dir")"
+  done
+  exit "$status"
+fi
+
+[[ -n "$id" ]] || usage
+if [[ ! "$id" =~ ^[a-z]{2,24}$ ]]; then
+  echo "build-theme: '$id' is not a valid theme id (^[a-z]{2,24}\$)" >&2
+  exit 2
+fi
+manifest="$repo_root/_data/themes/$id.json"
+if [[ ! -f "$manifest" ]]; then
+  echo "build-theme: no manifest at _data/themes/$id.json" >&2
+  exit 2
+fi
+
+work="$(mktemp -d "${TMPDIR:-/tmp}/inkdrafts-build-$id.XXXXXX")"
+src="$work/src"
+site="$work/site"
+serving=false
+cleanup() {
+  local status=$?
+  if $keep; then
+    return
+  fi
+  # A failed build, a stopped --serve, or a site already copied to --out
+  # leaves nothing behind; a successful build keeps only its site.
+  if (( status != 0 )) || $serving || [[ -n "$out" ]]; then
+    rm -rf "$work"
+  else
+    rm -rf "$src"
+  fi
+}
+trap cleanup EXIT
+trap 'exit 130' INT TERM
+
+mkdir -p "$src"
+(
+  cd "$repo_root"
+  git ls-files -co --exclude-standard -z | while IFS= read -r -d '' rel; do
+    # Dot-directories (assistant state, .github) never reach the site, and a
+    # tracked file deleted in the working tree has nothing to copy.
+    [[ "$rel" == .* ]] && continue
+    [[ -e "$rel" ]] && printf '%s\0' "$rel"
+  done | tar --null -T - -cf - | tar -xf - -C "$src"
+)
+
+primary_category="$(python3 -c 'import json,sys; print((json.load(open(sys.argv[1])).get("categories") or [""])[0])' "$manifest")"
+cp -R "$fixtures_root/base/." "$src/"
+if [[ -n "$primary_category" && -d "$fixtures_root/$primary_category" ]]; then
+  cp -R "$fixtures_root/$primary_category/." "$src/"
+fi
+[[ -n "$fixtures_base" ]] || fixtures_base="$baseurl/assets/fixtures"
+
+if $preview; then
+  mkdir -p "$src/assets/ink-preview"
+  cp "$repo_root/scripts/themes/preview.js" "$src/assets/ink-preview/preview.js"
+fi
+
+python3 - "$src" "$manifest" "$id" "$baseurl" "$fixtures_base" "$tweaks" "$preview" <<'PY'
+import json, pathlib, re, sys
+
+src, manifest_path, theme_id, baseurl, fixtures_base, tweak_arg, preview = sys.argv[1:]
+src = pathlib.Path(src)
+manifest = json.loads(pathlib.Path(manifest_path).read_text())
+
+for sub in ("_data", "_pages", "_posts"):
+    for path in (src / sub).rglob("*"):
+        if path.is_file() and path.suffix in (".md", ".yml", ".yaml", ".html"):
+            text = path.read_text()
+            new = text.replace("{{FIXTURES}}", fixtures_base).replace("{{BASEURL}}", baseurl)
+            if new != text:
+                path.write_text(new)
+
+declared = {t["key"]: t for t in manifest.get("tweaks", [])}
+pairings = [f["value"] for f in manifest.get("fonts", [])]
+
+
+def accepted(tweak, value):
+    """Why the template would ignore `value`, or None if it would use it."""
+    kind = tweak["type"]
+    if kind == "select" and value not in [o["value"] for o in tweak["options"]]:
+        return f"is not an option ({', '.join(o['value'] for o in tweak['options'])})"
+    if kind == "boolean" and value not in ("true", "false", "on", "off"):
+        return "is not on/off"
+    if kind == "color" and value not in [p["value"] for p in tweak["presets"]] and not (
+            tweak.get("custom") and re.fullmatch(r"#[0-9a-fA-F]{6}", value)):
+        return f"is not a preset ({', '.join(p['value'] for p in tweak['presets'])})" + (" or #rrggbb" if tweak.get("custom") else "")
+    if kind == "range":
+        if not re.fullmatch(r"-?\d+(\.\d+)?", value):
+            return "is not a number"
+        n = float(value)
+        steps = (n - tweak["min"]) / tweak["step"]
+        if not tweak["min"] <= n <= tweak["max"] or abs(steps - round(steps)) > 1e-6:
+            return f"is not in {tweak['min']}..{tweak['max']} on step {tweak['step']}"
+    if kind == "font" and value not in pairings:
+        return f"is not a pairing ({', '.join(pairings)})"
+    return None
+
+
+tweaks = {}
+for pair in filter(None, tweak_arg.split(",")):
+    if "=" not in pair:
+        sys.exit(f"build-theme: --tweaks entry '{pair}' is not key=value")
+    key, value = pair.split("=", 1)
+    tweak = declared.get(key)
+    # Invalid values still go through: the Liquid fallback is worth testing,
+    # but the author must know the build shows the default instead.
+    problem = accepted(tweak, value) if tweak else "is for an undeclared tweak"
+    if problem:
+        fallback = f"using the default {tweak['default']!r}" if tweak else "the template ignores it"
+        print(f"build-theme: warning: tweak {key!r}: {value!r} {problem}; {fallback}", file=sys.stderr)
+    kind = tweak["type"] if tweak else None
+    if kind == "boolean" and value in ("true", "false", "on", "off"):
+        tweaks[key] = value in ("true", "on")
+    elif kind == "range" and re.fullmatch(r"-?\d+(\.\d+)?", value):
+        tweaks[key] = float(value) if "." in value else int(value)
+    else:
+        tweaks[key] = value
+
+name = "Rowan Vale"
+home = src / "_data" / "home.yml"
+if home.exists():
+    m = re.search(r'^name:\s*"(.*)"\s*$', home.read_text(), re.M)
+    if m:
+        name = json.loads(f'"{m.group(1)}"')
+
+# JSON is valid YAML, so every value is written JSON-quoted.
+lines = [
+    f"title: {json.dumps(name)}",
+    "author:",
+    f"  name: {json.dumps(name)}",
+    f"baseurl: {json.dumps(baseurl)}",
+    "time: 2026-01-01T00:00:00Z",
+    "future: true",
+    "inkdrafts:",
+    f"  theme_id: {json.dumps(theme_id)}",
+    f"  tweaks: {json.dumps(tweaks)}",
+]
+if preview == "true":
+    lines.append("inkdrafts_preview: true")
+(src / "_config.build.yml").write_text("\n".join(lines) + "\n")
+PY
+
+mkdir -p "$site"
+jekyll_args=(build --config _config.yml,_config.build.yml --quiet)
+# jekyll-github-metadata prints a Faraday retry hint on every build; it is
+# noise, not an error. pipefail keeps Jekyll's own exit status.
+quiet_faraday() { { grep -v 'faraday-retry' || true; } >&2; }
+if $native; then
+  (
+    cd "$src"
+    BUNDLE_GEMFILE="${BUNDLE_GEMFILE:-$repo_root/Gemfile}" JEKYLL_ENV=production \
+      bundle exec jekyll "${jekyll_args[@]}" -d "$site" 2>&1
+  ) | quiet_faraday
+else
+  tag="$(image_tag)"
+  ensure_image "$tag"
+  docker run --rm --network none --user "$(id -u):$(id -g)" \
+    -v "$src:/site" -v "$site:/out" -w /site \
+    -e JEKYLL_ENV=production \
+    "$tag" bundle exec jekyll "${jekyll_args[@]}" -d /out 2>&1 | quiet_faraday
+fi
+
+check_args=(--site "$site" --theme "$id" --source "$src")
+$preview && check_args+=(--preview)
+python3 "$repo_root/scripts/check-themes.py" "${check_args[@]}" >&2
+
+result="$site"
+if [[ -n "$out" ]]; then
+  mkdir -p "$out"
+  cp -R "$site/." "$out/"
+  result="$(cd "$out" && pwd)"
+fi
+
+if [[ -n "$serve" ]]; then
+  root="$result"
+  if [[ -n "$baseurl" ]]; then
+    root="$work/serve"
+    mkdir -p "$root$(dirname "$baseurl")"
+    ln -sfn "$result" "$root$baseurl"
+  fi
+  echo "build-theme: serving http://127.0.0.1:$serve$baseurl/ (Ctrl-C to stop; the build is deleted then unless --keep)" >&2
+  echo "$result"
+  $keep || rm -rf "$src"
+  serving=true
+  python3 -m http.server "$serve" --bind 127.0.0.1 -d "$root" || true
+  exit 0
+fi
+
+echo "$result"

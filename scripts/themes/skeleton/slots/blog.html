@@ -1,0 +1,17 @@
+<div class="ink-post-list container">
+  <h1 class="page-title">{{ page.title | default: "Blog" }}</h1>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <div class="posts-list">
+    {%- for post in site.posts %}
+    {% if ink_slots contains "post-item" %}{% include themes/__ID__/post-item.html post=post %}{% else %}{% include post-card.html post=post %}{% endif %}
+    {%- endfor %}
+  </div>
+  {%- endif %}
+</div>

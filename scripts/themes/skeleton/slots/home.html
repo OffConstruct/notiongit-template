@@ -1,0 +1,39 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home">
+  {%- if home and home.name != blank %}
+  {%- if home.profile_picture != blank %}
+  <img class="ink-home-portrait" src="{{ home.profile_picture }}" alt="" width="96" height="96">
+  {%- endif %}
+  <h1 class="ink-home-name">{{ home.name }}</h1>
+  {%- if home.tagline != blank %}
+  <p class="ink-home-tagline">{{ home.tagline }}</p>
+  {%- endif %}
+  {%- if home.social_links.size > 0 %}
+  <ul class="ink-home-links" aria-label="Links">
+    {%- for link in home.social_links %}
+    <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+  {%- if home.bio != blank %}
+  <div class="ink-home-bio">{{ home.bio | markdownify }}</div>
+  {%- endif %}
+  {%- if site.posts.size > 0 %}
+  <section class="ink-home-section" aria-labelledby="ink-home-recent">
+    <h2 id="ink-home-recent">Recent writing</h2>
+    {%- for post in site.posts limit: 5 %}
+    {% if ink_slots contains "post-item" %}{% include themes/__ID__/post-item.html post=post %}{% else %}{% include post-card.html post=post %}{% endif %}
+    {%- endfor %}
+  </section>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

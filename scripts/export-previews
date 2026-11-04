@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+#
+# Exports static theme previews for the worker (inkdrafts.com/previews/).
+# Builds each theme with --preview under <base>/<id>, copies an allowlist of
+# pages plus the theme's assets, shares fixture images per category under
+# <base>/_fixtures/<category>/, and writes DIR/index.json. Deterministic: two
+# runs on the same clean tree produce identical files.
+#
+# Usage:
+#   scripts/export-previews --out DIR [--themes a,b] [--base /previews] [--jobs 4]
+
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+out=""
+themes=""
+base="/previews"
+jobs=4
+
+while (( $# > 0 )); do
+  case "$1" in
+    --out) out="${2:?}"; shift 2 ;;
+    --themes) themes="${2:?}"; shift 2 ;;
+    --base) base="${2:?}"; shift 2 ;;
+    --jobs) jobs="${2:?}"; shift 2 ;;
+    -h|--help) sed -n '9,10p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
+    *) echo "export-previews: unknown argument $1" >&2; exit 2 ;;
+  esac
+done
+[[ -n "$out" ]] || { echo "export-previews: --out DIR is required" >&2; exit 2; }
+base="${base%/}"
+[[ "$base" == /* ]] || { echo "export-previews: --base must start with /" >&2; exit 2; }
+
+if [[ -z "$themes" ]]; then
+  themes="$(cd "$repo_root/_data/themes" && ls -1 *.json | sed 's/\.json$//' | paste -sd, -)"
+fi
+
+work="$(mktemp -d "${TMPDIR:-/tmp}/inkdrafts-export.XXXXXX")"
+trap 'rm -rf "$work"' EXIT
+
+primary_category() {
+  python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["categories"][0])' "$repo_root/_data/themes/$1.json"
+}
+
+build_one() {
+  local id="$1" category
+  category="$(primary_category "$id")"
+  "$repo_root/scripts/build-theme" "$id" --preview --baseurl "$base/$id" \
+    --fixtures-base "$base/_fixtures/$category" --out "$work/build/$id" > /dev/null
+}
+export -f build_one primary_category
+export repo_root base work
+
+tr ',' '\n' <<< "$themes" | xargs -P "$jobs" -I{} bash -c 'build_one "$1" || { echo "export-previews: $1 failed" >&2; exit 255; }' _ {}
+
+mkdir -p "$out"
+python3 - "$repo_root" "$work/build" "$out" "$themes" <<'PY'
+import json, pathlib, shutil, subprocess, sys
+
+repo, build, out, themes = sys.argv[1:]
+repo, build, out = map(pathlib.Path, (repo, build, out))
+pages = [
+    "index.html",
+    "blog/index.html",
+    "about/index.html",
+    "tags/index.html",
+    "2026/02/14/the-harbour-at-low-tide/index.html",
+    "2025/11/03/keeping-a-commonplace-book/index.html",
+]
+fixtures = repo / "scripts" / "themes" / "fixtures"
+index = {"themes": {}}
+categories = set()
+for theme_id in sorted(filter(None, themes.split(","))):
+    manifest = json.loads((repo / "_data" / "themes" / f"{theme_id}.json").read_text())
+    site = build / theme_id
+    dest = out / theme_id
+    if dest.exists():
+        shutil.rmtree(dest)
+    for page in pages:
+        target = dest / page
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(site / page, target)
+    shutil.copytree(site / "assets" / "themes" / theme_id, dest / "assets" / "themes" / theme_id)
+    (dest / "assets" / "ink-preview").mkdir(parents=True)
+    shutil.copyfile(site / "assets" / "ink-preview" / "preview.js", dest / "assets" / "ink-preview" / "preview.js")
+    categories.add(manifest["categories"][0])
+    index["themes"][theme_id] = {"version": manifest["version"], "pages": pages}
+
+for category in sorted(categories):
+    dest = out / "_fixtures" / category
+    if dest.exists():
+        shutil.rmtree(dest)
+    shutil.copytree(fixtures / "base" / "assets" / "fixtures", dest)
+    overlay = fixtures / category / "assets" / "fixtures"
+    if overlay.is_dir():
+        shutil.copytree(overlay, dest, dirs_exist_ok=True)
+
+def git(*args):
+    return subprocess.run(["git", "-C", str(repo), *args], capture_output=True, text=True, check=True).stdout.strip()
+
+index = {"template_commit": git("rev-parse", "HEAD"), "dirty": bool(git("status", "--porcelain")), **index}
+(out / "index.json").write_text(json.dumps(index, indent=2, sort_keys=False) + "\n")
+print(out.resolve())
+PY

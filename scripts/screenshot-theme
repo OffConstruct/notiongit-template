@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+#
+# Screenshots a theme's fixture build in headless Chrome. Builds with
+# scripts/build-theme unless --site points at an existing build, serves it on a
+# free 127.0.0.1 port, and writes <out>/<id>[-<tweaks>]-<page>-<width>-<mode>.png
+# (with --tweaks density=compact,mode=dark the tag is density-compact_mode-dark).
+#
+# Usage:
+#   scripts/screenshot-theme <id> [--tweaks k=v,...] [--out DIR] [--site DIR]
+#                                 [--pages home,post] [--widths 1280,320]
+#                                 [--modes light,dark] [--height 2000]
+#
+# Pages: home blog post featured page tags. Modes set the OS preference
+# (prefers-color-scheme); force a mode with --tweaks mode=dark instead.
+# 320 is the WCAG reflow width every theme must survive.
+
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+id=""
+tweaks=""
+out=""
+site=""
+pages="home,post"
+widths="1280,320"
+modes="light,dark"
+height=2000
+
+while (( $# > 0 )); do
+  case "$1" in
+    --tweaks) tweaks="${2:?}"; shift 2 ;;
+    --out) out="${2:?}"; shift 2 ;;
+    --site) site="${2:?}"; shift 2 ;;
+    --pages) pages="${2:?}"; shift 2 ;;
+    --widths) widths="${2:?}"; shift 2 ;;
+    --modes) modes="${2:?}"; shift 2 ;;
+    --height) height="${2:?}"; shift 2 ;;
+    -h|--help) sed -n '9,13p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
+    -*) echo "screenshot-theme: unknown option $1" >&2; exit 2 ;;
+    *) id="$1"; shift ;;
+  esac
+done
+[[ -n "$id" ]] || { echo "screenshot-theme: theme id required" >&2; exit 2; }
+
+chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+[[ -n "$chrome" ]] || { echo "screenshot-theme: no Chrome or Chromium on PATH" >&2; exit 1; }
+
+work="$(mktemp -d "${TMPDIR:-/tmp}/inkdrafts-shots-$id.XXXXXX")"
+server_pid=""
+cleanup() {
+  [[ -n "$server_pid" ]] && kill "$server_pid" 2> /dev/null || true
+  rm -rf "$work"
+}
+trap cleanup EXIT
+
+if [[ -z "$site" ]]; then
+  build_args=("$id" --out "$work/site")
+  [[ -n "$tweaks" ]] && build_args+=(--tweaks "$tweaks")
+  "$repo_root/scripts/build-theme" "${build_args[@]}" > /dev/null
+  site="$work/site"
+fi
+[[ -n "$out" ]] || out="$PWD/shots"
+mkdir -p "$out"
+out="$(cd "$out" && pwd)"
+
+port="$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')"
+python3 -m http.server "$port" --bind 127.0.0.1 -d "$site" > /dev/null 2>&1 &
+server_pid=$!
+for _ in $(seq 50); do
+  python3 -c 'import sys, urllib.request; urllib.request.urlopen(sys.argv[1], timeout=1)' "http://127.0.0.1:$port/" 2> /dev/null && break
+  sleep 0.1
+done
+
+page_path() {
+  case "$1" in
+    home) echo "/" ;;
+    blog) echo "/blog/" ;;
+    post) echo "/2025/11/03/keeping-a-commonplace-book/" ;;
+    featured) echo "/2026/02/14/the-harbour-at-low-tide/" ;;
+    page) echo "/about/" ;;
+    tags) echo "/tags/" ;;
+    *) echo "screenshot-theme: unknown page $1" >&2; return 1 ;;
+  esac
+}
+
+tag=""
+[[ -n "$tweaks" ]] && tag="-$(printf '%s' "$tweaks" | tr ',=#' '_-x')"
+
+IFS=',' read -ra page_list <<< "$pages"
+IFS=',' read -ra width_list <<< "$widths"
+IFS=',' read -ra mode_list <<< "$modes"
+for page in "${page_list[@]}"; do
+  path="$(page_path "$page")"
+  for width in "${width_list[@]}"; do
+    for mode in "${mode_list[@]}"; do
+      case "$mode" in
+        dark) scheme=0 ;;
+        light) scheme=1 ;;
+        *) echo "screenshot-theme: mode must be light or dark" >&2; exit 2 ;;
+      esac
+      file="$out/$id$tag-$page-$width-$mode.png"
+      "$chrome" --headless --disable-gpu --hide-scrollbars --no-first-run --no-default-browser-check \
+        --user-data-dir="$work/chrome-$page-$width-$mode" \
+        --blink-settings="preferredColorScheme=$scheme" \
+        --window-size="$width,$height" --virtual-time-budget=4000 \
+        --screenshot="$file" "http://127.0.0.1:$port$path" > /dev/null 2>&1
+      echo "$file"
+    done
+  done
+done
