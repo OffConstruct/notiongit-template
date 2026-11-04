@@ -1,0 +1,8 @@
+{%- comment -%} Sets alm_ink (0-3 by the tag's position in the sorted tag list, 4 when untagged) for include.tag. {%- endcomment -%}
+{%- assign alm_ink = 4 -%}
+{%- if include.tag -%}
+  {%- assign alm_sorted = site.tags | sort -%}
+  {%- for alm_t in alm_sorted -%}
+    {%- if alm_t[0] == include.tag -%}{%- assign alm_ink = forloop.index0 | modulo: 4 -%}{%- break -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}

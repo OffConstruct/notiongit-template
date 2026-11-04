@@ -1,0 +1,43 @@
+{%- assign mgp_first_p = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign mgp_dek = page.excerpt | strip_html | strip -%}
+<div class="ink-post mgp-post">
+  <article>
+    <header class="mgp-wrap mgp-post-head">
+      <p class="mgp-post-kicker">
+        {%- if page.tags.size > 0 %}<span class="mgp-eyebrow">{{ page.tags | first }}</span>{% endif -%}
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        <span>{{ content | number_of_words | divided_by: 230 | plus: 1 }} min read</span>
+      </p>
+      <h1 class="mgp-post-title">{{ page.title }}</h1>
+      {%- if mgp_dek != "" and mgp_dek != mgp_first_p %}
+      <p class="mgp-dek">{{ mgp_dek }}</p>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <figure class="mgp-wrap mgp-post-cover"><img src="{{ page.cover_image }}" alt="" loading="lazy"></figure>
+    {%- endif %}
+    <div class="mgp-wrap">
+      <div class="mgp-prose">
+        {{ content }}
+      </div>
+      {%- if page.canonical_url %}
+      <p class="mgp-clip">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+      {%- endif %}
+      {%- if page.tags.size > 0 %}
+      <ul class="mgp-tags" aria-label="Tags">
+        {%- for tag in page.tags %}<li><a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>{% endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+    <aside class="mgp-band mgp-band--post" aria-labelledby="mgp-post-band">
+      <div class="mgp-wrap mgp-band-inner">
+        <h2 class="mgp-band-title" id="mgp-post-band">Get the next one first.</h2>
+        <div class="mgp-actions">{% include themes/megaphone/_cta.html %}</div>
+      </div>
+    </aside>
+    <nav class="mgp-wrap mgp-pager" aria-label="More posts">
+      {%- if page.previous %}<a class="mgp-pager-link" href="{{ page.previous.url | relative_url }}"><span class="mgp-eyebrow mgp-eyebrow--plain">Older</span><span class="mgp-pager-title">{{ page.previous.title }}</span></a>{% endif %}
+      {%- if page.next %}<a class="mgp-pager-link mgp-pager-link--next" href="{{ page.next.url | relative_url }}"><span class="mgp-eyebrow mgp-eyebrow--plain">Newer</span><span class="mgp-pager-title">{{ page.next.title }}</span></a>{% endif %}
+    </nav>
+  </article>
+</div>

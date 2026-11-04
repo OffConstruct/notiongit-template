@@ -1,0 +1,16 @@
+<div class="ink-post-list dsp-blog">
+  <header class="dsp-page-head">
+    <h1 class="dsp-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description and page.description != "" %}<p class="dsp-page-dek">{{ page.description }}</p>{% endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {% include themes/dispatch/_index.html posts=site.posts prefix="b" %}
+  {%- endif %}
+</div>

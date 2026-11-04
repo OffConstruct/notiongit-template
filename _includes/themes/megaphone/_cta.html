@@ -1,0 +1,18 @@
+{%- comment -%}
+  The one primary action. Every candidate is rendered and theme.css shows the
+  one named by the cta tweak, so previews can switch it without a rebuild.
+  include.size: "small" (header) or "large".
+{%- endcomment -%}
+{%- assign mgp_feed = '/feed.xml' | relative_url -%}
+{%- assign mgp_news = nil -%}{%- assign mgp_mail = nil -%}
+{%- for mgp_l in site.data.home.social_links -%}
+  {%- assign mgp_n = mgp_l.name | downcase -%}
+  {%- assign mgp_scheme = mgp_l.url | slice: 0, 7 -%}
+  {%- if mgp_mail == nil and mgp_scheme == "mailto:" -%}{%- assign mgp_mail = mgp_l.url -%}{%- endif -%}
+  {%- if mgp_news == nil -%}
+    {%- if mgp_n contains "newsletter" or mgp_n contains "subscribe" or mgp_n contains "substack" or mgp_n contains "buttondown" or mgp_n contains "beehiiv" or mgp_n contains "ghost" or mgp_n contains "letter" or mgp_n contains "convertkit" -%}
+      {%- assign mgp_news = mgp_l.url -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+<a class="mgp-cta mgp-cta--{{ include.size | default: 'large' }}" data-variant="cta:newsletter" href="{{ mgp_news | default: mgp_feed }}">{% if mgp_news %}Subscribe{% else %}Follow by RSS{% endif %}</a><a class="mgp-cta mgp-cta--{{ include.size | default: 'large' }}" data-variant="cta:email" href="{{ mgp_mail | default: mgp_feed }}">{% if mgp_mail %}Write to me{% else %}Follow by RSS{% endif %}</a><a class="mgp-cta mgp-cta--{{ include.size | default: 'large' }}" data-variant="cta:rss" href="{{ mgp_feed }}">Follow by RSS</a>

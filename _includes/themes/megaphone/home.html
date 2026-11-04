@@ -1,0 +1,101 @@
+{%- assign home = site.data.home -%}
+{%- assign mgp_name = home.name | strip -%}{%- assign mgp_tagline = home.tagline | strip -%}{%- assign mgp_pic = home.profile_picture | strip -%}{%- assign mgp_bio = home.bio | strip -%}
+<div class="ink-home mgp-home">
+  {%- if mgp_name != "" %}
+  <section class="mgp-hero" aria-labelledby="mgp-claim">
+    <div class="mgp-wrap mgp-hero-inner">
+      {%- if mgp_pic != "" or mgp_tagline != "" %}
+      <p class="mgp-id">
+        {%- if mgp_pic != "" %}<img class="mgp-avatar" src="{{ home.profile_picture }}" alt="" width="56" height="56">{% endif -%}
+        {%- if mgp_tagline != "" %}<span class="mgp-id-name">{{ home.name }}</span>{% endif -%}
+      </p>
+      {%- endif %}
+      <h1 class="mgp-claim" id="mgp-claim">{% if mgp_tagline != "" %}{{ home.tagline }}{% else %}{{ home.name }}{% endif %}</h1>
+      <div class="mgp-actions">
+        {% include themes/megaphone/_cta.html %}
+        {%- if site.posts.size > 0 %}<a class="mgp-textlink" href="#mgp-latest">Read the latest</a>{% endif %}
+      </div>
+    </div>
+  </section>
+
+  {%- assign mgp_tags = site.tags | sort %}
+  <div class="mgp-marquee" data-variant="marquee:tags" aria-hidden="true">
+    <div class="mgp-marquee-track">
+      {%- for copy in (1..2) %}
+      <span class="mgp-marquee-group">{% if mgp_tags.size > 0 %}{% for t in mgp_tags %}<span>{{ t[0] }}</span>{% endfor %}{% else %}<span>{{ home.name }}</span><span>{{ home.name }}</span><span>{{ home.name }}</span>{% endif %}</span>
+      {%- endfor %}
+    </div>
+  </div>
+  <div class="mgp-marquee" data-variant="marquee:name" aria-hidden="true">
+    <div class="mgp-marquee-track">
+      {%- for copy in (1..2) %}
+      <span class="mgp-marquee-group"><span>{{ home.name }}</span><span>{{ home.name }}</span><span>{{ home.name }}</span><span>{{ home.name }}</span></span>
+      {%- endfor %}
+    </div>
+  </div>
+
+  {%- if mgp_bio != "" %}
+  <section class="mgp-sec mgp-about" aria-labelledby="mgp-about-label">
+    <div class="mgp-wrap mgp-sec-grid">
+      <h2 class="mgp-sec-head" id="mgp-about-label"><span class="mgp-num" aria-hidden="true"></span>About</h2>
+      <div class="mgp-bio">{{ home.bio | markdownify }}</div>
+    </div>
+  </section>
+  {%- endif %}
+
+  {%- assign mgp_feat = site.posts | where: "featured", true %}
+  {%- if mgp_feat.size > 0 %}
+  <section class="mgp-sec" aria-labelledby="mgp-feat-label">
+    <div class="mgp-wrap">
+      <h2 class="mgp-sec-head" id="mgp-feat-label"><span class="mgp-num" aria-hidden="true"></span>Featured</h2>
+      <ol class="mgp-rows">
+        {%- for post in mgp_feat limit: 3 %}
+        {% include themes/megaphone/_row.html post=post num=forloop.index feature=true %}
+        {%- endfor %}
+      </ol>
+    </div>
+  </section>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  <section class="mgp-sec" aria-labelledby="mgp-latest">
+    <div class="mgp-wrap">
+      <h2 class="mgp-sec-head" id="mgp-latest"><span class="mgp-num" aria-hidden="true"></span>Latest</h2>
+      <ol class="mgp-rows">
+        {%- for post in site.posts limit: 6 %}
+        {%- assign mgp_n = site.posts.size | minus: forloop.index0 %}
+        {% include themes/megaphone/_row.html post=post num=mgp_n %}
+        {%- endfor %}
+      </ol>
+      <p class="mgp-more"><a class="mgp-textlink" href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} posts</a></p>
+    </div>
+  </section>
+  {%- endif %}
+
+  {%- assign mgp_lead = home.bio | markdownify | split: "</p>" | first | split: "<p>" | last | strip_html | strip | split: ". " | first | truncatewords: 24, "…" | append: "" %}
+  {%- if mgp_lead == "" %}{% assign mgp_lead = mgp_tagline %}{% endif %}
+  {%- if mgp_lead != "" %}
+  <section class="mgp-statement" aria-label="In short">
+    <div class="mgp-wrap">{%- assign mgp_last = mgp_lead | slice: -1, 1 -%}<p class="mgp-statement-text">{{ mgp_lead }}{% unless mgp_last == "." or mgp_last == "!" or mgp_last == "?" or mgp_last == "…" %}.{% endunless %}</p></div>
+  </section>
+  {%- endif %}
+
+  <section class="mgp-band" aria-labelledby="mgp-band-label">
+    <div class="mgp-wrap mgp-band-inner">
+      <h2 class="mgp-band-title" id="mgp-band-label">Get the next one first.</h2>
+      <div class="mgp-actions">{% include themes/megaphone/_cta.html %}</div>
+    </div>
+  </section>
+  {%- else %}
+  <div class="mgp-wrap">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

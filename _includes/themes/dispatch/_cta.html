@@ -1,0 +1,18 @@
+{%- comment -%}
+  The one primary action. Every candidate is rendered and theme.css shows the
+  one named by the cta tweak, so previews can switch it without a rebuild.
+  include.size: "small" (header) or "large".
+{%- endcomment -%}
+{%- assign dsp_feed = '/feed.xml' | relative_url -%}
+{%- assign dsp_news = nil -%}{%- assign dsp_mail = nil -%}
+{%- for dsp_l in site.data.home.social_links -%}
+  {%- assign dsp_n = dsp_l.name | downcase -%}
+  {%- assign dsp_scheme = dsp_l.url | slice: 0, 7 -%}
+  {%- if dsp_mail == nil and dsp_scheme == "mailto:" -%}{%- assign dsp_mail = dsp_l.url -%}{%- endif -%}
+  {%- if dsp_news == nil -%}
+    {%- if dsp_n contains "newsletter" or dsp_n contains "subscribe" or dsp_n contains "substack" or dsp_n contains "buttondown" or dsp_n contains "beehiiv" or dsp_n contains "ghost" or dsp_n contains "letter" or dsp_n contains "convertkit" -%}
+      {%- assign dsp_news = dsp_l.url -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+<a class="dsp-cta dsp-cta--{{ include.size | default: 'large' }}" data-variant="cta:newsletter" href="{{ dsp_news | default: dsp_feed }}">{% if dsp_news %}Subscribe{% else %}Follow by RSS{% endif %}</a><a class="dsp-cta dsp-cta--{{ include.size | default: 'large' }}" data-variant="cta:email" href="{{ dsp_mail | default: dsp_feed }}">{% if dsp_mail %}Write to me{% else %}Follow by RSS{% endif %}</a><a class="dsp-cta dsp-cta--{{ include.size | default: 'large' }}" data-variant="cta:rss" href="{{ dsp_feed }}">Follow by RSS</a>

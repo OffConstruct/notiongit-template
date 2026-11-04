@@ -1,0 +1,36 @@
+{%- assign dsp_first_p = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign dsp_dek = page.excerpt | strip_html | strip -%}
+<div class="ink-post dsp-post">
+  <article class="dsp-article">
+    <header class="dsp-post-head">
+      <p class="dsp-meta"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time><span class="dsp-readtime"> &middot; {{ content | number_of_words | divided_by: 230 | plus: 1 }} min read</span></p>
+      <h1 class="dsp-post-title">{{ page.title }}</h1>
+      {%- if dsp_dek != "" and dsp_dek != dsp_first_p %}
+      <p class="dsp-dek">{{ dsp_dek }}</p>
+      {%- endif %}
+      {%- if page.tags.size > 0 %}
+      <ul class="dsp-tags" aria-label="Tags">
+        {%- for tag in page.tags %}<li><a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>{% endfor %}
+      </ul>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <figure class="dsp-cover"><img src="{{ page.cover_image }}" alt="" loading="lazy"></figure>
+    {%- endif %}
+    <div class="dsp-prose">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="dsp-clip">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <aside class="dsp-band dsp-band--post" aria-labelledby="dsp-post-band">
+      <h2 class="dsp-band-title" id="dsp-post-band">Read the next one first.</h2>
+      <div class="dsp-actions">{% include themes/dispatch/_cta.html %}</div>
+    </aside>
+    <nav class="dsp-pager" aria-label="More posts">
+      {%- if page.previous %}<a class="dsp-pager-link" href="{{ page.previous.url | relative_url }}"><span class="dsp-pager-dir">Older</span> <span class="dsp-pager-title">{{ page.previous.title }}</span></a>{% endif %}
+      {%- if page.next %}<a class="dsp-pager-link dsp-pager-link--next" href="{{ page.next.url | relative_url }}"><span class="dsp-pager-dir">Newer</span> <span class="dsp-pager-title">{{ page.next.title }}</span></a>{% endif %}
+      <a class="dsp-pager-all" href="{{ '/blog/' | relative_url }}">All writing</a>
+    </nav>
+  </article>
+</div>

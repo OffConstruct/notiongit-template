@@ -1,0 +1,23 @@
+<div class="ink-post-list mgp-blog">
+  <div class="mgp-wrap">
+    <header class="mgp-page-head">
+      <h1 class="mgp-page-title">{{ page.title | default: "Writing" }}</h1>
+      <p class="mgp-page-dek">{% if page.description and page.description != "" %}{{ page.description }} {% endif %}<span class="mgp-count">{{ site.posts.size }} post{% if site.posts.size != 1 %}s{% endif %}</span></p>
+    </header>
+    {%- if site.posts.size == 0 %}
+    {% include empty-state.html
+      kicker="NOTION POSTS"
+      title="Your posts will appear here"
+      copy="Published posts will show up automatically after your first sync completes."
+      note="If nothing appears after a few minutes, run the sync from the Actions tab."
+    %}
+    {%- else %}
+    <ol class="mgp-rows">
+      {%- for post in site.posts %}
+      {%- assign mgp_n = site.posts.size | minus: forloop.index0 %}
+      {% include themes/megaphone/_row.html post=post num=mgp_n %}
+      {%- endfor %}
+    </ol>
+    {%- endif %}
+  </div>
+</div>

@@ -1,0 +1,18 @@
+{%- comment -%}
+  The one primary action. Every candidate is rendered and theme.css shows the
+  one named by the cta tweak, so previews can switch it without a rebuild.
+  include.size: "small" (header) or "large".
+{%- endcomment -%}
+{%- assign alm_feed = '/feed.xml' | relative_url -%}
+{%- assign alm_news = nil -%}{%- assign alm_mail = nil -%}
+{%- for alm_l in site.data.home.social_links -%}
+  {%- assign alm_n = alm_l.name | downcase -%}
+  {%- assign alm_scheme = alm_l.url | slice: 0, 7 -%}
+  {%- if alm_mail == nil and alm_scheme == "mailto:" -%}{%- assign alm_mail = alm_l.url -%}{%- endif -%}
+  {%- if alm_news == nil -%}
+    {%- if alm_n contains "newsletter" or alm_n contains "subscribe" or alm_n contains "substack" or alm_n contains "buttondown" or alm_n contains "beehiiv" or alm_n contains "ghost" or alm_n contains "letter" or alm_n contains "convertkit" -%}
+      {%- assign alm_news = alm_l.url -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+<a class="alm-cta alm-cta--{{ include.size | default: 'large' }}" data-variant="cta:newsletter" href="{{ alm_news | default: alm_feed }}">{% if alm_news %}Subscribe{% else %}Follow by RSS{% endif %}</a><a class="alm-cta alm-cta--{{ include.size | default: 'large' }}" data-variant="cta:email" href="{{ alm_mail | default: alm_feed }}">{% if alm_mail %}Write to me{% else %}Follow by RSS{% endif %}</a><a class="alm-cta alm-cta--{{ include.size | default: 'large' }}" data-variant="cta:rss" href="{{ alm_feed }}">Follow by RSS</a>

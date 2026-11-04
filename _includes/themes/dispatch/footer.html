@@ -1,0 +1,14 @@
+{%- assign home = site.data.home -%}
+<footer class="ink-footer dsp-footer">
+  <div class="dsp-footer-inner">
+    <p class="dsp-footer-name">&copy; {{ 'now' | date: '%Y' }} {{ home.name | default: site.author.name | default: site.title }}</p>
+    {%- if home.social_links.size > 0 %}
+    <ul class="dsp-footer-links" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    <p class="dsp-footer-made">Written in Notion, built with Jekyll</p>
+  </div>
+</footer>

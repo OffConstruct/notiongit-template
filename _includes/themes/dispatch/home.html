@@ -1,0 +1,75 @@
+{%- assign home = site.data.home -%}
+{%- assign dsp_name = home.name | strip -%}{%- assign dsp_tagline = home.tagline | strip -%}{%- assign dsp_pic = home.profile_picture | strip -%}{%- assign dsp_bio = home.bio | strip -%}
+<div class="ink-home dsp-home">
+  {%- if dsp_name != "" %}
+  {%- assign dsp_first = home.name | split: " " | first -%}
+  <div class="dsp-front">
+    <section class="dsp-hero" aria-labelledby="dsp-hook">
+      <div class="dsp-hero-inner">
+        {%- if dsp_pic != "" or dsp_tagline != "" %}
+        <p class="dsp-byline">
+          {%- if dsp_pic != "" %}<img class="dsp-avatar" src="{{ home.profile_picture }}" alt="" width="40" height="40">{% endif -%}
+          {%- if dsp_tagline != "" %}<span>{{ home.name }}</span>{% endif -%}
+        </p>
+        {%- endif %}
+        <h1 class="dsp-hook" id="dsp-hook">{% if dsp_tagline != "" %}{{ home.tagline }}{% else %}{{ home.name }}{% endif %}</h1>
+        <div class="dsp-actions">
+          {% include themes/dispatch/_cta.html %}
+          {%- if site.posts.size > 0 %}<a class="dsp-textlink" href="#dsp-archive-label">Read the archive</a>{% endif %}
+        </div>
+      </div>
+    </section>
+
+    <div class="dsp-column">
+      {%- if dsp_bio != "" %}
+      <section class="dsp-letter" aria-label="A letter from {{ home.name }}">
+        <div class="dsp-letter-body">{{ home.bio | markdownify }}</div>
+        <p class="dsp-signature"><span class="dsp-signoff">Yours,</span> {{ dsp_first }}</p>
+      </section>
+      {%- endif %}
+
+      {%- if site.posts.size > 0 %}
+      {%- assign dsp_picks = site.posts | where: "featured", true -%}
+      {%- if dsp_picks.size == 0 %}{% assign dsp_picks = site.posts %}{% assign dsp_pick_limit = 3 %}{% else %}{% assign dsp_pick_limit = 5 %}{% endif %}
+      <section class="dsp-section dsp-start" aria-labelledby="dsp-start-label">
+        <h2 class="dsp-label" id="dsp-start-label">Start here</h2>
+        <ol class="dsp-picks">
+          {%- for post in dsp_picks limit: dsp_pick_limit %}
+          <li class="dsp-pick">
+            <h3 class="dsp-pick-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+            {%- if post.excerpt %}
+            <p class="dsp-pick-excerpt">{{ post.excerpt | strip_html | strip | truncate: 200 }}</p>
+            {%- endif %}
+            <p class="dsp-meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %Y" }}</time><span class="dsp-readtime"> &middot; {{ post.content | number_of_words | divided_by: 230 | plus: 1 }} min read</span></p>
+          </li>
+          {%- endfor %}
+        </ol>
+      </section>
+
+      <section class="dsp-section dsp-archive" aria-labelledby="dsp-archive-label">
+        <h2 class="dsp-label" id="dsp-archive-label">All writing</h2>
+        {%- assign dsp_recent = site.posts | slice: 0, 40 %}
+        {% include themes/dispatch/_index.html posts=dsp_recent prefix="h" %}
+        {%- if site.posts.size > 40 %}
+        <p class="dsp-more"><a href="{{ '/blog/' | relative_url }}">Every post, all {{ site.posts.size }} of them</a></p>
+        {%- endif %}
+      </section>
+      {%- endif %}
+
+      <section class="dsp-band" aria-labelledby="dsp-band-label">
+        <h2 class="dsp-band-title" id="dsp-band-label">Read the next one first.</h2>
+        <div class="dsp-actions">{% include themes/dispatch/_cta.html %}</div>
+      </section>
+    </div>
+  </div>
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

@@ -1,0 +1,14 @@
+{%- assign home = site.data.home -%}
+<footer class="ink-footer mgp-footer">
+  <div class="mgp-wrap mgp-footer-inner">
+    <p class="mgp-footer-name">{{ home.name | default: site.author.name | default: site.title }}</p>
+    {%- if home.social_links.size > 0 %}
+    <ul class="mgp-footer-links" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    <p class="mgp-footer-fine">&copy; {{ 'now' | date: '%Y' }} &middot; Written in Notion, built with Jekyll</p>
+  </div>
+</footer>

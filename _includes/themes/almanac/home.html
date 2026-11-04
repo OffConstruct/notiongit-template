@@ -1,0 +1,115 @@
+{%- assign home = site.data.home -%}
+{%- assign alm_name = home.name | strip -%}{%- assign alm_tagline = home.tagline | strip -%}{%- assign alm_pic = home.profile_picture | strip -%}{%- assign alm_bio = home.bio | strip -%}
+<div class="ink-home alm-home">
+  {%- if alm_name != "" %}
+  {%- assign alm_bio = home.bio | markdownify -%}
+  {%- assign alm_lead = alm_bio | split: "</p>" | first | append: "</p>" -%}
+  {%- assign alm_lead_text = alm_lead | strip_html | strip -%}
+  {%- assign alm_rest = alm_bio | remove_first: alm_lead | strip -%}
+  {%- assign alm_lead_first = alm_bio | strip | slice: 0, 3 -%}
+  {%- if alm_lead_first != "<p>" %}{% assign alm_lead_text = "" %}{% assign alm_rest = alm_bio | strip %}{% endif %}
+  <section class="alm-wrap alm-intro" aria-labelledby="alm-hook">
+    <h1 class="alm-hook" id="alm-hook">{% if alm_tagline != "" %}{{ home.tagline }}{% else %}{{ home.name }}{% endif %}</h1>
+    <div class="alm-intro-side">
+      {%- if alm_lead_text != "" %}<div class="alm-lead">{{ alm_lead }}</div>{% endif %}
+      <div class="alm-actions">
+        {% include themes/almanac/_cta.html %}
+        {%- if site.posts.size > 0 %}<a class="alm-textlink" href="#alm-shelf-label">Browse all issues</a>{% endif %}
+      </div>
+    </div>
+  </section>
+
+  {%- assign alm_feat = site.posts | where: "featured", true | first %}
+  {%- if alm_feat %}
+  {%- for p in site.posts %}{% if p.url == alm_feat.url %}{% assign alm_no = forloop.rindex %}{% endif %}{% endfor %}
+  <section class="alm-wrap alm-slab-wrap" aria-label="Featured issue">
+    <a class="alm-slab{% if alm_feat.cover_image %} alm-slab--cover{% endif %}" href="{{ alm_feat.url | relative_url }}">
+      <span class="alm-slab-text">
+        <span class="alm-slab-no">No. {{ alm_no }}</span>
+        <span class="alm-slab-kicker">Featured{% if alm_feat.tags.size > 0 %} &middot; {{ alm_feat.tags | first }}{% endif %}</span>
+        <span class="alm-slab-title">{{ alm_feat.title }}</span>
+        {%- if alm_feat.excerpt %}<span class="alm-slab-excerpt">{{ alm_feat.excerpt | strip_html | strip | truncate: 180 }}</span>{% endif %}
+        <span class="alm-slab-more">Read the issue <span aria-hidden="true">&rarr;</span></span>
+      </span>
+      {%- if alm_feat.cover_image %}<span class="alm-slab-img"><img src="{{ alm_feat.cover_image }}" alt="" loading="lazy"></span>{% endif %}
+    </a>
+  </section>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  <section class="alm-wrap alm-section" aria-labelledby="alm-shelf-label">
+    <div class="alm-section-head">
+      <h2 class="alm-section-title" id="alm-shelf-label">The shelf</h2>
+      <p class="alm-section-count">{{ site.posts.size }} issue{% if site.posts.size != 1 %}s{% endif %}</p>
+    </div>
+    <div class="ink-variant" data-variant="home_layout:shelf">
+      <ul class="alm-shelf">
+        {%- assign alm_shown = 0 %}
+        {%- for post in site.posts %}
+        {%- if alm_feat and post.url == alm_feat.url %}{% continue %}{% endif %}
+        {%- if alm_shown >= 12 %}{% break %}{% endif %}
+        {%- assign alm_shown = alm_shown | plus: 1 %}
+        {% include themes/almanac/_card.html post=post %}
+        {%- endfor %}
+      </ul>
+    </div>
+    <div class="ink-variant" data-variant="home_layout:series">
+      {%- assign alm_series = site.tags | sort %}
+      {%- for t in alm_series limit: 8 %}
+      <section class="alm-series alm-ink-{{ forloop.index0 | modulo: 4 }}" aria-labelledby="alm-series-{{ t[0] | slugify }}">
+        <div class="alm-series-head">
+          <h3 class="alm-series-title" id="alm-series-{{ t[0] | slugify }}"><span class="alm-dot" aria-hidden="true"></span>{{ t[0] }}</h3>
+          <a class="alm-textlink" href="{{ '/tags/' | relative_url }}#{{ t[0] | slugify }}">All {{ t[1].size }} in {{ t[0] }}</a>
+        </div>
+        <ul class="alm-shelf alm-shelf--row">
+          {%- assign alm_tposts = t[1] | sort: "date" | reverse %}
+          {%- for post in alm_tposts limit: 3 %}
+          {% include themes/almanac/_card.html post=post %}
+          {%- endfor %}
+        </ul>
+      </section>
+      {%- else %}
+      <ul class="alm-shelf alm-shelf--row">
+        {%- for post in site.posts limit: 3 %}
+        {% include themes/almanac/_card.html post=post %}
+        {%- endfor %}
+      </ul>
+      {%- endfor %}
+    </div>
+    {%- if site.posts.size > 12 %}
+    <p class="alm-more"><a class="alm-textlink" href="{{ '/blog/' | relative_url }}">Every issue, all {{ site.posts.size }}</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
+  {%- if alm_rest != "" %}
+  <section class="alm-wrap alm-section alm-about" aria-labelledby="alm-about-label">
+    <div class="alm-section-head">
+      <h2 class="alm-section-title" id="alm-about-label">About {{ home.name | split: " " | first }}</h2>
+    </div>
+    <div class="alm-about-grid">
+      {%- if alm_pic != "" %}<img class="alm-about-photo" src="{{ home.profile_picture }}" alt="Portrait of {{ home.name }}" width="160" height="160" loading="lazy">{% endif %}
+      <div class="alm-bio">{{ alm_rest }}</div>
+    </div>
+  </section>
+  {%- endif %}
+
+  <section class="alm-wrap alm-band" aria-labelledby="alm-band-label">
+    <div class="alm-band-inner">
+      <h2 class="alm-band-title" id="alm-band-label">Get the next issue when it ships.</h2>
+      <div class="alm-actions">{% include themes/almanac/_cta.html %}</div>
+    </div>
+  </section>
+  {%- else %}
+  <div class="alm-wrap">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

@@ -1,0 +1,29 @@
+name: "Rowan Vale"
+tagline: "Field notes on tides, tools and small repairs, sent every other Sunday."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "Newsletter"
+    url: "https://letters.example/rowanvale"
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "Mastodon"
+    url: "https://social.example/@rowanvale"
+  - name: "GitHub"
+    url: "https://github.example/rowanvale"
+  - name: "RSS"
+    url: "{{BASEURL}}/feed.xml"
+bio: |
+  I write about tides, tools and the slow work of keeping things running. Each
+  letter starts as a note in a pocket book and ends up here, a little longer and
+  a little more careful. Read the [archive]({{BASEURL}}/blog/) or start with
+  [what I am doing now]({{BASEURL}}/now/).
+
+  > The one letter I read the day it arrives, usually on the ferry.
+  >
+  > A harbour office reader, since letter 12
+
+  ## Currently
+
+  - Writing: a book about repair, due next spring
+  - Sending: letter 61, on salt and rope
+  - Reading: tide tables from 1890, slowly

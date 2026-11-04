@@ -1,0 +1,32 @@
+{%- assign home = site.data.home -%}
+{%- assign alm_name = home.name | strip -%}{%- assign alm_tagline = home.tagline | strip -%}{%- assign alm_pic = home.profile_picture | strip -%}{%- assign alm_bio = home.bio | strip -%}
+<header class="ink-header alm-header">
+  <a class="alm-skip" href="#main-content">Skip to content</a>
+  <div class="alm-wrap alm-header-inner">
+    <a class="alm-brand" href="{{ '/' | relative_url }}">
+      {%- if alm_pic != "" %}<img class="alm-brand-avatar" src="{{ home.profile_picture }}" alt="" width="32" height="32">{% endif -%}
+      <span>{{ home.name | default: site.author.name | default: site.title }}</span>
+    </a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="alm-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="alm-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+    <div class="alm-header-cta">{% include themes/almanac/_cta.html size="small" %}</div>
+  </div>
+  {%- assign alm_tags = site.tags | sort %}
+  {%- if alm_tags.size > 0 %}
+  <nav class="alm-tagbar" aria-label="Topics">
+    <ul class="alm-wrap alm-tagbar-list">
+      {%- for t in alm_tags %}
+      <li><a class="alm-chip alm-ink-{{ forloop.index0 | modulo: 4 }}" href="{{ '/tags/' | relative_url }}#{{ t[0] | slugify }}"><span class="alm-dot" aria-hidden="true"></span>{{ t[0] }} <span class="alm-chip-count">{{ t[1].size }}</span></a></li>
+      {%- endfor %}
+    </ul>
+  </nav>
+  {%- endif %}
+</header>

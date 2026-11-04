@@ -1,0 +1,20 @@
+{%- comment -%} Year-grouped title index. include.posts: the posts to list. {%- endcomment -%}
+{%- assign dsp_years = include.posts | group_by_exp: "p", "p.date | date: '%Y'" -%}
+{%- for y in dsp_years %}
+<section class="dsp-year" aria-labelledby="dsp-year-{{ include.prefix }}{{ y.name }}">
+  <h3 class="dsp-year-label" id="dsp-year-{{ include.prefix }}{{ y.name }}">{{ y.name }}</h3>
+  <ul class="dsp-rows">
+    {%- for post in y.items %}
+    <li class="dsp-row">
+      <a class="dsp-row-link" href="{{ post.url | relative_url }}">
+        <span class="dsp-row-title">{{ post.title }}</span>
+        <time class="dsp-row-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d" }}</time>
+      </a>
+      {%- if post.excerpt %}
+      <p class="dsp-row-excerpt">{{ post.excerpt | strip_html | strip | truncate: 180 }}</p>
+      {%- endif %}
+    </li>
+    {%- endfor %}
+  </ul>
+</section>
+{%- endfor %}

@@ -1,0 +1,15 @@
+{%- comment -%} One issue card. include.post. {%- endcomment -%}
+{%- assign alm_p = include.post -%}
+{%- assign alm_tag = alm_p.tags | first -%}
+{% include themes/almanac/_ink.html tag=alm_tag %}
+<li class="alm-card alm-ink-{{ alm_ink }}{% if alm_p.cover_image %} alm-card--cover{% else %} alm-card--block{% endif %}">
+  <a class="alm-card-link" href="{{ alm_p.url | relative_url }}">
+    {%- if alm_p.cover_image %}<span class="alm-card-img"><img src="{{ alm_p.cover_image }}" alt="" loading="lazy"></span>{% endif %}
+    <span class="alm-card-body">
+      <span class="alm-card-tag">{{ alm_tag | default: "Note" }}</span>
+      <span class="alm-card-title">{{ alm_p.title }}</span>
+      {%- if alm_p.excerpt %}<span class="alm-card-excerpt">{{ alm_p.excerpt | strip_html | strip | truncate: 120 }}</span>{% endif %}
+      <span class="alm-card-meta">{{ alm_p.content | number_of_words | divided_by: 230 | plus: 1 }} min &middot; <time datetime="{{ alm_p.date | date_to_xmlschema }}">{{ alm_p.date | date: "%b %Y" }}</time></span>
+    </span>
+  </a>
+</li>

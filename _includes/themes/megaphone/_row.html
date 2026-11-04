@@ -1,0 +1,14 @@
+{%- comment -%} One post row. include.post, include.num (display numeral), include.feature (bool). {%- endcomment -%}
+{%- assign mgp_p = include.post -%}
+<li class="mgp-row{% if include.feature %} mgp-row--feature{% endif %}{% if mgp_p.cover_image %} mgp-row--thumb{% endif %}">
+  <a class="mgp-row-link" href="{{ mgp_p.url | relative_url }}">
+    <span class="mgp-row-num" aria-hidden="true">{% if include.num < 10 %}0{% endif %}{{ include.num }}</span>
+    <span class="mgp-row-body">
+      {%- if mgp_p.tags.size > 0 %}<span class="mgp-eyebrow">{{ mgp_p.tags | first }}</span>{% endif %}
+      <span class="mgp-row-title">{{ mgp_p.title }}</span>
+      {%- if include.feature and mgp_p.excerpt %}<span class="mgp-row-excerpt">{{ mgp_p.excerpt | strip_html | strip | truncate: 160 }}</span>{% endif %}
+      <span class="mgp-row-meta"><time datetime="{{ mgp_p.date | date_to_xmlschema }}">{{ mgp_p.date | date: "%b %-d, %Y" }}</time> &middot; {{ mgp_p.content | number_of_words | divided_by: 230 | plus: 1 }} min</span>
+    </span>
+    {%- if mgp_p.cover_image %}<span class="mgp-row-thumb"><img src="{{ mgp_p.cover_image }}" alt="" loading="lazy"></span>{% endif %}
+  </a>
+</li>

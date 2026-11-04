@@ -1,0 +1,55 @@
+{%- assign alm_first_p = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign alm_dek = page.excerpt | strip_html | strip -%}
+{%- for p in site.posts %}{% if p.url == page.url %}{% assign alm_no = forloop.rindex %}{% endif %}{% endfor -%}
+{%- assign alm_tag = page.tags | first -%}
+{% include themes/almanac/_ink.html tag=alm_tag %}
+<div class="ink-post alm-post">
+  <article>
+    <header class="alm-wrap alm-post-head alm-ink-{{ alm_ink }}">
+      <p class="alm-post-kicker">
+        {%- if alm_no %}<span class="alm-post-no">No. {{ alm_no }}</span>{% endif -%}
+        {%- if alm_tag %}<a class="alm-chip" href="{{ '/tags/' | relative_url }}#{{ alm_tag | slugify }}"><span class="alm-dot" aria-hidden="true"></span>{{ alm_tag }}</a>{% endif -%}
+        <span class="alm-post-meta"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time> &middot; {{ content | number_of_words | divided_by: 230 | plus: 1 }} min read</span>
+      </p>
+      <h1 class="alm-post-title">{{ page.title }}</h1>
+      {%- if alm_dek != "" and alm_dek != alm_first_p %}
+      <p class="alm-dek">{{ alm_dek }}</p>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <figure class="alm-wrap alm-post-cover"><img src="{{ page.cover_image }}" alt="" loading="lazy"></figure>
+    {%- endif %}
+    <div class="alm-prose">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="alm-clip">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    {%- if alm_tag %}
+    {%- assign alm_more = site.tags[alm_tag] | sort: "date" | reverse %}
+    {%- if alm_more.size > 1 %}
+    <section class="alm-wrap alm-section alm-related" aria-labelledby="alm-related-label">
+      <div class="alm-section-head">
+        <h2 class="alm-section-title" id="alm-related-label">More in {{ alm_tag }}</h2>
+        <a class="alm-textlink" href="{{ '/tags/' | relative_url }}#{{ alm_tag | slugify }}">All {{ alm_more.size }}</a>
+      </div>
+      <ul class="alm-shelf alm-shelf--row">
+        {%- assign alm_shown = 0 %}
+        {%- for post in alm_more %}
+        {%- if post.url != page.url and alm_shown < 3 %}
+        {% include themes/almanac/_card.html post=post %}
+        {%- assign alm_shown = alm_shown | plus: 1 %}
+        {%- endif %}
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endif %}
+    {%- endif %}
+    <aside class="alm-wrap alm-band" aria-labelledby="alm-post-band">
+      <div class="alm-band-inner">
+        <h2 class="alm-band-title" id="alm-post-band">Get the next issue when it ships.</h2>
+        <div class="alm-actions">{% include themes/almanac/_cta.html %}</div>
+      </div>
+    </aside>
+  </article>
+</div>
