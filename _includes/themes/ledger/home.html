@@ -1,0 +1,101 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home lg-home lg-shell">
+  {%- if home and home.name and home.name != "" %}
+  {%- assign lg_bio = home.bio | markdownify -%}
+  {%- assign lg_parts = lg_bio | split: "<h2" -%}
+  {%- assign lg_letter = home.social_links | where_exp: "l", "l.name contains 'ewsletter'" | first -%}
+  <aside class="lg-profile" aria-labelledby="lg-name">
+    {%- if home.profile_picture and home.profile_picture != "" %}
+    <img class="lg-avatar" src="{{ home.profile_picture }}" alt="" width="64" height="64">
+    {%- endif %}
+    <h1 class="lg-name" id="lg-name">{{ home.name }}</h1>
+    {%- if home.tagline and home.tagline != "" %}
+    <p class="lg-tagline">{{ home.tagline }}</p>
+    {%- endif %}
+    {%- if home.bio and home.bio != "" %}
+    <div class="lg-bio">{{ lg_parts[0] }}</div>
+    {%- endif %}
+    {%- if lg_letter %}
+    <a class="lg-button" href="{{ lg_letter.url }}">Subscribe to the newsletter</a>
+    {%- else %}
+    <a class="lg-button" href="{{ '/feed.xml' | relative_url }}">Subscribe <span class="lg-button-hint">RSS</span></a>
+    {%- endif %}
+    {%- if home.social_links.size > 0 %}
+    <ul class="lg-socials" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      {%- if link.url contains "://" %}{% assign lg_host = link.url | split: "/" | slice: 2, 1 | first | remove: "www." %}
+      {%- elsif link.url contains "mailto:" %}{% assign lg_host = link.url | remove: "mailto:" %}
+      {%- else %}{% assign lg_host = link.url | split: "/" | last %}{% endif %}
+      <li><a href="{{ link.url }}"><span class="lg-social-name">{{ link.name }}</span><span class="lg-social-host">{{ lg_host }}</span><span class="lg-social-arrow" aria-hidden="true">&#8599;</span></a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </aside>
+
+  <div class="lg-main">
+    {%- assign lg_featured = site.posts | where: "featured", true -%}
+    {%- if lg_featured.size > 0 %}
+    <section class="lg-panel lg-ventures" aria-labelledby="lg-ventures-title">
+      <div class="lg-panel-head">
+        <h2 class="lg-panel-title" id="lg-ventures-title">Ventures</h2>
+        <span class="lg-count">{% if lg_featured.size < 10 %}0{% endif %}{{ lg_featured.size }}</span>
+      </div>
+      <ul class="lg-cells">
+        {%- for post in lg_featured %}
+        <li class="lg-cell">
+          <div class="lg-cell-top">
+            {%- if post.cover_image %}
+            <img class="lg-logo" src="{{ post.cover_image }}" alt="" width="32" height="32" loading="lazy">
+            {%- endif %}
+            <h3 class="lg-cell-title"><a class="lg-cell-link" href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+          </div>
+          <div class="lg-cell-meta">
+            {%- if post.tags.size > 0 %}
+            {%- assign lg_status = post.tags | first %}
+            <span class="lg-chip lg-chip--{{ lg_status | slugify }}">{{ lg_status }}</span>
+            {%- endif %}
+            <span class="lg-year">{{ post.date | date: "%Y" }}</span>
+          </div>
+          {%- if post.excerpt %}
+          <p class="lg-cell-line">{{ post.excerpt | strip_html | strip | truncate: 150 }}</p>
+          {%- endif %}
+        </li>
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endif %}
+
+    {%- if site.posts.size > 0 %}
+    <section class="lg-panel lg-writing" aria-labelledby="lg-writing-title">
+      <div class="lg-panel-head">
+        <h2 class="lg-panel-title" id="lg-writing-title">Writing</h2>
+        <span class="lg-count">{% if site.posts.size < 10 %}0{% endif %}{{ site.posts.size }}</span>
+        <a class="lg-more" href="{{ '/blog/' | relative_url }}">All posts <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      {% include themes/ledger/_rows.html limit=8 %}
+    </section>
+    {%- endif %}
+
+    {%- if lg_parts.size > 1 %}
+    <section class="lg-panel lg-readme" aria-label="More about {{ home.name }}">
+      <div class="lg-readme-grid lg-body">
+        {%- for part in lg_parts offset: 1 %}
+        <div class="lg-readme-col"><h2{{ part }}</div>
+        {%- endfor %}
+      </div>
+    </section>
+    {%- endif %}
+  </div>
+  {%- else %}
+  <div class="lg-main">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

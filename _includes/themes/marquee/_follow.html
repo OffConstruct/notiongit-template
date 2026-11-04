@@ -1,0 +1,16 @@
+{%- assign mq_home = site.data.home -%}
+{%- assign mq_letter = mq_home.social_links | where_exp: "l", "l.name contains 'ewsletter'" | first -%}
+<section class="mq-follow" aria-labelledby="mq-follow-title">
+  <div class="mq-wrap mq-follow-inner">
+    <h2 class="mq-follow-title" id="mq-follow-title">Follow along</h2>
+    <p class="mq-follow-copy">New posts{% if mq_home.name and mq_home.name != "" %} from {{ mq_home.name }}{% endif %} reach your reader the day they go out.</p>
+    <div class="mq-follow-actions">
+      {%- if mq_letter %}
+      <a class="mq-button" href="{{ mq_letter.url }}">Get the newsletter <span aria-hidden="true">&rarr;</span></a>
+      <a class="mq-button-quiet" href="{{ '/feed.xml' | relative_url }}">Or use the RSS feed</a>
+      {%- else %}
+      <a class="mq-button" href="{{ '/feed.xml' | relative_url }}">Subscribe by RSS <span aria-hidden="true">&rarr;</span></a>
+      {%- endif %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,34 @@
+{%- assign lg_minutes = content | number_of_words | divided_by: 230 | plus: 1 -%}
+<div class="ink-post lg-post lg-shell lg-narrow">
+  <article>
+    <header class="lg-page-head">
+      <h1 class="lg-post-title">{{ page.title }}</h1>
+      <p class="lg-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
+        <span aria-hidden="true">&middot;</span> <span>{{ lg_minutes }} min read</span>
+        {%- for tag in page.tags %}
+        <a class="lg-chip lg-chip--{{ tag | slugify }}" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+        {%- endfor %}
+      </p>
+    </header>
+    {%- if page.cover_image %}
+    <img class="lg-cover" src="{{ page.cover_image }}" alt="">
+    {%- endif %}
+    <div class="lg-body">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="lg-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    {%- if page.previous or page.next %}
+    <nav class="lg-adjacent" aria-label="More posts">
+      {%- if page.previous %}
+      <a class="lg-adjacent-link" href="{{ page.previous.url | relative_url }}"><span class="lg-adjacent-label">&larr; Older</span><span class="lg-adjacent-title">{{ page.previous.title }}</span></a>
+      {%- endif %}
+      {%- if page.next %}
+      <a class="lg-adjacent-link lg-adjacent-link--next" href="{{ page.next.url | relative_url }}"><span class="lg-adjacent-label">Newer &rarr;</span><span class="lg-adjacent-title">{{ page.next.title }}</span></a>
+      {%- endif %}
+    </nav>
+    {%- endif %}
+  </article>
+</div>

@@ -1,0 +1,15 @@
+{%- assign memo_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<footer class="ink-footer memo-footer">
+  <div class="memo-wrap">
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="memo-footer-nav" aria-label="Footer navigation">
+      <ul>
+        {%- for item in site.data.nav %}
+        <li><a href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- endif %}
+    <p class="memo-colophon">&copy; {{ 'now' | date: '%Y' }} {{ memo_name }}. <a href="{{ '/feed.xml' | relative_url }}">Subscribe by RSS</a></p>
+  </div>
+</footer>

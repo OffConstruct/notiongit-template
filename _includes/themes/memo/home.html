@@ -1,0 +1,52 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home memo-home memo-wrap">
+  {%- if home and home.name and home.name != "" %}
+  <h1 class="memo-statement">
+    <span class="memo-statement-name">{{ home.name }}</span>
+    {%- if home.tagline and home.tagline != "" %}
+    <span class="memo-statement-tagline">{{ home.tagline }}</span>
+    {%- endif %}
+  </h1>
+  {%- if home.bio and home.bio != "" %}
+  <div class="memo-letter memo-body">{{ home.bio | markdownify }}</div>
+  {%- endif %}
+  {%- assign memo_link_names = home.social_links | map: "name" | join: "," | downcase -%}
+  <div class="memo-line memo-elsewhere">
+    <h2 class="memo-label">Elsewhere</h2>
+    <ul class="memo-sentence">
+      {%- for link in home.social_links -%}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor -%}
+      {%- unless memo_link_names contains "rss" -%}
+      <li><a href="{{ '/feed.xml' | relative_url }}">RSS</a></li>
+      {%- endunless -%}
+    </ul>
+  </div>
+  {%- assign memo_picks = site.posts | where: "featured", true -%}
+  {%- if memo_picks.size > 0 %}
+  <div class="memo-line memo-start">
+    <h2 class="memo-label">Start here</h2>
+    <ul class="memo-sentence">
+      {%- for post in memo_picks limit: 4 -%}
+      <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
+      {%- endfor -%}
+    </ul>
+  </div>
+  {%- endif %}
+  {%- if site.posts.size > 0 %}
+  <section class="memo-writing" aria-labelledby="memo-writing-title">
+    <h2 class="memo-label memo-section-label" id="memo-writing-title">Writing</h2>
+    {% include themes/memo/_index.html heading="h3" %}
+  </section>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

@@ -1,0 +1,11 @@
+<div class="ink-page memo-page memo-wrap">
+  <header class="memo-page-head">
+    <h1 class="memo-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="memo-page-desc">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="memo-body">
+    {{ content }}
+  </div>
+</div>

@@ -1,0 +1,15 @@
+{%- comment -%} Dated entries: month kicker, big title, excerpt, arrow. include.limit caps the count, include.heading sets the title level. {%- endcomment -%}
+{%- assign mq_limit = include.limit | default: 1000 -%}
+{%- assign mq_h = include.heading | default: "h3" -%}
+<ol class="mq-entries">
+  {%- for post in site.posts limit: mq_limit %}
+  <li class="mq-entry">
+    <p class="mq-entry-kicker"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%m %Y" }}</time>{% if post.tags.size > 0 %} <span aria-hidden="true">/</span> {{ post.tags | first }}{% endif %}{% if post.canonical_url %} <span aria-hidden="true">/</span> at {{ post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}{% endif %}</p>
+    <{{ mq_h }} class="mq-entry-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></{{ mq_h }}>
+    {%- if post.excerpt %}
+    <p class="mq-entry-excerpt">{{ post.excerpt | strip_html | strip | truncate: 200 }}</p>
+    {%- endif %}
+    <span class="mq-entry-cta" aria-hidden="true">Read the post <span class="mq-arrow">&rarr;</span></span>
+  </li>
+  {%- endfor %}
+</ol>

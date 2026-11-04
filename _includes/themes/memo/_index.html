@@ -1,0 +1,22 @@
+{%- comment -%} Year-grouped title index. include.heading is the year heading level. {%- endcomment -%}
+{%- assign memo_h = include.heading | default: "h3" -%}
+{%- assign memo_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" -%}
+<div class="memo-index">
+  {%- for y in memo_years %}
+  <section class="memo-year">
+    <{{ memo_h }} class="memo-year-label">{{ y.name }}</{{ memo_h }}>
+    <ol class="memo-rows">
+      {%- for post in y.items %}
+      <li class="memo-row{% if post.featured %} is-pick{% endif %}">
+        <span class="memo-row-main">
+          <a class="memo-row-link" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          {%- if post.featured %} <span class="memo-pick">pick</span>{% endif %}
+          {%- if post.canonical_url %} <span class="memo-clip">at {{ post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif %}
+        </span>
+        <time class="memo-row-date" datetime="{{ post.date | date_to_xmlschema }}"><span class="memo-d-md">{{ post.date | date: "%b %-d" }}</span><span class="memo-d-y">, {{ post.date | date: "%Y" }}</span></time>
+      </li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+</div>

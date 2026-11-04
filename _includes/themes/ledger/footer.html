@@ -1,0 +1,7 @@
+{%- assign lg_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<footer class="ink-footer lg-footer">
+  <div class="lg-shell lg-footer-inner">
+    <p class="lg-footer-name">&copy; {{ 'now' | date: '%Y' }} {{ lg_name }}</p>
+    <p class="lg-footer-meta"><a href="{{ '/feed.xml' | relative_url }}">RSS</a> <span aria-hidden="true">&middot;</span> Written in Notion</p>
+  </div>
+</footer>

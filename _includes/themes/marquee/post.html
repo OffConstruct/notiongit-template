@@ -1,0 +1,38 @@
+{%- assign mq_minutes = content | number_of_words | divided_by: 230 | plus: 1 -%}
+{%- assign mq_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign mq_dek = page.excerpt | strip_html | strip -%}
+<div class="ink-post mq-post">
+  <article>
+    <header class="mq-post-head mq-wrap">
+      <p class="mq-post-kicker">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        {%- for tag in page.tags %}
+        <span aria-hidden="true">/</span> <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+        {%- endfor %}
+        <span aria-hidden="true">/</span> {{ mq_minutes }} min
+      </p>
+      <h1 class="mq-post-title">{{ page.title }}</h1>
+      {%- if mq_dek and mq_dek != "" and mq_dek != mq_first %}
+      <p class="mq-post-dek">{{ mq_dek }}</p>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <div class="mq-wrap"><img class="mq-post-cover" src="{{ page.cover_image }}" alt=""></div>
+    {%- endif %}
+    <div class="mq-wrap">
+      <div class="mq-body mq-text">
+        {{ content }}
+      </div>
+      {%- if page.canonical_url %}
+      <p class="mq-canonical mq-text">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+      {%- endif %}
+      <footer class="mq-post-foot mq-text">
+        <a class="mq-more" href="{{ '/blog/' | relative_url }}"><span aria-hidden="true">&larr;</span> All writing</a>
+        {%- if page.next %}
+        <a class="mq-more" href="{{ page.next.url | relative_url }}">Newer: {{ page.next.title }}</a>
+        {%- endif %}
+      </footer>
+    </div>
+  </article>
+  {% include themes/marquee/_follow.html %}
+</div>

@@ -1,0 +1,19 @@
+{%- comment -%} Writing rows: mono date, title, tag chips. include.limit caps the count. {%- endcomment -%}
+{%- assign lg_limit = include.limit | default: 1000 -%}
+<ol class="lg-rows">
+  {%- for post in site.posts limit: lg_limit %}
+  <li class="lg-row">
+    <time class="lg-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+    <a class="lg-row-link" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+    {%- if post.excerpt %}
+    <p class="lg-row-excerpt">{{ post.excerpt | strip_html | strip | truncate: 140 }}</p>
+    {%- endif %}
+    {%- if post.tags.size > 0 or post.canonical_url %}
+    <span class="lg-row-tags">
+      {%- if post.canonical_url %}<span class="lg-chip">{{ post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }} &#8599;</span>{% endif -%}
+      {%- for tag in post.tags limit: 3 %}<span class="lg-chip lg-chip--{{ tag | slugify }}">{{ tag }}</span>{% endfor -%}
+    </span>
+    {%- endif %}
+  </li>
+  {%- endfor %}
+</ol>

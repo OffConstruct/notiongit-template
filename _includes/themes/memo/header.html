@@ -1,0 +1,20 @@
+{%- assign memo_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<header class="ink-header memo-header">
+  <div class="memo-wrap memo-header-inner">
+    {%- unless page.layout == "home" %}
+    <a class="memo-back" href="{{ '/' | relative_url }}"><span aria-hidden="true">&larr;</span> {{ memo_name }}</a>
+    {%- endunless %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="memo-nav" aria-label="Main navigation">
+      <ul>
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        <li><a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- elsif page.layout == "home" %}
+    <p class="memo-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

@@ -1,0 +1,21 @@
+<div class="ink-post-list mq-blog">
+  <header class="mq-page-head mq-wrap">
+    <h1 class="mq-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="mq-page-desc">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="mq-wrap">
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {% include themes/marquee/_entries.html heading="h2" %}
+  {%- endif %}
+  </div>
+  {% include themes/marquee/_follow.html %}
+</div>

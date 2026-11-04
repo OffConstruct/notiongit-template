@@ -1,0 +1,37 @@
+{%- assign memo_minutes = content | number_of_words | divided_by: 230 | plus: 1 -%}
+<div class="ink-post memo-post memo-wrap">
+  <article>
+    <header class="memo-post-head">
+      <h1 class="memo-post-title">{{ page.title }}</h1>
+      <p class="memo-post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        <span aria-hidden="true">&middot;</span> {{ memo_minutes }} min read
+        {%- for tag in page.tags %}
+        <span aria-hidden="true">&middot;</span> <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+        {%- endfor %}
+      </p>
+    </header>
+    {%- if page.cover_image %}
+    <img class="memo-cover" src="{{ page.cover_image }}" alt="">
+    {%- endif %}
+    <div class="memo-body">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="memo-canonical">Originally published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="memo-post-foot">
+      {%- if page.previous or page.next %}
+      <ul class="memo-adjacent">
+        {%- if page.next %}
+        <li><span class="memo-label">Newer</span> <a href="{{ page.next.url | relative_url }}">{{ page.next.title }}</a></li>
+        {%- endif %}
+        {%- if page.previous %}
+        <li><span class="memo-label">Older</span> <a href="{{ page.previous.url | relative_url }}">{{ page.previous.title }}</a></li>
+        {%- endif %}
+      </ul>
+      {%- endif %}
+      <a class="memo-all" href="{{ '/blog/' | relative_url }}"><span aria-hidden="true">&larr;</span> All writing</a>
+    </footer>
+  </article>
+</div>

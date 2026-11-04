@@ -1,0 +1,24 @@
+{%- assign lg_home = site.data.home -%}
+{%- assign lg_name = lg_home.name | default: site.author.name | default: site.title -%}
+<header class="ink-header lg-header">
+  <div class="lg-shell lg-header-inner">
+    {%- unless page.layout == "home" %}
+    <a class="lg-brand" href="{{ '/' | relative_url }}">
+      {%- if lg_home.profile_picture and lg_home.profile_picture != "" %}<img class="lg-brand-avatar" src="{{ lg_home.profile_picture }}" alt="" width="24" height="24">{% endif -%}
+      <span>{{ lg_name }}</span>
+    </a>
+    {%- endunless %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="lg-nav" aria-label="Main navigation">
+      <ol>
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        <li><a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}><span class="lg-key" aria-hidden="true">{{ forloop.index }}</span><span class="lg-nav-label">{{ item.title }}</span></a></li>
+        {%- endfor %}
+      </ol>
+    </nav>
+    {%- else %}
+    <p class="lg-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

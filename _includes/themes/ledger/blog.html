@@ -1,0 +1,20 @@
+<div class="ink-post-list lg-blog lg-shell lg-narrow">
+  <header class="lg-page-head">
+    <h1 class="lg-page-title">{{ page.title | default: "Writing" }} <span class="lg-count">{% if site.posts.size < 10 %}0{% endif %}{{ site.posts.size }}</span></h1>
+    {%- if page.description %}
+    <p class="lg-page-desc">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <div class="lg-panel lg-writing lg-writing--all">
+    {% include themes/ledger/_rows.html %}
+  </div>
+  {%- endif %}
+</div>

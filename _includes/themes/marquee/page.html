@@ -1,0 +1,13 @@
+<div class="ink-page mq-page">
+  <header class="mq-page-head mq-wrap">
+    <h1 class="mq-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="mq-page-desc">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="mq-wrap">
+    <div class="mq-body mq-text">
+      {{ content }}
+    </div>
+  </div>
+</div>
