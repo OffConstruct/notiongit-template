@@ -1,0 +1,32 @@
+<div class="ink-tags vt-wrap vt-tags">
+  <header class="vt-page-head">
+    <h1 class="vt-page-title">Tags</h1>
+  </header>
+  {%- assign tags_list = site.tags | sort %}
+  {%- if tags_list.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion tags"
+    title="Your tags will appear here"
+    copy="Tags from your published posts will be collected here automatically."
+  %}
+  {%- else %}
+  <div class="vt-index">
+    {%- for tag in tags_list %}
+    <section class="vt-index-year" id="{{ tag[0] | slugify }}" aria-labelledby="vt-tag-{{ tag[0] | slugify }}">
+      <h2 class="vt-index-label" id="vt-tag-{{ tag[0] | slugify }}">{{ tag[0] }} <span class="vt-index-count">{{ tag[1].size }}</span></h2>
+      <ol class="vt-index-list">
+        {%- assign sorted_posts = tag[1] | sort: 'date' | reverse %}
+        {%- for post in sorted_posts %}
+        <li class="vt-index-row">
+          <a href="{{ post.url | relative_url }}">
+            <span class="vt-index-title">{{ post.title }}</span>
+            <time class="vt-index-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time>
+          </a>
+        </li>
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+</div>

@@ -1,0 +1,27 @@
+<div class="ink-tags cf-wrap cf-tags">
+  <header class="cf-page-head">
+    <h1 class="cf-page-title">Tags</h1>
+  </header>
+  {%- assign tags_list = site.tags | sort %}
+  {%- if tags_list.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion tags"
+    title="Your tags will appear here"
+    copy="Tags from your published posts will be collected here automatically."
+  %}
+  {%- else %}
+  <div class="cf-tag-grid">
+    {%- for tag in tags_list %}
+    <section class="cf-tag cf-c{{ forloop.index0 | modulo: 5 }}" id="{{ tag[0] | slugify }}" aria-labelledby="cf-tag-{{ tag[0] | slugify }}">
+      <h2 class="cf-tag-name" id="cf-tag-{{ tag[0] | slugify }}"><span>{{ tag[0] }}</span> <span class="cf-tag-count">{{ tag[1].size }}</span></h2>
+      <ul class="cf-tag-posts">
+        {%- assign sorted_posts = tag[1] | sort: 'date' | reverse %}
+        {%- for post in sorted_posts %}
+        <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+</div>

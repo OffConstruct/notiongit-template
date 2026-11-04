@@ -1,0 +1,7 @@
+{%- assign vt_p = include.post -%}
+{%- assign vt_ex = vt_p.excerpt | strip_html | strip -%}
+<a class="vt-caption-title" href="{{ vt_p.url | relative_url }}">{{ vt_p.title }}</a>
+{%- if vt_ex != "" %}
+<span class="vt-caption-line">{{ vt_ex | truncate: 160 }}</span>
+{%- endif %}
+<span class="vt-caption-year"><time datetime="{{ vt_p.date | date_to_xmlschema }}">{{ vt_p.date | date: "%Y" }}</time></span>

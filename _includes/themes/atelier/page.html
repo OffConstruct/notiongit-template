@@ -1,0 +1,11 @@
+<article class="ink-page at-wrap at-page">
+  <header class="at-page-head">
+    <h1 class="at-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="at-page-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="at-post-body page-content">
+    {{ content }}
+  </div>
+</article>

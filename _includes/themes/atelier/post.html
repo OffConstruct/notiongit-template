@@ -1,0 +1,32 @@
+{%- assign at_first = content | split: "</p>" | first | strip_html | strip -%}
+<article class="ink-post at-wrap at-post">
+  <header class="at-post-head">
+    <p class="at-post-date"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%A %-d %B %Y" }}</time></p>
+    <h1 class="at-post-title">{{ page.title }}</h1>
+    {%- assign at_ex = page.excerpt | strip_html | strip %}
+    {%- if at_ex != "" and at_ex != at_first %}
+    <p class="at-post-lede">{{ at_ex }}</p>
+    {%- endif %}
+    {%- if page.tags.size > 0 %}
+    <p class="at-post-tags">{% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
+    {%- endif %}
+  </header>
+  {%- if page.cover_image %}
+  <figure class="at-post-cover"><img src="{{ page.cover_image }}" alt="" loading="eager"></figure>
+  {%- endif %}
+  <div class="at-post-body post-content">
+    {{ content }}
+    {%- if page.canonical_url %}
+    <p class="at-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+  </div>
+  <nav class="at-post-nav" aria-label="Journal">
+    {%- if page.previous %}
+    <a href="{{ page.previous.url | relative_url }}"><span class="at-post-nav-label">Earlier</span> <span class="at-post-nav-title">{{ page.previous.title }}</span></a>
+    {%- endif %}
+    {%- if page.next %}
+    <a href="{{ page.next.url | relative_url }}"><span class="at-post-nav-label">Later</span> <span class="at-post-nav-title">{{ page.next.title }}</span></a>
+    {%- endif %}
+    <a href="{{ '/blog/' | relative_url }}"><span class="at-post-nav-label">Back to</span> <span class="at-post-nav-title">the journal</span></a>
+  </nav>
+</article>

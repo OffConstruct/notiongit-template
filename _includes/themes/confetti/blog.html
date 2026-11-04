@@ -1,0 +1,26 @@
+<div class="ink-post-list cf-list">
+  <header class="cf-wrap cf-page-head">
+    <h1 class="cf-page-title">{{ page.title | default: "Posts" }}</h1>
+    {%- if page.description %}
+    <p class="cf-page-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  <div class="cf-wrap">
+  {% include empty-state.html
+    kicker="Notion posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  </div>
+  {%- else %}
+  <div class="cf-sheet-wrap">
+    <ul class="cf-sheet" role="list">
+      {%- for post in site.posts %}
+      {% include themes/confetti/_panel.html post=post %}
+      {%- endfor %}
+    </ul>
+  </div>
+  {%- endif %}
+</div>

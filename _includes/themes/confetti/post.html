@@ -1,0 +1,42 @@
+{%- assign cf_c = page.date | date: "%j" | modulo: 5 -%}
+{%- assign cf_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign cf_ex = page.excerpt | strip_html | strip -%}
+<article class="ink-post cf-post">
+  <header class="cf-band cf-c{{ cf_c }}{% if page.cover_image %} cf-band--art{% endif %}">
+    <div class="cf-wrap cf-band-inner">
+      <div class="cf-band-text">
+        <h1 class="cf-post-title">{{ page.title }}</h1>
+        {%- if cf_ex != "" and cf_ex != cf_first %}
+        <p class="cf-post-lede">{{ cf_ex }}</p>
+        {%- endif %}
+        <p class="cf-post-meta"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time></p>
+        {%- if page.tags.size > 0 %}
+        <ul class="cf-post-tags" aria-label="Tags">
+          {%- for tag in page.tags %}
+          <li><a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>
+          {%- endfor %}
+        </ul>
+        {%- endif %}
+      </div>
+      {%- if page.cover_image %}
+      <figure class="cf-band-art"><img src="{{ page.cover_image }}" alt="" loading="eager"></figure>
+      {%- endif %}
+    </div>
+  </header>
+  <div class="cf-wrap">
+    <div class="cf-post-body post-content">
+      {{ content }}
+      {%- if page.canonical_url %}
+      <p class="cf-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+      {%- endif %}
+    </div>
+  </div>
+  {%- if page.previous or page.next %}
+  <nav class="cf-sheet-wrap cf-post-nav" aria-label="More posts">
+    <ul class="cf-sheet cf-sheet--pair" role="list">
+      {%- if page.previous %}{% include themes/confetti/_panel.html post=page.previous %}{% endif %}
+      {%- if page.next %}{% include themes/confetti/_panel.html post=page.next %}{% endif %}
+    </ul>
+  </nav>
+  {%- endif %}
+</article>

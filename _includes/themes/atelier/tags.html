@@ -1,0 +1,27 @@
+<div class="ink-tags at-wrap at-tags">
+  <header class="at-page-head">
+    <h1 class="at-page-title">Tags</h1>
+  </header>
+  {%- assign tags_list = site.tags | sort %}
+  {%- if tags_list.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion tags"
+    title="Your tags will appear here"
+    copy="Tags from your published posts will be collected here automatically."
+  %}
+  {%- else %}
+  <div class="at-tag-grid">
+    {%- for tag in tags_list %}
+    <section class="at-tag" id="{{ tag[0] | slugify }}" aria-labelledby="at-tag-{{ tag[0] | slugify }}">
+      <h2 class="at-tag-name" id="at-tag-{{ tag[0] | slugify }}">{{ tag[0] }} <span class="at-tag-count">{{ tag[1].size }}</span></h2>
+      <ul class="at-tag-posts">
+        {%- assign sorted_posts = tag[1] | sort: 'date' | reverse %}
+        {%- for post in sorted_posts %}
+        <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a> <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %Y" }}</time></li>
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+</div>

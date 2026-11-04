@@ -1,0 +1,28 @@
+<div class="ink-post-list at-wrap at-list">
+  <header class="at-page-head">
+    <h1 class="at-page-title">{{ page.title | default: "Journal" }}</h1>
+    {%- if page.description %}
+    <p class="at-page-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign months = site.posts | group_by_exp: "p", "p.date | date: '%B %Y'" %}
+  {%- for month in months %}
+  <section class="at-month" aria-labelledby="at-m-{{ forloop.index }}">
+    <h2 class="at-month-head" id="at-m-{{ forloop.index }}">{{ month.name }}</h2>
+    <ol class="at-journal" role="list">
+      {%- for post in month.items %}
+      {% include themes/atelier/_entry.html post=post level=3 under="%A" %}
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

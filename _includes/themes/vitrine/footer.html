@@ -1,0 +1,13 @@
+{%- assign home = site.data.home -%}
+<footer class="ink-footer vt-footer">
+  <div class="vt-wrap vt-footer-inner">
+    <p class="vt-footer-name">&copy; {{ 'now' | date: '%Y' }} {{ home.name | default: site.author.name | default: site.title }}</p>
+    {%- if home.social_links.size > 0 %}
+    <ul class="vt-footer-links" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </div>
+</footer>

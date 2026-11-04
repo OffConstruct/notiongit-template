@@ -1,0 +1,20 @@
+<header class="ink-header vt-header">
+  <div class="vt-wrap vt-header-inner">
+    <a class="vt-wordmark" href="{{ '/' | relative_url }}">{{ site.data.home.name | default: site.author.name | default: site.title }}</a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="vt-nav" aria-label="Main navigation">
+      <ul>
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        {%- assign is_active = false %}
+        {%- if page.url == item_url %}{% assign is_active = true %}{% endif %}
+        {%- if page.url contains item.url and item.url != "/" %}{% assign is_active = true %}{% endif %}
+        <li><a href="{{ item_url }}"{% if is_active %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- else %}
+    <p class="vt-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

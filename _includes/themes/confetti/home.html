@@ -1,0 +1,77 @@
+{%- assign home = site.data.home -%}
+{%- assign h_name = home.name | strip -%}
+{%- assign h_tag = home.tagline | strip -%}
+{%- assign h_pic = home.profile_picture | strip -%}
+<div class="ink-home cf-home">
+  {%- if h_name != "" %}
+  {%- assign bio_parts = home.bio | markdownify | split: "<h2" -%}
+  {%- assign bio_lead = bio_parts[0] | strip -%}
+  {%- assign cf_bare = true %}
+  {%- if h_tag != "" or bio_lead != "" or h_pic != "" or home.social_links.size > 0 %}{% assign cf_bare = false %}{% endif %}
+  <section class="cf-first{% if cf_bare %} cf-first--bare{% endif %}" aria-labelledby="cf-name">
+    {%- unless cf_bare %}
+    <div class="cf-wrap cf-intro{% if h_pic != "" %} cf-intro--avatar{% endif %}">
+      <div class="cf-intro-text">
+        {%- if h_tag != "" %}
+        <p class="cf-statement">{{ home.tagline }}</p>
+        {%- endif %}
+        {%- if bio_lead != "" %}
+        <div class="cf-bio">{{ bio_parts[0] }}</div>
+        {%- endif %}
+        {%- if home.social_links.size > 0 %}
+        <ul class="cf-links" aria-label="Elsewhere">
+          {%- for link in home.social_links %}
+          <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+          {%- endfor %}
+        </ul>
+        {%- endif %}
+      </div>
+      {%- if h_pic != "" %}
+      <img class="cf-avatar" src="{{ home.profile_picture }}" alt="" width="160" height="160">
+      {%- endif %}
+    </div>
+    {%- endunless %}
+    <h1 class="cf-wrap cf-mast" id="cf-name">{{ home.name }}</h1>
+  </section>
+
+  {%- if site.posts.size > 0 %}
+  {%- assign featured = site.posts | where: "featured", true %}
+  <section class="cf-sheet-wrap" aria-label="Work and posts">
+    <ul class="cf-sheet" role="list">
+      {%- for post in featured limit: 6 %}
+      {% include themes/confetti/_panel.html post=post %}
+      {%- endfor %}
+      {%- assign cf_left = 12 | minus: featured.size %}
+      {%- for post in site.posts %}
+      {%- if post.featured %}{% continue %}{% endif %}
+      {%- if cf_left <= 0 %}{% break %}{% endif %}
+      {% include themes/confetti/_panel.html post=post %}
+      {%- assign cf_left = cf_left | minus: 1 %}
+      {%- endfor %}
+    </ul>
+    {%- if site.posts.size > 12 %}
+    <p class="cf-wrap cf-more"><a href="{{ '/blog/' | relative_url }}">Every post, {{ site.posts.size }} in all</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
+  {%- if bio_parts.size > 1 %}
+  <section class="cf-wrap cf-about" aria-label="About">
+    {%- for part in bio_parts offset: 1 %}
+    <div class="cf-about-part"><h2{{ part }}</div>
+    {%- endfor %}
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="cf-wrap">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="Setup in progress"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

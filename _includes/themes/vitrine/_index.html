@@ -1,0 +1,20 @@
+{%- comment -%} Catalogue index: posts grouped by year, one numbered row each. include.posts {%- endcomment -%}
+{%- assign vt_years = include.posts | group_by_exp: "p", "p.date | date: '%Y'" -%}
+<div class="vt-index">
+  {%- for year in vt_years %}
+  <section class="vt-index-year" aria-labelledby="vt-year-{{ include.id }}-{{ year.name }}">
+    <h{{ include.level | default: 2 }} class="vt-index-label" id="vt-year-{{ include.id }}-{{ year.name }}">{{ year.name }}</h{{ include.level | default: 2 }}>
+    <ol class="vt-index-list">
+      {%- for post in year.items %}
+      <li class="vt-index-row">
+        <a href="{{ post.url | relative_url }}">
+          <span class="vt-index-title">{{ post.title }}</span>
+          {%- if post.tags.size > 0 %}<span class="vt-index-tag">{{ post.tags | first }}</span>{% endif %}
+          <time class="vt-index-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %B" }}</time>
+        </a>
+      </li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+</div>

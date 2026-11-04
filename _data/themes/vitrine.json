@@ -1,0 +1,78 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "vitrine",
+  "name": "Vitrine",
+  "version": "1.0.0",
+  "summary": "The exhibition catalogue: one work hung on a white wall with a printed caption beside it.",
+  "description": "The home page opens on your newest work, uncropped, with your name and bio set beside it like a wall text. Other works hang one per row with catalogue captions, and every post is listed in a numbered, year-by-year index. One serif family, no ornament: the art carries the color.",
+  "categories": ["artists"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page", "tags"],
+  "fonts": [
+    {
+      "value": "newsreader",
+      "label": "Newsreader",
+      "google": "family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500",
+      "stacks": {
+        "body": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Georgia, serif",
+        "display": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "garamond",
+      "label": "EB Garamond",
+      "google": "family=EB+Garamond:ital,wght@0,400;0,500;1,400",
+      "stacks": {
+        "body": "\"EB Garamond\", Garamond, \"Iowan Old Style\", Georgia, serif",
+        "display": "\"EB Garamond\", Garamond, \"Iowan Old Style\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "caslon",
+      "label": "Libre Caslon",
+      "google": "family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400",
+      "stacks": {
+        "body": "\"Libre Caslon Text\", \"Big Caslon\", \"Iowan Old Style\", Georgia, serif",
+        "display": "\"Libre Caslon Text\", \"Big Caslon\", \"Iowan Old Style\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#fdfdfb", "text": "#141414", "muted": "#5f5f5c" },
+    "dark": { "bg": "#161615", "text": "#ebe8e2", "muted": "#9b978f" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "White wall" },
+        { "value": "dark", "label": "Dark room" } ] },
+    { "key": "accent", "type": "color", "label": "Link color", "role": "text", "default": "ink", "custom": true,
+      "presets": [
+        { "value": "ink", "label": "Ink only", "light": "#141414", "dark": "#ebe8e2" },
+        { "value": "oxide", "label": "Oxide red", "light": "#a3321f", "dark": "#e8907a" },
+        { "value": "ultramarine", "label": "Ultramarine", "light": "#2b3a9e", "dark": "#a3aef0" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Typeface", "default": "newsreader" },
+    { "key": "hang", "type": "select", "label": "How works hang", "default": "offset",
+      "options": [
+        { "value": "offset", "label": "Offset, left and right" },
+        { "value": "centered", "label": "Centred column" },
+        { "value": "pairs", "label": "Two per row" } ] },
+    { "key": "caption", "type": "select", "label": "Captions", "default": "beside",
+      "options": [
+        { "value": "beside", "label": "Beside the work" },
+        { "value": "below", "label": "Below the work" } ] },
+    { "key": "wall", "type": "select", "label": "Wall color (light mode)", "default": "white",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "warm", "label": "Warm white" },
+        { "value": "grey", "label": "Gallery grey" } ] },
+    { "key": "index_numbers", "type": "boolean", "label": "Number the catalogue index", "default": true }
+  ]
+}

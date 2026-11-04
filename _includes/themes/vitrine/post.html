@@ -1,0 +1,36 @@
+{%- assign vt_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign vt_ex = page.excerpt | strip_html | strip -%}
+<article class="ink-post vt-wrap vt-post{% if page.cover_image %} vt-post--work{% endif %}">
+  {%- if page.cover_image %}
+  <figure class="vt-post-plate">
+    <img src="{{ page.cover_image }}" alt="" loading="eager">
+  </figure>
+  {%- endif %}
+  <header class="vt-post-head">
+    <h1 class="vt-post-title">{{ page.title }}</h1>
+    {%- if vt_ex != "" and vt_ex != vt_first %}
+    <p class="vt-post-line">{{ vt_ex }}</p>
+    {%- endif %}
+    <p class="vt-post-date"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time></p>
+    {%- if page.tags.size > 0 %}
+    <p class="vt-post-tags">
+      {%- for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor -%}
+    </p>
+    {%- endif %}
+  </header>
+  <div class="vt-post-body post-content">
+    {{ content }}
+    {%- if page.canonical_url %}
+    <p class="vt-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+  </div>
+  <nav class="vt-post-nav" aria-label="More works">
+    {%- if page.previous %}
+    <a class="vt-post-nav-prev" href="{{ page.previous.url | relative_url }}"><span class="vt-post-nav-label">Earlier</span> <span class="vt-post-nav-title">{{ page.previous.title }}</span></a>
+    {%- endif %}
+    {%- if page.next %}
+    <a class="vt-post-nav-next" href="{{ page.next.url | relative_url }}"><span class="vt-post-nav-label">Later</span> <span class="vt-post-nav-title">{{ page.next.title }}</span></a>
+    {%- endif %}
+    <a class="vt-post-nav-all" href="{{ '/blog/' | relative_url }}">The index</a>
+  </nav>
+</article>

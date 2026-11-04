@@ -1,0 +1,13 @@
+{%- assign cf_p = include.post -%}
+<li class="cf-panel{% if cf_p.cover_image %} cf-panel--art{% else %} cf-panel--text{% endif %}">
+  <a class="cf-panel-link" href="{{ cf_p.url | relative_url }}">
+    {%- if cf_p.cover_image %}
+    <span class="cf-panel-field"><img src="{{ cf_p.cover_image }}" alt="" loading="lazy"></span>
+    {%- else %}
+    {%- assign cf_ex = cf_p.excerpt | strip_html | strip %}
+    <span class="cf-panel-excerpt">{% if cf_ex != "" %}{{ cf_ex | truncate: 140 }}{% endif %}</span>
+    {%- endif %}
+    <span class="cf-panel-title"><span>{{ cf_p.title }}</span></span>
+    <span class="cf-panel-date"><time datetime="{{ cf_p.date | date_to_xmlschema }}">{{ cf_p.date | date: "%b %Y" }}</time></span>
+  </a>
+</li>

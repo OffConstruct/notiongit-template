@@ -1,0 +1,19 @@
+{%- assign at_p = include.post -%}
+{%- assign at_ex = at_p.excerpt | strip_html | strip -%}
+{%- assign at_fmt = include.under | default: "%b %Y" -%}
+<li class="at-entry{% if at_p.cover_image %} at-entry--art{% endif %}">
+  <time class="at-entry-date" datetime="{{ at_p.date | date_to_xmlschema }}"><span class="at-day">{{ at_p.date | date: "%-d" }}</span> <span class="at-dow">{{ at_p.date | date: at_fmt }}</span></time>
+  <div class="at-entry-text">
+    <time class="at-entry-inline" datetime="{{ at_p.date | date_to_xmlschema }}">{{ at_p.date | date: "%-d %B %Y" }}</time>
+    <h{{ include.level | default: 3 }} class="at-entry-title"><a href="{{ at_p.url | relative_url }}">{{ at_p.title }}</a></h{{ include.level | default: 3 }}>
+    {%- if at_ex != "" %}
+    <p class="at-entry-excerpt">{{ at_ex | truncate: 220 }}</p>
+    {%- endif %}
+    {%- if at_p.tags.size > 0 %}
+    <p class="at-entry-tags">{% for tag in at_p.tags limit: 3 %}<a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
+    {%- endif %}
+  </div>
+  {%- if at_p.cover_image %}
+  <a class="at-entry-thumb" href="{{ at_p.url | relative_url }}" tabindex="-1" aria-hidden="true"><img src="{{ at_p.cover_image }}" alt="" loading="lazy"></a>
+  {%- endif %}
+</li>

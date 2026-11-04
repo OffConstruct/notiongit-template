@@ -1,0 +1,79 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "atelier",
+  "name": "Atelier",
+  "version": "1.0.0",
+  "summary": "The studio journal: an arch portrait, your bio read like a wall label, then work and dated notes.",
+  "description": "For makers who post often: potters, printmakers, daily sketchers. The home page sets your bio large beside an arch-shaped portrait, with a line pointing to your newest post. Selected work hangs in a masonry wall at its true proportions, and every post sits in a month-by-month journal with a large day numeral.",
+  "categories": ["artists"],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page", "tags"],
+  "fonts": [
+    {
+      "value": "fraunces",
+      "label": "Fraunces and Instrument Sans",
+      "google": "family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Instrument+Sans:wght@400;600",
+      "stacks": {
+        "body": "\"Instrument Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "display": "Fraunces, \"Iowan Old Style\", \"Palatino Linotype\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "figtree",
+      "label": "Fraunces and Figtree",
+      "google": "family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Figtree:wght@400;600",
+      "stacks": {
+        "body": "Figtree, system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "display": "Fraunces, \"Iowan Old Style\", \"Palatino Linotype\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "newsreader",
+      "label": "Newsreader and Instrument Sans",
+      "google": "family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Instrument+Sans:wght@400;600",
+      "stacks": {
+        "body": "\"Instrument Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "display": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f4efe6", "text": "#1a1714", "muted": "#5f584e" },
+    "dark": { "bg": "#1d1b18", "text": "#ece6da", "muted": "#a59d8f" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Bone" },
+        { "value": "dark", "label": "Kiln" } ] },
+    { "key": "accent", "type": "color", "label": "Glaze color", "role": "text", "default": "cobalt", "custom": true,
+      "presets": [
+        { "value": "cobalt", "label": "Cobalt", "light": "#2c4a9a", "dark": "#9fb4ec" },
+        { "value": "clay", "label": "Clay", "light": "#9a4422", "dark": "#e08a5f" },
+        { "value": "moss", "label": "Moss", "light": "#4f6b2a", "dark": "#a9c27f" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Typefaces", "default": "fraunces" },
+    { "key": "work_grid", "type": "select", "label": "Selected work", "default": "masonry",
+      "options": [
+        { "value": "masonry", "label": "Masonry, true proportions" },
+        { "value": "square", "label": "Square tiles, uncropped" },
+        { "value": "off", "label": "Hidden, journal only" } ] },
+    { "key": "avatar", "type": "select", "label": "Portrait shape", "default": "arch",
+      "options": [
+        { "value": "arch", "label": "Arch" },
+        { "value": "circle", "label": "Circle" },
+        { "value": "square", "label": "Square" },
+        { "value": "hidden", "label": "Hidden" } ] },
+    { "key": "currently", "type": "boolean", "label": "Show the newest post under the bio", "default": true },
+    { "key": "feed_dates", "type": "select", "label": "Journal dates", "default": "numeral",
+      "options": [
+        { "value": "numeral", "label": "Large day numeral" },
+        { "value": "inline", "label": "Small, before the title" } ] }
+  ]
+}
