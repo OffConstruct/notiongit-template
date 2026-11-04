@@ -4,7 +4,8 @@
 #
 # Rejects personal content and unsafe template artifacts: a CNAME file,
 # non-placeholder content in the sync-managed _pages/_posts/_data
-# directories, private AI-assistant files, obvious secret patterns, unpinned third-party actions, and a
+# directories (theme manifests in _data/themes/ excepted), private
+# AI-assistant files, obvious secret patterns, unpinned third-party actions, and a
 # README pin mention that disagrees with the workflow's actual pin. Matched
 # secret values are never printed; only the file path and rule name are
 # reported.
@@ -63,11 +64,13 @@ for rel in "${TRACKED_FILES[@]}"; do
 done
 
 # 2. _pages/, _posts/, and _data/ are sync-managed output. Only the
-# documented .gitkeep placeholder may be committed there.
+# documented .gitkeep placeholder may be committed there, plus theme
+# manifests at _data/themes/<id>.json (the sync never writes or deletes them).
 for rel in "${TRACKED_FILES[@]}"; do
   case "$rel" in
     _pages/*|_posts/*|_data/*)
       [[ "$(basename "$rel")" == ".gitkeep" ]] && continue
+      [[ "$rel" =~ ^_data/themes/[a-z]{2,24}\.json$ ]] && continue
       fail "$rel [sync-managed-output]: ${rel%%/*}/ must contain only the .gitkeep placeholder"
       ;;
   esac

@@ -38,11 +38,25 @@ jobs:
         if: github.repository == 'OffConstruct/notiongit-template'
         run: ./scripts/check-neutral-config.sh
 
+      # Theme packages are template-only: generated sites do not need to
+      # validate or build every theme on each sync.
+      - name: Check theme validator fixtures
+        if: github.repository == 'OffConstruct/notiongit-template'
+        run: ./scripts/test-check-themes.sh
+
+      - name: Check themes
+        if: github.repository == 'OffConstruct/notiongit-template'
+        run: python3 scripts/check-themes.py
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           ruby-version: '3.1'
           bundler-cache: true
+
+      - name: Build every theme with fixtures
+        if: github.repository == 'OffConstruct/notiongit-template'
+        run: ./scripts/build-theme --all --native
 
       - name: Build site
         run: bundle exec jekyll build

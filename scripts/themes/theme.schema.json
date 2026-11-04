@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inkdrafts.com/schemas/theme.schema.json",
+  "title": "InkDrafts theme manifest",
+  "description": "Manifest for one theme, stored at _data/themes/<id>.json. Validated by scripts/check-themes.py, which supports only a subset of JSON Schema keywords. Reference: docs/themes/README.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "name", "version", "summary", "description", "categories", "author", "license", "slots", "fonts", "palette", "tweaks"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z]{2,24}$" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 24, "pattern": "^[A-Za-z][A-Za-z0-9 .'-]*$" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "summary": { "type": "string", "minLength": 10, "maxLength": 120 },
+    "description": { "type": "string", "minLength": 10, "maxLength": 400 },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/category" }
+    },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 60 },
+        "url": { "type": "string", "maxLength": 200, "pattern": "^https://[A-Za-z0-9.-]+(/[A-Za-z0-9._~/%-]*)?$" }
+      }
+    },
+    "license": { "const": "MIT" },
+    "slots": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 8,
+      "items": { "enum": ["header", "footer", "home", "blog", "post-item", "post", "page", "tags"] }
+    },
+    "fonts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/pairing" }
+    },
+    "palette": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["light", "dark"],
+      "properties": {
+        "light": { "$ref": "#/$defs/swatch" },
+        "dark": { "$ref": "#/$defs/swatch" }
+      }
+    },
+    "tweaks": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 10,
+      "items": { "$ref": "#/$defs/tweak" }
+    }
+  },
+  "$defs": {
+    "category": {
+      "enum": ["developers", "designers", "writers", "researchers", "educators", "artists", "photographers", "musicians", "entrepreneurs", "marketing", "professionals"]
+    },
+    "hex": { "type": "string", "pattern": "^#[0-9a-f]{6}$" },
+    "value": { "type": "string", "pattern": "^[a-z0-9-]{1,24}$" },
+    "label": { "type": "string", "minLength": 1, "maxLength": 40 },
+    "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,23}$" },
+    "stack": { "type": "string", "pattern": "^[A-Za-z0-9 ,\"-]{1,200}$" },
+    "swatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bg", "text", "muted"],
+      "properties": {
+        "bg": { "$ref": "#/$defs/hex" },
+        "text": { "$ref": "#/$defs/hex" },
+        "muted": { "$ref": "#/$defs/hex" }
+      }
+    },
+    "pairing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "label", "google", "stacks"],
+      "properties": {
+        "value": { "$ref": "#/$defs/value" },
+        "label": { "$ref": "#/$defs/label" },
+        "google": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "maxLength": 300, "pattern": "^family=[A-Z][A-Za-z0-9+]*(:[a-z,]+@[0-9.,;]+)?(&family=[A-Z][A-Za-z0-9+]*(:[a-z,]+@[0-9.,;]+)?){0,2}$" }
+          ]
+        },
+        "stacks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["body", "display", "mono"],
+          "properties": {
+            "body": { "$ref": "#/$defs/stack" },
+            "display": { "$ref": "#/$defs/stack" },
+            "mono": { "$ref": "#/$defs/stack" }
+          }
+        }
+      }
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "label"],
+      "properties": {
+        "value": { "$ref": "#/$defs/value" },
+        "label": { "$ref": "#/$defs/label" }
+      }
+    },
+    "preset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "label", "light", "dark"],
+      "properties": {
+        "value": { "$ref": "#/$defs/value" },
+        "label": { "$ref": "#/$defs/label" },
+        "light": { "$ref": "#/$defs/hex" },
+        "dark": { "$ref": "#/$defs/hex" },
+        "on": { "$ref": "#/$defs/hex" }
+      }
+    },
+    "tweak": {
+      "oneOf": [
+        { "$ref": "#/$defs/tweak_select" },
+        { "$ref": "#/$defs/tweak_boolean" },
+        { "$ref": "#/$defs/tweak_color" },
+        { "$ref": "#/$defs/tweak_range" },
+        { "$ref": "#/$defs/tweak_font" }
+      ]
+    },
+    "tweak_select": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "type", "label", "default", "options"],
+      "properties": {
+        "key": { "$ref": "#/$defs/key" },
+        "type": { "const": "select" },
+        "label": { "$ref": "#/$defs/label" },
+        "default": { "$ref": "#/$defs/value" },
+        "options": { "type": "array", "minItems": 2, "maxItems": 6, "items": { "$ref": "#/$defs/option" } }
+      }
+    },
+    "tweak_boolean": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "type", "label", "default"],
+      "properties": {
+        "key": { "$ref": "#/$defs/key" },
+        "type": { "const": "boolean" },
+        "label": { "$ref": "#/$defs/label" },
+        "default": { "type": "boolean" }
+      }
+    },
+    "tweak_color": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "type", "label", "default", "presets", "custom", "role"],
+      "properties": {
+        "key": { "$ref": "#/$defs/key" },
+        "type": { "const": "color" },
+        "label": { "$ref": "#/$defs/label" },
+        "default": { "$ref": "#/$defs/value" },
+        "custom": { "type": "boolean" },
+        "role": { "enum": ["text", "large", "surface"] },
+        "presets": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/preset" } }
+      }
+    },
+    "tweak_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "type", "label", "default", "min", "max", "step", "unit"],
+      "properties": {
+        "key": { "$ref": "#/$defs/key" },
+        "type": { "const": "range" },
+        "label": { "$ref": "#/$defs/label" },
+        "default": { "type": "number" },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "step": { "type": "number", "minimum": 0.001 },
+        "unit": { "enum": ["px", "rem", "em", "ch", "%", ""] }
+      }
+    },
+    "tweak_font": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "type", "label", "default"],
+      "properties": {
+        "key": { "const": "font" },
+        "type": { "const": "font" },
+        "label": { "$ref": "#/$defs/label" },
+        "default": { "$ref": "#/$defs/value" }
+      }
+    }
+  }
+}

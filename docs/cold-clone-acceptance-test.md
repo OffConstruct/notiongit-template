@@ -51,7 +51,7 @@ project-site (`owner.github.io/reponame/`) paths. This acceptance test
 doesn't exercise that backend (out of scope per issue #8), so a raw clone
 deployed to a project-site URL has a self-inflicted broken stylesheet: every
 `relative_url`-based asset link in `_layouts`/`_includes` prepends
-`site.baseurl`, which is empty, producing an absolute `/assets/css/main.css`
+`site.baseurl`, which is empty, producing an absolute `/assets/themes/classic/theme.css`
 that 404s at the Pages domain root instead of the repo's subpath.
 
 `--simulate-provisioning` patches `_config.yml`'s `url`/`baseurl` in the
@@ -75,8 +75,8 @@ per the cleanup step below).
 | `sync-notion.yml`, zero secrets | ✅ success, 17s, no-op (run 33698564865) — see finding 1 |
 | GitHub Pages | ✅ `status: built`, legacy build from `main`/`/`, `https://<owner>.github.io/notiongit-template-coldclone-20260902/` → HTTP 200 |
 | Empty state renders | ✅ "SETUP IN PROGRESS" / "Your site is almost ready" / "Navigation will appear after the first sync" all present |
-| Stylesheet, unpatched `_config.yml` | ❌ `/assets/css/main.css` → HTTP 404 (expected — see `--simulate-provisioning` above) |
-| Stylesheet, after `--simulate-provisioning` | ✅ `/notiongit-template-coldclone-20260902/assets/css/main.css` → HTTP 200, `text/css` |
+| Stylesheet, unpatched `_config.yml` | ❌ `/assets/css/main.css` → HTTP 404 (expected — see `--simulate-provisioning` above; the stylesheet has since moved to `/assets/themes/classic/theme.css`) |
+| Stylesheet, after `--simulate-provisioning` | ✅ `/notiongit-template-coldclone-20260902/assets/css/main.css` → HTTP 200, `text/css` (path as of this run; now `assets/themes/classic/theme.css`) |
 
 Total wall-clock time for the run, repo creation to final Pages verification:
 ~16 minutes, dominated by two GitHub Pages build cycles (~35–40s each) and

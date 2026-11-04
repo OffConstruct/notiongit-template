@@ -129,10 +129,12 @@ PAGES_URL="$(gh api "repos/${TARGET}/pages" --jq '.html_url')"
 log "Checking ${PAGES_URL}"
 HTTP_CODE="$(curl -s -o /dev/null -w '%{http_code}' "$PAGES_URL")"
 echo "Pages URL: $PAGES_URL -> HTTP $HTTP_CODE"
-CSS_HREF="$(curl -s "$PAGES_URL" | grep -Eo '/[^"]*main\.css' | head -1)"
+CSS_HREF="$(curl -s "$PAGES_URL" | grep -Eo '/([^"]*/)?assets/themes/[a-z]+/theme\.css' | head -1)"
 if [[ -n "$CSS_HREF" ]]; then
   CSS_CODE="$(curl -s -o /dev/null -w '%{http_code}' "https://$(echo "$PAGES_URL" | sed -E 's#https?://([^/]+)/.*#\1#')${CSS_HREF}")"
   echo "Stylesheet ${CSS_HREF} -> HTTP $CSS_CODE"
+else
+  echo "Stylesheet: no theme stylesheet link found on the page"
 fi
 
 log "Summary"

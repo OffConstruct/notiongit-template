@@ -79,6 +79,29 @@ echo "title: My Site" > "$dir"/_data/home.yml
 stage "$dir"
 expect_fail "populated _data/ (sync-managed output)" "$dir"
 
+dir="$work/theme-manifest"; clean_case "$dir"
+mkdir -p "$dir"/_data/themes
+echo '{"id": "quire"}' > "$dir"/_data/themes/quire.json
+stage "$dir"
+expect_pass "theme manifest in _data/themes/" "$dir"
+
+dir="$work/theme-manifest-nested"; clean_case "$dir"
+mkdir -p "$dir"/_data/themes/x
+echo '{}' > "$dir"/_data/themes/x/y.json
+stage "$dir"
+expect_fail "nested file under _data/themes/" "$dir"
+
+dir="$work/data-other-json"; clean_case "$dir"
+echo '{}' > "$dir"/_data/other.json
+stage "$dir"
+expect_fail "other JSON file in _data/" "$dir"
+
+dir="$work/theme-manifest-bad-name"; clean_case "$dir"
+mkdir -p "$dir"/_data/themes
+echo '{}' > "$dir"/_data/themes/Quire2.json
+stage "$dir"
+expect_fail "theme manifest with an invalid id" "$dir"
+
 
 dir="$work/assistant-file"; clean_case "$dir"
 echo "instructions" > "$dir"/CLAUDE.md
