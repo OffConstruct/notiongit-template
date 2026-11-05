@@ -1,0 +1,26 @@
+name: "Rowan Vale"
+tagline: "Painter and printmaker. I copy old masters to learn, and paint the harbour to live."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "Instagram"
+    url: "https://instagram.example/rowanvale"
+  - name: "Shop"
+    url: "https://shop.example/rowanvale"
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "RSS"
+    url: "{{BASEURL}}/feed.xml"
+bio: |
+  I paint the harbour at low tide, make woodblock prints, and spend one day a
+  week copying paintings I love to learn how they were made. See the
+  [studio journal]({{BASEURL}}/blog/) or [what is on the easel]({{BASEURL}}/now/).
+
+  ## Exhibitions
+
+  - 2026: Low Water, the harbour gallery
+  - 2025: Open studios, north coast
+
+  ## Contact
+
+  Prints and commissions: [rowan@example.com](mailto:rowan@example.com)
+notion_id: "fixture-home"

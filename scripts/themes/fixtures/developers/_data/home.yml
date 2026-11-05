@@ -1,0 +1,31 @@
+name: "Rowan Vale"
+tagline: "Software developer. I maintain Tidewatch, a small open-source library that predicts the tide."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "GitHub"
+    url: "https://github.example/rowanvale"
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "Mastodon"
+    url: "https://social.example/@rowanvale"
+  - name: "CV"
+    url: "{{FIXTURES}}/rowan-vale-cv.pdf"
+  - name: "RSS"
+    url: "{{BASEURL}}/feed.xml"
+bio: |
+  I build small, dependable tools and write about how they work. Most of my
+  time goes into [Tidewatch]({{BASEURL}}/projects/), a tide-prediction library
+  used by harbour offices and sailing clubs. Read the [notes]({{BASEURL}}/blog/)
+  or see [what I am working on now]({{BASEURL}}/now/).
+
+  ## Work
+
+  Ten years of web and data work, mostly for small public organisations. I
+  like boring technology, good error messages and documentation people read.
+
+  ## Contact
+
+  - Open to: contract work, three days a week
+  - Talks: testing, open source maintenance
+  - Email: [rowan@example.com](mailto:rowan@example.com)
+notion_id: "fixture-home"

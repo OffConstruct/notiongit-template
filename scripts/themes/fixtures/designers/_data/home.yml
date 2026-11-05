@@ -1,0 +1,27 @@
+name: "Rowan Vale"
+tagline: "Graphic designer. Posters, signs and identities for small harbour businesses."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "Portfolio PDF"
+    url: "{{FIXTURES}}/rowan-vale-cv.pdf"
+  - name: "Instagram"
+    url: "https://instagram.example/rowanvale"
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "RSS"
+    url: "{{BASEURL}}/feed.xml"
+bio: |
+  I design posters, signs and identities for cafés, ferries and festivals
+  along the north coast. See the [selected work]({{BASEURL}}/projects/) or read
+  the [studio notes]({{BASEURL}}/blog/).
+
+  ## Studio
+
+  A one-person studio above the net loft. I work with small teams who want
+  something simple, readable and a little bit bold.
+
+  ## Contact
+
+  - New projects: from April
+  - Email: [rowan@example.com](mailto:rowan@example.com)
+notion_id: "fixture-home"

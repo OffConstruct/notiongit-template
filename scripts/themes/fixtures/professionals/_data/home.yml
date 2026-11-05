@@ -1,0 +1,27 @@
+name: "Rowan Vale"
+tagline: "Harbour planning consultant. I help councils and small ports plan for the next fifty years."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "CV (PDF)"
+    url: "{{FIXTURES}}/rowan-vale-cv.pdf"
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "LinkedIn"
+    url: "https://linkedin.example/in/rowanvale"
+  - name: "RSS"
+    url: "{{BASEURL}}/feed.xml"
+bio: |
+  I advise councils and small ports on moorings, access and flood risk. Twenty
+  years of experience, plain-language reports, and no surprises on the
+  invoice. Read the [case studies]({{BASEURL}}/blog/) or [get in touch](mailto:rowan@example.com).
+
+  ## Services
+
+  - Harbour surveys and access plans
+  - Flood-risk reviews for small ports
+  - Training for harbour staff
+
+  ## Credentials
+
+  Chartered planner. Member of the Coastal Towns Forum.
+notion_id: "fixture-home"

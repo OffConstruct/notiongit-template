@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
 # Exports static theme previews for the worker (inkdrafts.com/previews/).
-# Builds each theme with --preview under <base>/<id>, copies an allowlist of
-# pages plus the theme's assets, shares fixture images per category under
+# Builds each theme with --preview under <base>/<id>, copies every built
+# page plus the theme's assets, shares fixture images per category under
 # <base>/_fixtures/<category>/, and writes DIR/index.json. Deterministic: two
 # runs on the same clean tree produce identical files.
 #
@@ -59,6 +59,8 @@ import json, pathlib, shutil, subprocess, sys
 
 repo, build, out, themes = sys.argv[1:]
 repo, build, out = map(pathlib.Path, (repo, build, out))
+# The pages the theme audit checks. Every other built page is exported too,
+# so no link inside a preview leads to a missing page.
 pages = [
     "index.html",
     "blog/index.html",
@@ -76,11 +78,15 @@ for theme_id in sorted(filter(None, themes.split(","))):
     dest = out / theme_id
     if dest.exists():
         shutil.rmtree(dest)
-    for page in pages:
+    built = sorted(str(f.relative_to(site)) for f in site.rglob("index.html") if f.relative_to(site).parts[0] != "assets")
+    if (site / "feed.xml").is_file():
+        built.append("feed.xml")
+    for page in built:
         target = dest / page
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(site / page, target)
     shutil.copytree(site / "assets" / "themes" / theme_id, dest / "assets" / "themes" / theme_id)
+    shutil.copytree(site / "assets" / "ink", dest / "assets" / "ink")
     (dest / "assets" / "ink-preview").mkdir(parents=True)
     shutil.copyfile(site / "assets" / "ink-preview" / "preview.js", dest / "assets" / "ink-preview" / "preview.js")
     categories.add(manifest["categories"][0])

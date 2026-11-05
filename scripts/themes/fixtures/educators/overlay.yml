@@ -1,0 +1,3 @@
+# Fixture overlay options, read by scripts/build-theme. Not copied into the site.
+# true: drop the base posts, so the preview shows only this category's posts.
+replace_base_posts: true

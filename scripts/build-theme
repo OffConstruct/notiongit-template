@@ -32,7 +32,10 @@ baseurl=""
 fixtures_base=""
 out=""
 serve=""
+# INKDRAFTS_BUILD_NATIVE=1 is --native for every build, including the ones
+# export-previews and the worker's theme audit start (CI without Docker).
 native=false
+[[ "${INKDRAFTS_BUILD_NATIVE:-}" == 1 ]] && native=true
 keep=false
 all=false
 prepare=false
@@ -162,8 +165,15 @@ mkdir -p "$src"
 
 primary_category="$(python3 -c 'import json,sys; print((json.load(open(sys.argv[1])).get("categories") or [""])[0])' "$manifest")"
 cp -R "$fixtures_root/base/." "$src/"
-if [[ -n "$primary_category" && -d "$fixtures_root/$primary_category" ]]; then
-  cp -R "$fixtures_root/$primary_category/." "$src/"
+overlay="$fixtures_root/$primary_category"
+if [[ -n "$primary_category" && -d "$overlay" ]]; then
+  # An overlay with its own complete set of posts drops the base essays, so a
+  # category's preview shows only that kind of site.
+  if [[ -f "$overlay/overlay.yml" ]] && grep -Eq '^replace_base_posts:[[:space:]]*true[[:space:]]*$' "$overlay/overlay.yml"; then
+    find "$src/_posts" -maxdepth 1 -name '*.md' -delete
+  fi
+  cp -R "$overlay/." "$src/"
+  rm -f "$src/overlay.yml"
 fi
 [[ -n "$fixtures_base" ]] || fixtures_base="$baseurl/assets/fixtures"
 

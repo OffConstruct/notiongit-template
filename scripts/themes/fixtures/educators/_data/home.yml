@@ -1,0 +1,26 @@
+name: "Rowan Vale"
+tagline: "Science teacher at the harbour school. Lesson plans, field trips and notes for other teachers."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "Lesson plans PDF"
+    url: "{{FIXTURES}}/rowan-vale-cv.pdf"
+  - name: "Mastodon"
+    url: "https://social.example/@rowanvale"
+  - name: "RSS"
+    url: "{{BASEURL}}/feed.xml"
+bio: |
+  I teach science to ten- to fourteen-year-olds in a harbour town, and I share
+  every lesson here so other teachers can use them. Start with the
+  [lessons]({{BASEURL}}/blog/) or see [what we are doing this term]({{BASEURL}}/now/).
+
+  ## For teachers
+
+  Every lesson is free to use and change. Most take one hour and need nothing
+  more than a whiteboard and a window.
+
+  ## Contact
+
+  Questions and corrections: [rowan@example.com](mailto:rowan@example.com)
+notion_id: "fixture-home"

@@ -1,0 +1,28 @@
+name: "Rowan Vale"
+tagline: "Founder of Moorings, the booking app for small harbours. I write about building it in public."
+profile_picture: "{{FIXTURES}}/portrait.jpg"
+social_links:
+  - name: "Moorings"
+    url: "https://moorings.example"
+  - name: "Email"
+    url: "mailto:rowan@example.com"
+  - name: "Mastodon"
+    url: "https://social.example/@rowanvale"
+  - name: "Newsletter"
+    url: "https://letters.example/rowanvale"
+  - name: "RSS"
+    url: "{{BASEURL}}/feed.xml"
+bio: |
+  I run Moorings, a small company that helps harbours let visiting boats book
+  a mooring online. Two people, no investors, profitable since last spring.
+  Read the [monthly notes]({{BASEURL}}/blog/) or see [what I am doing now]({{BASEURL}}/now/).
+
+  ## Ventures
+
+  - Moorings: live, about 120 harbours
+  - Tide tables print shop: sold in 2024
+
+  ## Contact
+
+  Partnerships and press: [rowan@example.com](mailto:rowan@example.com)
+notion_id: "fixture-home"
