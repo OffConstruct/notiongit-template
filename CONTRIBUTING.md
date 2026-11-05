@@ -1,6 +1,6 @@
-# Contributing to NotionGit template
+# Contributing to the InkDrafts site template
 
-Thanks for helping maintain the reusable NotionGit Jekyll template. Keep
+Thanks for helping maintain the reusable InkDrafts Jekyll template. Keep
 changes focused on the template itself: a fresh repository generated from it
 must build with no personal content, custom domain, secrets, or required
 Notion data.
