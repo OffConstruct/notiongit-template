@@ -47,7 +47,8 @@ checkout. The one exception is theme manifests at `_data/themes/<id>.json`,
 which the sync never writes or deletes. Theme fixtures live in
 `scripts/themes/fixtures/`. Do not add `CNAME`, personal posts or pages, populated generated
 data, private workspace content, expiring Notion-hosted image URLs, tokens,
-private keys, or private assistant configuration.
+private keys, or private assistant configuration (`AGENTS.md`, which only
+points at the theme docs, is the one allowed assistant file).
 
 The browser runtime is deliberately pure HTML and CSS. Do not add client-side
 JavaScript. Jekyll extensions must be available in GitHub Pages safe mode and

@@ -78,10 +78,11 @@ done
 
 
 # 4. Private AI-assistant files must not be committed to the template.
+# AGENTS.md is allowed: the template ships one that points coding agents at
+# the theme docs, and it holds no private configuration.
 PRIVATE_ASSISTANT_NAMES=(
   "CLAUDE.md"
   ".claude"
-  "AGENTS.md"
   ".cursor"
   ".cursorrules"
   ".codex"

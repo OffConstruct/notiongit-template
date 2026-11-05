@@ -28,7 +28,6 @@ Thumbs.db
 # Private AI-assistant files — never commit these (see scripts/check-hygiene.sh)
 CLAUDE.md
 .claude/
-AGENTS.md
 .cursor/
 .cursorrules
 .codex/

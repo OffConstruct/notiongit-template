@@ -119,6 +119,17 @@ echo "instructions" > "$dir"/claude.md
 stage "$dir"
 expect_fail "private assistant file, case-variant (claude.md)" "$dir"
 
+dir="$work/agents-file"; clean_case "$dir"
+echo "See THEMES.md." > "$dir"/AGENTS.md
+stage "$dir"
+expect_pass "AGENTS.md (the public guide for coding agents)" "$dir"
+
+dir="$work/agents-file-with-claude"; clean_case "$dir"
+echo "See THEMES.md." > "$dir"/AGENTS.md
+echo "instructions" > "$dir"/CLAUDE.md
+stage "$dir"
+expect_fail "CLAUDE.md next to an allowed AGENTS.md" "$dir"
+
 
 # Secret fixtures below use clearly fake, non-functional values that only
 # match the expected format.

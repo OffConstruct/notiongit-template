@@ -6,9 +6,9 @@ The site's look is a theme, chosen in the `inkdrafts:` block of `_config.yml`;
 see [`THEMES.md`](THEMES.md) for the themes and how they work.
 
 **Building or changing a theme, as a person or a coding agent? Start at
-[`THEMES.md`](THEMES.md).** This template keeps no `AGENTS.md` or
-`CLAUDE.md` (the hygiene scan forbids assistant files, so none reach the
-sites generated from it); `THEMES.md` is the entry point instead.
+[`THEMES.md`](THEMES.md).** Coding agents also get a short
+[`AGENTS.md`](AGENTS.md) that points there. Other assistant files, such as
+`CLAUDE.md` or `.cursorrules`, are still forbidden by the hygiene scan.
 
 The reusable template code is released under the [MIT License](LICENSE). See
 [`CONTRIBUTING.md`](CONTRIBUTING.md) for maintainer setup, generated-file
