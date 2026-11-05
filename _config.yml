@@ -1,7 +1,7 @@
 # Neutral template defaults. Provisioning patches url/baseurl; the Notion sync
 # may replace title and author.name from the published home page.
-title: "NotionGit"
-description: "A Notion-powered Jekyll site."
+title: "My website"
+description: "A personal website, written in Notion."
 url: ""
 baseurl: ""
 
@@ -67,3 +67,6 @@ exclude:
   - vendor/
   - docs/
   - THEMES.md
+  - AGENTS.md
+  - README.md
+  - CONTRIBUTING.md

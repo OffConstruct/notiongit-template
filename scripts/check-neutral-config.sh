@@ -21,8 +21,8 @@ require_line() {
   fi
 }
 
-require_line "title" '^[[:space:]]*title:[[:space:]]*"NotionGit"[[:space:]]*$'
-require_line "description" '^[[:space:]]*description:[[:space:]]*"A Notion-powered Jekyll site\."[[:space:]]*$'
+require_line "title" '^[[:space:]]*title:[[:space:]]*"My website"[[:space:]]*$'
+require_line "description" '^[[:space:]]*description:[[:space:]]*"A personal website, written in Notion\."[[:space:]]*$'
 require_line "url" '^[[:space:]]*url:[[:space:]]*""[[:space:]]*$'
 require_line "baseurl" '^[[:space:]]*baseurl:[[:space:]]*""[[:space:]]*$'
 require_line "author name" '^[[:space:]]*name:[[:space:]]*""[[:space:]]*$'
