@@ -6,10 +6,8 @@ social_links:
     url: "https://letters.example/rowanvale"
   - name: "Email"
     url: "mailto:rowan@example.com"
-  - name: "Mastodon"
-    url: "https://social.example/@rowanvale"
-  - name: "GitHub"
-    url: "https://github.example/rowanvale"
+  - name: "Instagram"
+    url: "https://instagram.example/rowanvale"
   - name: "RSS"
     url: "{{BASEURL}}/feed.xml"
 bio: |

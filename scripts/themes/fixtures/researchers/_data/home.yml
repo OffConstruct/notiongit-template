@@ -6,8 +6,6 @@ social_links:
     url: "https://scholar.example.org/citations?user=rowanvale"
   - name: "ORCID"
     url: "https://orcid.example.org/0000-0001-0000-0000"
-  - name: "GitHub"
-    url: "https://github.example/rowanvale"
   - name: "Email"
     url: "mailto:rowan@example.com"
   - name: "CV"

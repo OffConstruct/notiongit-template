@@ -15,10 +15,10 @@ notes, and now and then a review of a book I could not stop thinking about.
 
 ## Colophon
 
-This site is written in Notion and published with Jekyll on GitHub Pages.
+This site is written in Notion and published with InkDrafts.
 
 | Item | Detail |
 | --- | --- |
-| Editor | Notion |
-| Build | Jekyll, GitHub Pages |
+| Written in | Notion |
+| Published with | InkDrafts |
 | Fonts | Chosen by the theme |

@@ -6,8 +6,8 @@ social_links:
     url: "mailto:rowan@example.com"
   - name: "Lesson plans PDF"
     url: "{{FIXTURES}}/rowan-vale-cv.pdf"
-  - name: "Mastodon"
-    url: "https://social.example/@rowanvale"
+  - name: "Newsletter for parents"
+    url: "https://letters.example/rowanvale"
   - name: "RSS"
     url: "{{BASEURL}}/feed.xml"
 bio: |
