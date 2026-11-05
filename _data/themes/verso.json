@@ -7,6 +7,7 @@
   "summary": "For photographers and artists: a short text beside one large photo, plus a list of your work.",
   "description": "Like the left-hand page of a photobook. Your name, menu and a line of bio stay on one side, one large photo faces them, shown whole, and every project is listed by title and year. Pointing at a title shows its photo. For fine-art and documentary photographers.",
   "categories": ["photographers", "artists"],
+  "audience": ["personal"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

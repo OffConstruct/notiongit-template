@@ -7,6 +7,7 @@
   "summary": "For designers: your name and bio on the left, and every post as a row in a neat index on the right.",
   "description": "A tidy, precise page. Your name, bio and links stay on the left while visitors scroll; selected work and writing run on the right as neat tables of year, title and topics, each showing how many items it has. One spot color marks lines and the chosen topic. For designers who like order.",
   "categories": ["designers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page", "tags"],

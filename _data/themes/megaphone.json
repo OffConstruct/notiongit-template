@@ -7,6 +7,7 @@
   "summary": "For marketers and creators: your tagline as a giant headline on warm black, with one bright button under it.",
   "description": "Built around one loud sentence. Your tagline fills the first screen in tall capitals with one bright button under it. Numbered sections follow for About, Featured and Latest, then a bold quote from your bio. Dark by default, with a cream light mode. For creators and personal brands.",
   "categories": ["marketing", "entrepreneurs"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post"],

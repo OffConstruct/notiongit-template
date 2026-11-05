@@ -7,6 +7,7 @@
   "summary": "For filmmakers and photographers: one wide cinematic photo with your name across it, then your work in wide bands.",
   "description": "A cinematic home on deep black. The first screen is one wide, film-shaped photo with your name in tall capitals across it. Below it, a short intro and each post as a full-width band with its title over the picture. For filmmakers, cinematographers and adventure photographers.",
   "categories": ["photographers", "musicians"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

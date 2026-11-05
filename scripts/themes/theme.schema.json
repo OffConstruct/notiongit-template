@@ -5,7 +5,7 @@
   "description": "Manifest for one theme, stored at _data/themes/<id>.json. Validated by scripts/check-themes.py, which supports only a subset of JSON Schema keywords. Reference: docs/themes/README.md.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "id", "name", "version", "summary", "description", "categories", "author", "license", "slots", "fonts", "palette", "tweaks"],
+  "required": ["schema_version", "id", "name", "version", "summary", "description", "categories", "audience", "author", "license", "slots", "fonts", "palette", "tweaks"],
   "properties": {
     "$schema": { "type": "string" },
     "schema_version": { "const": 1 },
@@ -20,6 +20,12 @@
       "maxItems": 3,
       "uniqueItems": true,
       "items": { "$ref": "#/$defs/category" }
+    },
+    "audience": {
+      "type": "array",
+      "maxItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/audience" }
     },
     "author": {
       "type": "object",
@@ -63,6 +69,7 @@
     "category": {
       "enum": ["developers", "designers", "writers", "researchers", "educators", "artists", "photographers", "musicians", "entrepreneurs", "marketing", "professionals"]
     },
+    "audience": { "enum": ["personal"] },
     "hex": { "type": "string", "pattern": "^#[0-9a-f]{6}$" },
     "value": { "type": "string", "pattern": "^[a-z0-9-]{1,24}$" },
     "label": { "type": "string", "minLength": 1, "maxLength": 40 },

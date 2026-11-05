@@ -7,6 +7,7 @@
   "summary": "For speakers and coaches: your portrait on a color panel, one big promise and a numbered list of your talks.",
   "description": "Laid out like a printed event program. Your portrait sits on a color panel beside a dark panel that holds your one big promise. Your pages follow as a numbered running order, then your writing as a lead story and a list, with one contact button. For coaches, speakers and workshop leaders.",
   "categories": ["educators", "professionals"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

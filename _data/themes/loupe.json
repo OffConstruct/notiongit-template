@@ -7,6 +7,7 @@
   "summary": "For photographers: a tight grid of whole, uncropped photos on white, numbered like film frames.",
   "description": "Your photos as a contact sheet. A top bar with your portrait or initials, a short bio, your featured photos marked in red, then every post as a whole, uncropped photo with its number and month. Visitors can filter by topic or switch to a list by date. For working photographers and photo journals.",
   "categories": ["photographers", "designers"],
+  "audience": ["personal"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

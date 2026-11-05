@@ -49,7 +49,7 @@ CSS styles.
 
 ## 3. Edit your three paths
 
-1. `_data/themes/quire.json`: summary, description, fonts, palette, tweaks.
+1. `_data/themes/quire.json`: summary, description, audience, fonts, palette, tweaks.
    Keep `mode`, `accent` and `webfonts`.
 2. `assets/themes/quire/theme.css`: in the `:root` block, set `--ink-bg`,
    `--ink-text` and `--ink-muted` to `palette.light`'s hexes. In both dark

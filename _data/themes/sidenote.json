@@ -7,6 +7,7 @@
   "summary": "For researchers and essayists: an elegant paper look with dates and links in the margins.",
   "description": "An elegant paper page with notes in the margins. Your bio reads like the summary of an essay, with its headings in the left margin and your links in the right. Your writing is listed by year with dates beside each title, and posts get neat tables and a Notes section. For essayists, professors and students.",
   "categories": ["researchers", "writers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "home", "blog", "post", "page"],

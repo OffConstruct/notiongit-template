@@ -7,6 +7,7 @@
   "summary": "For artists and makers: an arched portrait, a short bio, then your work and dated journal notes.",
   "description": "For makers who post often: potters, printmakers, daily sketchers. Your bio sits large beside an arch-shaped portrait, with a pointer to your newest post. Selected work hangs as a wall of pictures at their real shapes, and every post sits in a month-by-month journal with a large day number.",
   "categories": ["artists"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page", "tags"],

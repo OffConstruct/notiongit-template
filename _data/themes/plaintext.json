@@ -7,6 +7,7 @@
   "summary": "For writers who want it simple: one font, one color and a list of everything you have written, by year.",
   "description": "One typeface on a page tinted with a single color. The home page is your bio, then two lists side by side: Writing and Featured. The archive lists every post by year with its date. For people who write rarely, at length, and want to be read.",
   "categories": ["developers", "writers"],
+  "audience": ["personal"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "home", "blog", "post", "page"],

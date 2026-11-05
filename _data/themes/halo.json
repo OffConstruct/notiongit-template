@@ -7,6 +7,7 @@
   "summary": "For bands and DJs: a concert poster with your name in giant letters, your latest releases and upcoming dates.",
   "description": "A dark concert poster. Your name sits across the top in wide capitals, your newest release stands on bands of color, then your upcoming dates, a row of releases and your links set large. Every cover is shown in black and one bright color, so any artwork fits. Tag a post live to list it under Dates. For bands, DJs and electronic producers.",
   "categories": ["musicians"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "home", "blog", "post", "page"],

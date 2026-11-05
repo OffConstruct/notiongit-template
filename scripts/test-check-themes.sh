@@ -89,6 +89,8 @@ cases = [
     ("manifest-parse", write("_data/themes/notes.txt", "x")),
     ("manifest-schema", edit(lambda d: d.update(summary="short"))),
     ("manifest-schema", edit(lambda d: d.update(extra=True))),
+    ("manifest-schema", edit(lambda d: d.update(audience=["family"]))),
+    ("manifest-schema", edit(lambda d: d.pop("audience"))),
     ("manifest-schema", edit(lambda d: d.update(description="A description with <b>markup</b> in it."))),
     ("manifest-schema", edit(lambda d: d["fonts"][0]["stacks"].update(body="Georgia; } body { color: red"))),
     ("id-filename", edit(lambda d: d.update(id="other"))),

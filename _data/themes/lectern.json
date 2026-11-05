@@ -7,6 +7,7 @@
   "summary": "For teachers and researchers: a course handout with your writing listed by date and notes in the margin.",
   "description": "One calm column, like a well-made course handout: your name, tagline and bio, a line of topics to read by, then your writing listed with dates in the margin. Posts read like lecture notes, with footnotes beside the text on wide screens. For teachers, lecturers and tutors.",
   "categories": ["educators", "researchers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

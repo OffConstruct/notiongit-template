@@ -7,6 +7,7 @@
   "summary": "For founders building in public: your name poster-size, a highlighted tagline and bold cards for featured work.",
   "description": "For makers, coaches and small businesses that want to be noticed. Your name is set poster-size, your tagline sits under a highlighter stripe, featured posts become bold two-color cards, and a band near the end invites readers to follow along.",
   "categories": ["entrepreneurs", "marketing"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

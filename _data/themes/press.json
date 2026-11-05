@@ -7,6 +7,7 @@
   "summary": "For authors and researchers: a home page like a cloth-bound book cover, and calm pages for reading.",
   "description": "The home page is a book cover: one cloth color, one foil-like ink, your name in large classic letters, your links, and featured posts as book spines. Posts open on cream paper beside a printed cover panel. Works with no pictures at all. For authors and researchers.",
   "categories": ["researchers", "writers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "home", "blog", "post", "page"],

@@ -7,6 +7,7 @@
   "summary": "For academics and labs: your photo, links to your profiles and papers, then your sections in a neat grid.",
   "description": "A clear, orderly page made with an easy-to-read typeface. It opens with who you are: your role, a short statement of your research, links to your profiles and papers, and your photo. Numbered sections follow for selected work, writing, your other pages and About. For professors, lab leads and students.",
   "categories": ["researchers", "educators"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "home", "blog", "post", "page"],

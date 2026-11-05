@@ -7,6 +7,7 @@
   "summary": "For journalists and writers: a newspaper-style front page with your lead story, bio and stories grouped by topic.",
   "description": "A newspaper front page and clip file. Your name sits between double lines like a masthead, your latest featured story leads beside an About the author box, and each topic becomes its own section of headlines. Stories you published elsewhere name the outlet and link to it. For journalists, critics and columnists.",
   "categories": ["writers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "home", "blog", "post", "page"],

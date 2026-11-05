@@ -7,6 +7,7 @@
   "summary": "For designers and writers: one quiet column with your name, selected work and writing, and one link color.",
   "description": "A letter-like home in one narrow column: your name and tagline, your bio as plain text, then sections for selected work, writing and links elsewhere. Posts are simple title and date rows, and long reads are set for comfortable reading. For designers and writers whose taste shows in the details.",
   "categories": ["designers"],
+  "audience": ["personal"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page", "tags"],

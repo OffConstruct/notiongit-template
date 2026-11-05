@@ -7,6 +7,7 @@
   "summary": "For founders and makers: your profile beside your projects, each with its status, and a list of your writing.",
   "description": "For founders who run several projects at once. Dark by default, with fine lines like a modern dashboard. Featured posts become project cards, and the first topic of each shows as its status, such as live, sold or paused. Every post is listed in a table with its date and topics.",
   "categories": ["entrepreneurs", "developers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

@@ -7,6 +7,7 @@
   "summary": "For developers: your name in huge letters on a dark screen, then your posts in a code-style font.",
   "description": "Dark and bold. Your name fills the top of the screen in huge letters, and everything else looks like code on a terminal, with one bright accent color. Your bio splits into labeled blocks, and your posts run as a list of titles, dates, topics and one-line summaries. For developers and technical writers.",
   "categories": ["developers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "home", "blog", "post", "page"],

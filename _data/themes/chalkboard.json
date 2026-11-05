@@ -7,6 +7,7 @@
   "summary": "For teachers: a dark board with your portrait, easy-to-read lesson cards and topics to pick from.",
   "description": "A dark board with one highlighter color. Your tagline is the headline, marked like the key line on a board, next to your portrait. Readers pick a topic, start with one featured lesson, then browse lesson cards, all in a typeface made to be easy to read. For teachers, course creators and tutors.",
   "categories": ["educators", "developers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

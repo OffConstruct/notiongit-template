@@ -7,6 +7,7 @@
   "summary": "For founders and writers: a two-part opening line, a bio written as a letter and your posts listed by year.",
   "description": "For founders whose work speaks for itself. The home page reads like a letter: your name and tagline as one quiet sentence, your bio, a Start here line of featured posts, then every post listed by title under its year. One typeface, one accent color, nothing extra.",
   "categories": ["entrepreneurs", "writers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

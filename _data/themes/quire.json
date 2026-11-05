@@ -7,6 +7,7 @@
   "summary": "For writers and essayists: a home page laid out like a book, with a preface and a contents page.",
   "description": "A home page laid out like the first pages of a book: a title page, a preface, then a numbered contents list. Featured posts with pictures sit on a shelf, one per row, and posts open like chapters with a large first letter. For writers and essayists.",
   "categories": ["writers"],
+  "audience": ["personal"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["home", "blog", "post", "page"],

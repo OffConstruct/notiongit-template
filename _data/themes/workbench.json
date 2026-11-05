@@ -7,6 +7,7 @@
   "summary": "For developers: your profile beside a featured post, post cards, and every topic with its count.",
   "description": "A tidy home for people with a lot to show. Your profile sits beside one featured post, recent posts follow as cards or as table rows, and a topic list shows every topic with how many posts it has. For developers and technical writers.",
   "categories": ["developers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "home", "blog", "post", "page"],

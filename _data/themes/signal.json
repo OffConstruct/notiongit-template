@@ -7,6 +7,7 @@
   "summary": "For professionals: your name in huge clean letters, colored section bars and posts listed like a timetable.",
   "description": "Clean, confident and orderly. Your name fills the top of the page in large letters, each section opens with a full-width colored bar and a big number, your posts read like a timetable, and your email or CV becomes the one button. For freelancers and consultants who sell a service.",
   "categories": ["professionals"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

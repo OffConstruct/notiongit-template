@@ -7,6 +7,7 @@
   "summary": "For newsletters and series: a short intro, a subscribe button and your posts as colorful numbered issues.",
   "description": "Your writing as a shelf of issues. A short intro and a subscribe button come first, then your newest featured post as a large numbered issue, then every other post as a colorful card. Posts without a picture become solid blocks of color, one color per topic, and readers can browse by topic. For newsletter writers, teachers and anyone who writes in series.",
   "categories": ["marketing", "educators"],
+  "audience": ["personal"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post"],

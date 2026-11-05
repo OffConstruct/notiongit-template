@@ -7,6 +7,7 @@
   "summary": "For [who it suits]: what their home page shows. One line, 10 to 120 characters.",
   "description": "Replace with two or three sentences for the theme's detail page: what the home page looks like, how posts are listed, and who the theme is for.",
   "categories": ["__CATEGORY__"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": [],

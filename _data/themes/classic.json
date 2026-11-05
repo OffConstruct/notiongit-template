@@ -7,6 +7,7 @@
   "summary": "For anyone: your photo, a short bio, your latest posts and links, on a calm gray page with one blue accent.",
   "description": "Your photo, name and tagline at the top, a short bio, your latest posts with their dates, and your links, on a calm gray page with one blue accent. It switches to dark mode by itself when a visitor's device does. Every site starts here, and a site with no design chosen keeps this look.",
   "categories": ["writers", "developers"],
+  "audience": ["personal"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": [],

@@ -7,6 +7,7 @@
   "summary": "For lawyers, doctors and consultants: formal letter paper, a short introduction and a numbered contents list.",
   "description": "A quiet, formal site that feels like printed letter paper. Your name heads the page, your bio reads as an introduction, and your pages and featured writing form a numbered contents list. One elegant typeface and one amber line. For lawyers, doctors and senior advisers.",
   "categories": ["professionals"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page"],

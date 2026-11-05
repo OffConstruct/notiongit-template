@@ -7,6 +7,7 @@
   "summary": "For newsletter writers: one centered headline, a subscribe button and your letters listed by year.",
   "description": "A home page written like a short letter. Your tagline is the headline, one button sends readers to your newsletter, your bio reads as the letter itself, then a short Start here list of featured posts and a quiet list of everything by year. For newsletter writers.",
   "categories": ["marketing", "writers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post"],

@@ -7,6 +7,7 @@
   "summary": "For writers: a magazine cover with a bold title, your cover story and numbered features.",
   "description": "Every visit lands on your latest issue, like a magazine cover. Your name is the title, your newest featured post is the cover story, and everything else is a numbered list of features in two columns. The strong background color carries the page with or without pictures. For newsletter writers, poets and zine makers.",
   "categories": ["writers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "home", "blog", "post", "page"],

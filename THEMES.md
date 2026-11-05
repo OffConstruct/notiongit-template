@@ -15,6 +15,10 @@ assets/themes/<id>/theme.css    stylesheet (required) and optional images
 _includes/themes/<id>/*.html    optional slot overrides and _partials
 ```
 
+The manifest's `audience` field is `[]`, or `["personal"]` when the theme
+also suits a personal or family site; it drives the gallery's
+"Personal & family" filter.
+
 A theme may also own one fixture overlay, `scripts/themes/fixtures/<category>/`,
 when it is the only theme in that category that needs extra sample content.
 

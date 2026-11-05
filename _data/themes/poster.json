@@ -7,6 +7,7 @@
   "summary": "For designers: your name in huge letters, then one big block of flat color for each featured project.",
   "description": "Every section is a block of flat color with one thing in it, set huge. Your name fills the first block, each featured post gets its own block with its picture (or its title, poster-size, when it has none), and the rest follow as numbered notes. For brand designers, illustrators and letterers whose work is the star.",
   "categories": ["designers"],
+  "audience": [],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page", "tags"],

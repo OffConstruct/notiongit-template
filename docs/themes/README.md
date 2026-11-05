@@ -85,6 +85,7 @@ rejects unknown fields.
 | `summary` | 10 to 120 characters (gallery card) |
 | `description` | 10 to 400 characters (detail page) |
 | `categories` | 1 to 3 of the list in section 7; the first is primary |
+| `audience` | `[]`, or `["personal"]` when the theme suits a personal or family site (section 7) |
 | `author` | `{ "name": 1-60 chars, "url"?: https URL }` |
 | `license` | `"MIT"` |
 | `slots` | unique subset of the slots in section 3; may be `[]` |
@@ -326,6 +327,12 @@ fixture overlay.
 | `marketing` | Marketing |
 | `professionals` | Professionals |
 <!-- categories:end -->
+
+`audience` is a second gallery filter that cuts across the categories.
+`["personal"]` puts the theme under "Personal & family": a family blog, a
+travel journal, a page about yourself. Tag a theme only when it reads as warm
+and simple with a home page of photos and short posts, not as a CV, a shop or
+a product page. Use `[]` otherwise.
 
 Every theme meets, in every mode and tweak value:
 

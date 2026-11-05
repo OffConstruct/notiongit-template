@@ -7,6 +7,7 @@
   "summary": "For illustrators and artists: your work as bright color panels on one sheet, with your name on top.",
   "description": "For illustrators who love color. Your bio comes first, your name sits huge at the bottom of the first screen, and your posts follow as a sheet of bright color panels. Posts without a picture become solid color panels, and every artwork is shown whole, never cropped.",
   "categories": ["artists"],
+  "audience": ["personal"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
   "slots": ["header", "footer", "home", "blog", "post", "page", "tags"],
