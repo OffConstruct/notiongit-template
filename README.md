@@ -66,7 +66,10 @@ The Action synchronizes these files from Notion:
 - `_posts/` — published Posts rows.
 - `_data/home.yml` — home-page profile and biography.
 - `_data/nav.yml` — navigation items.
-- `_config.yml` — only the site `title` and `author.name` lines.
+- `_config.yml` — only the site `title`, `author.name` and `description`
+  lines (`description` comes from the home row's Tagline).
+- `assets/notion/` — copies of photos and files uploaded to Notion, so their
+  links never expire.
 
 Do not edit those generated files by hand. Your next sync can overwrite them.
 Edit the corresponding Notion row instead. Provisioning owns `_config.yml`'s
@@ -92,15 +95,19 @@ one-click action on the **Actions** screen.
 
 If a run is red, open the run and read the failed step. A missing token or
 database ID is treated as a safe, green no-op before any files are changed;
-other failures need attention before retrying. Do not put a Notion token or
+other failures need attention before retrying. A single row that cannot be
+published does not turn the run red: everything else is published, and the
+run summary lists the rows that were left out and why. Do not put a Notion token or
 private workspace content in an issue, log, or support message.
 
 ### Bulk-delete protection and recovery
 
 The sync protects the repository from a damaged or incomplete Notion response.
-It stops before deleting files when Notion reports no published rows while
-tracked generated files exist, or when a run would delete an unusually large
-share of generated files. The normal workflow then makes no commit.
+It holds deletions back when Notion reports no published rows while tracked
+generated files exist, or when a run would delete an unusually large share of
+generated files. The check works per section (pages and posts): the held-back
+deletions are skipped and everything else in the run is still committed, and
+the run summary says what was held back.
 
 If that stop was unexpected:
 
@@ -117,10 +124,11 @@ not become a second, conflicting source of truth.
 
 ### Images
 
-Use stable, externally hosted image URLs for profile pictures, cover images,
-and images in page or post content. Notion-hosted file URLs expire, so an image
-that works immediately after publishing can later disappear. Never paste a
-private URL or a credential into a public page.
+Drag photos straight into Notion: uploaded images and files (up to 20 MB
+each) in page and post content, post covers and the home profile picture are
+copied into `assets/notion/` and linked from there, so they keep working after
+Notion's own links expire. Externally hosted image URLs work too. Never paste
+a private URL or a credential into a public page.
 
 ### Custom domains
 
@@ -245,7 +253,7 @@ site it normally follows `https://OWNER.github.io/REPOSITORY/`.
 
 The workflow uses the reusable
 [`OffConstruct/notiongit-sync`](https://github.com/OffConstruct/notiongit-sync)
-Action, pinned to commit `d87bb7c034bcd770ad2c39bef59542a41588b448` (v2.0.1),
+Action, pinned to commit `113707c94c0088b20a02853816e0ef4c784c388d` (v2.1.0),
 and needs write permission for repository contents. The checked-in workflows
 are the complete configuration: `sync-notion.yml` performs every sync, and
 `sync-watchdog.yml` only re-triggers it when the schedule stalls. It has no
