@@ -28,6 +28,36 @@ layout: default
   {% if home.tagline and home.tagline != "" %}
   <p class="home-tagline">{{ home.tagline }}</p>
   {% endif %}
+
+  {% if home.social_links and home.social_links.size > 0 %}
+  <ul class="home-links" aria-label="Links">
+    {% for link in home.social_links %}
+    <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if home.bio and home.bio != "" %}
+  <div class="home-bio">{{ home.bio | markdownify }}</div>
+  {% endif %}
+
+  {% assign home_latest = site.posts | slice: 0, 5 %}
+  {% if home_latest.size > 0 %}
+  <section class="home-latest" aria-labelledby="home-latest-title">
+    <h2 class="home-latest-title" id="home-latest-title">Latest writing</h2>
+    <ul class="home-latest-list">
+      {% for post in home_latest %}
+      <li>
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+      </li>
+      {% endfor %}
+    </ul>
+    {% if site.posts.size > 5 %}
+    <p class="home-latest-more"><a href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} posts</a></p>
+    {% endif %}
+  </section>
+  {% endif %}
   {% else %}
   {% include empty-state.html
     variant="home-empty-state"

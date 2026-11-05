@@ -4,7 +4,8 @@
       {%- if include.post.cover_image %}
       <img class="crate-cover" src="{{ include.post.cover_image }}" alt="" loading="lazy">
       {%- else %}
-      <span class="crate-blank" aria-hidden="true"><span class="crate-blank-t">{% if include.post.tags.size > 0 %}{{ include.post.tags | first | truncate: 14, "" }}{% else %}{{ include.post.date | date: "%Y" }}{% endif %}</span></span>
+      {%- assign crate_seed = include.post.title | size | modulo: 4 %}
+      <span class="crate-blank crate-blank--{{ crate_seed }}" aria-hidden="true"><span class="crate-blank-k">{% if include.post.tags.size > 0 %}{{ include.post.tags | first | truncate: 18, "" }}{% else %}{{ include.post.date | date: "%Y" }}{% endif %}</span><span class="crate-blank-t">{{ include.post.title | truncatewords: 8 }}</span></span>
       {%- endif %}
       <span class="crate-badge">No.&nbsp;{{ include.n }}</span>
     </span>

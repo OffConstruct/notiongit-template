@@ -7,6 +7,9 @@
   {%- else %}{% assign lt_v = lt_u | split: "/" | last %}{% endif %}
   {%- assign lt_end = lt_v | slice: -1, 1 %}
   {%- if lt_end == "/" %}{% assign lt_len = lt_v | size | minus: 1 %}{% assign lt_v = lt_v | slice: 0, lt_len %}{% endif %}
+  {%- comment -%} A long path or query reads as a raw URL; show the site's name instead. {%- endcomment %}
+  {%- assign lt_parts = lt_v | split: "/" %}
+  {%- if lt_parts.size > 2 or lt_v contains "?" %}{% assign lt_v = lt_parts.first | split: "?" | first %}{% endif %}
   <div class="lt-id">
     <dt>{{ link.name }}</dt>
     <dd><a href="{{ link.url }}">{{ lt_v | default: link.name | truncate: 48 }}</a></dd>

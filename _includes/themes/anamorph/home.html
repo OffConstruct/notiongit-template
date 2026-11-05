@@ -54,7 +54,10 @@
       <h2 class="an-reel-title" id="an-reel-title">Reel</h2>
       {%- if site.posts.size > 0 %}<p class="an-reel-count">{{ site.posts.size }} {% if site.posts.size == 1 %}title{% else %}titles{% endif %}</p>{% endif %}
     </div>
-    {% include themes/anamorph/_reel.html %}
+    {% include themes/anamorph/_reel.html limit=8 %}
+    {%- if site.posts.size > 8 %}
+    <p class="an-reel-more"><a href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} titles</a></p>
+    {%- endif %}
   </section>
   {%- endif %}
 </div>

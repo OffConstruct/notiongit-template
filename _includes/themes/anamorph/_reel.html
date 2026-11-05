@@ -1,6 +1,7 @@
 {%- if site.posts.size > 0 %}
 <ol class="an-reel">
-  {%- for post in site.posts %}
+  {%- assign an_reel_limit = include.limit | default: site.posts.size %}
+  {%- for post in site.posts limit: an_reel_limit %}
   <li class="an-band{% unless post.cover_image %} an-band--text{% endunless %}{% if post.title.size > 40 %} an-band--long{% endif %}">
     <a href="{{ post.url | relative_url }}">
       {%- if post.cover_image %}
