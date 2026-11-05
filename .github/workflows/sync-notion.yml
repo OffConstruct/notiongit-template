@@ -61,11 +61,18 @@ jobs:
           overwrite: true
           retention-days: 30
 
+      # Runs even when the sync step failed: one Notion row that could not be
+      # published, or deletions held back for the owner to confirm, must not
+      # stop the rest of the update from going live. `changed` is false
+      # whenever the sync aborted part-way, so nothing half-done is pushed.
       - name: Commit synced content
-        if: steps.sync.outputs.changed == 'true'
+        if: ${{ !cancelled() && steps.sync.outputs.changed == 'true' }}
         run: |
           git config user.name "notiongit-sync"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A _pages _posts _data _config.yml
+          # assets/notion holds copies of photos and files uploaded to Notion.
+          for path in _pages _posts _data _config.yml assets/notion; do
+            if [ -e "$path" ]; then git add -A -- "$path"; fi
+          done
           git commit -m "chore: sync from Notion" || exit 0
           git push
