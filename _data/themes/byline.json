@@ -4,8 +4,8 @@
   "id": "byline",
   "name": "Byline",
   "version": "1.0.1",
-  "summary": "The front page: a broadsheet masthead, a lead story beside your bio, and clip rows grouped by beat.",
-  "description": "A newspaper front page and clip file for journalists, critics and columnists. Your name sits between double rules, the latest featured piece leads beside an About the author box, and every tag becomes a section of headline rows. Pieces published elsewhere name their outlet and link out.",
+  "summary": "For journalists and writers: a newspaper-style front page with your lead story, bio and stories grouped by topic.",
+  "description": "A newspaper front page and clip file. Your name sits between double lines like a masthead, your latest featured story leads beside an About the author box, and each topic becomes its own section of headlines. Stories you published elsewhere name the outlet and link to it. For journalists, critics and columnists.",
   "categories": ["writers"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
@@ -32,13 +32,13 @@
         { "value": "auto", "label": "Match system" },
         { "value": "light", "label": "Light" },
         { "value": "dark", "label": "Dark" } ] },
-    { "key": "accent", "type": "color", "label": "Kicker color", "role": "text", "default": "red", "custom": true,
+    { "key": "accent", "type": "color", "label": "Label color", "role": "text", "default": "red", "custom": true,
       "presets": [
         { "value": "red", "label": "Press red", "light": "#b3122a", "dark": "#ff6b6b" },
         { "value": "navy", "label": "Navy", "light": "#1f3a5f", "dark": "#8fb3e0" },
         { "value": "green", "label": "Green", "light": "#1e6b52", "dark": "#6fcfaa" },
         { "value": "black", "label": "Black", "light": "#121212", "dark": "#e9e7e2" } ] },
-    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
     { "key": "paper", "type": "select", "label": "Paper", "default": "white",
       "options": [
         { "value": "white", "label": "White" },
@@ -52,7 +52,7 @@
       "options": [
         { "value": "tag", "label": "Tag sections" },
         { "value": "date", "label": "One latest list" } ] },
-    { "key": "kicker", "type": "select", "label": "Kicker above headlines", "default": "tag",
+    { "key": "kicker", "type": "select", "label": "Label above headlines", "default": "tag",
       "options": [
         { "value": "tag", "label": "First tag" },
         { "value": "date", "label": "Month and year" },

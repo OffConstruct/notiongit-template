@@ -4,8 +4,8 @@
   "id": "verso",
   "name": "Verso",
   "version": "1.0.0",
-  "summary": "The photobook spread: a quiet text column facing one uncropped plate and an index of work.",
-  "description": "Set like the left-hand page of a photobook. A fixed column holds your name, nav and a line of bio; one plate faces it at natural aspect, and every project is listed as an italic title with its year. Hovering a title lays its cover over the plate. For fine-art and documentary photographers.",
+  "summary": "For photographers and artists: a short text beside one large photo, plus a list of your work.",
+  "description": "Like the left-hand page of a photobook. Your name, menu and a line of bio stay on one side, one large photo faces them, shown whole, and every project is listed by title and year. Pointing at a title shows its photo. For fine-art and documentary photographers.",
   "categories": ["photographers", "artists"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
@@ -52,14 +52,14 @@
         { "value": "auto", "label": "Match system" },
         { "value": "light", "label": "Light" },
         { "value": "dark", "label": "Dark" } ] },
-    { "key": "accent", "type": "color", "label": "Accent", "role": "text", "default": "ink", "custom": false,
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "ink", "custom": false,
       "presets": [
         { "value": "ink", "label": "Ink only", "light": "#1b1d1d", "dark": "#e3e5e2" } ] },
-    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
-    { "key": "font", "type": "font", "label": "Typeface", "default": "garamond" },
-    { "key": "ground", "type": "select", "label": "Mount", "default": "mount",
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "garamond" },
+    { "key": "ground", "type": "select", "label": "Background", "default": "mount",
       "options": [
-        { "value": "mount", "label": "Print-mount grey" },
+        { "value": "mount", "label": "Soft gray" },
         { "value": "paper", "label": "Warm paper" },
         { "value": "white", "label": "Gallery white" } ] },
     { "key": "column", "type": "select", "label": "Text column", "default": "left",
@@ -68,14 +68,14 @@
         { "value": "top", "label": "One line at the top" } ] },
     { "key": "home", "type": "select", "label": "Home page", "default": "spread",
       "options": [
-        { "value": "spread", "label": "Plate and index" },
-        { "value": "index", "label": "Index only" },
-        { "value": "plate", "label": "Plate only" } ] },
+        { "value": "spread", "label": "Big photo and list" },
+        { "value": "index", "label": "List only" },
+        { "value": "plate", "label": "Big photo only" } ] },
     { "key": "dates", "type": "select", "label": "Dates", "default": "year",
       "options": [
         { "value": "year", "label": "Year only" },
         { "value": "full", "label": "Full date" },
         { "value": "hidden", "label": "Hidden" } ] },
-    { "key": "plate_swap", "type": "boolean", "label": "Show a cover over the plate on hover", "default": true }
+    { "key": "plate_swap", "type": "boolean", "label": "Show a post's cover when you point at it", "default": true }
   ]
 }

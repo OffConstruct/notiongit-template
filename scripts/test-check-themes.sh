@@ -29,6 +29,7 @@ def scaffold(dir):
     (dir / "docs/themes").mkdir(parents=True)
     rows = "\n".join(f"| `{c}` | x |" for c in categories)
     (dir / "docs/themes/README.md").write_text(f"<!-- categories:start -->\n| id | label |\n|---|---|\n{rows}\n<!-- categories:end -->\n")
+    (dir / "scripts/themes/fixtures/writers").mkdir(parents=True)
 
 def manifest(dir):
     return json.loads((dir / "_data/themes/good.json").read_text())
@@ -113,6 +114,13 @@ cases = [
     ("tweak-font", edit(lambda d: d["fonts"].append(dict(d["fonts"][0], value="second")))),
     ("tweak-font", edit(lambda d: (d["fonts"][0].update(google="family=Inter"), tweak(d, "webfonts").update(default=False)))),
     ("palette-contrast", edit(lambda d: d["palette"]["light"].update(muted="#bbbbbb"))),
+    ("plain-language", edit(lambda d: d.update(summary="A sticky sidebar beside your posts, for writers."))),
+    ("plain-language", edit(lambda d: d.update(description="A hairline nav on a 12-column grid."))),
+    ("plain-language", edit(lambda d: tweak(d, "mode").update(label="Colour scheme"))),
+    ("plain-language", edit(lambda d: tweak(d, "mode")["options"][0].update(label="Mono rows"))),
+    ("fixture-overlay", remove("scripts/themes/fixtures/writers")),
+    ("fixture-overlay", write("scripts/themes/fixtures/writers/overlay.yml", "replace_base_posts: true\n")),
+    ("fixture-provenance", write("scripts/themes/fixtures/writers/assets/fixtures/stock.jpg", "x")),
     ("accent-contrast", edit(lambda d: tweak(d, "accent")["presets"][0].update(light="#9999ff"))),
     ("css-tokens", css_sub("--ink-bg: #fbfaf7;", "--ink-bg: #ffffff;")),
     ("css-tokens", css_sub("--ink-muted: #5f5b53;", "--ink-muted: #5f5b53 !important;")),

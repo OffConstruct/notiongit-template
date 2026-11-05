@@ -4,8 +4,8 @@
   "id": "vitrine",
   "name": "Vitrine",
   "version": "1.0.0",
-  "summary": "The exhibition catalogue: one work hung on a white wall with a printed caption beside it.",
-  "description": "The home page opens on your newest work, uncropped, with your name and bio set beside it like a wall text. Other works hang one per row with catalogue captions, and every post is listed in a numbered, year-by-year index. One serif family, no ornament: the art carries the color.",
+  "summary": "For artists: one artwork at a time on a white wall, each with a printed label beside it.",
+  "description": "One artwork at a time, as on a gallery wall. The home page opens on your newest work, uncropped, with your name and bio beside it like a wall label. Other works hang one per row with printed captions, and every post is listed in a numbered index by year. No decoration: the art brings the color. For artists.",
   "categories": ["artists"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
@@ -50,19 +50,19 @@
     { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
       "options": [
         { "value": "auto", "label": "Match system" },
-        { "value": "light", "label": "White wall" },
-        { "value": "dark", "label": "Dark room" } ] },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
     { "key": "accent", "type": "color", "label": "Link color", "role": "text", "default": "ink", "custom": true,
       "presets": [
         { "value": "ink", "label": "Ink only", "light": "#141414", "dark": "#ebe8e2" },
         { "value": "oxide", "label": "Oxide red", "light": "#a3321f", "dark": "#e8907a" },
         { "value": "ultramarine", "label": "Ultramarine", "light": "#2b3a9e", "dark": "#a3aef0" } ] },
-    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
-    { "key": "font", "type": "font", "label": "Typeface", "default": "newsreader" },
-    { "key": "hang", "type": "select", "label": "How works hang", "default": "offset",
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "newsreader" },
+    { "key": "hang", "type": "select", "label": "Layout of works", "default": "offset",
       "options": [
-        { "value": "offset", "label": "Offset, left and right" },
-        { "value": "centered", "label": "Centred column" },
+        { "value": "offset", "label": "Alternating left and right" },
+        { "value": "centered", "label": "One centered column" },
         { "value": "pairs", "label": "Two per row" } ] },
     { "key": "caption", "type": "select", "label": "Captions", "default": "beside",
       "options": [
@@ -72,7 +72,7 @@
       "options": [
         { "value": "white", "label": "White" },
         { "value": "warm", "label": "Warm white" },
-        { "value": "grey", "label": "Gallery grey" } ] },
-    { "key": "index_numbers", "type": "boolean", "label": "Number the catalogue index", "default": true }
+        { "value": "grey", "label": "Gallery gray" } ] },
+    { "key": "index_numbers", "type": "boolean", "label": "Number the list of works", "default": true }
   ]
 }

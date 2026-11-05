@@ -4,8 +4,8 @@
   "id": "specimen",
   "name": "Specimen",
   "version": "1.0.0",
-  "summary": "The archive table: identity in a fixed left column, every post a row in a typeset index.",
-  "description": "A 12-column page with Rethink Sans heads over IBM Plex Sans, and Azeret Mono as the material. Name, bio and links stay in a sticky left column while Selected and Writing run as hairline tables of year, title and tags, each headed with its real count. One spot color marks rules, focus and the active tag. For type, systems and UX designers who think in grids.",
+  "summary": "For designers: your name and bio on the left, and every post as a row in a neat index on the right.",
+  "description": "A tidy, precise page. Your name, bio and links stay on the left while visitors scroll; selected work and writing run on the right as neat tables of year, title and topics, each showing how many items it has. One spot color marks lines and the chosen topic. For designers who like order.",
   "categories": ["designers"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
@@ -32,29 +32,29 @@
         { "value": "auto", "label": "Match system" },
         { "value": "light", "label": "Light" },
         { "value": "dark", "label": "Dark" } ] },
-    { "key": "accent", "type": "color", "label": "Spot color", "role": "large", "default": "cobalt", "custom": true,
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "large", "default": "cobalt", "custom": true,
       "presets": [
         { "value": "orange", "label": "Orange", "light": "#ff4a00", "dark": "#ff6a2b" },
         { "value": "cobalt", "label": "Cobalt", "light": "#2340ff", "dark": "#7d8cff" },
         { "value": "red", "label": "Red", "light": "#e10600", "dark": "#ff5a4f" },
         { "value": "green", "label": "Green", "light": "#00a050", "dark": "#2ecc71" } ] },
-    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
     { "key": "index_view", "type": "select", "label": "Selected work", "default": "table",
       "options": [
         { "value": "table", "label": "Table rows" },
         { "value": "grid", "label": "Cover grid with captions" } ] },
-    { "key": "index_scale", "type": "select", "label": "Index type size", "default": "regular",
+    { "key": "index_scale", "type": "select", "label": "List text size", "default": "regular",
       "options": [
-        { "value": "regular", "label": "Regular mono rows" },
-        { "value": "large", "label": "Large sans titles" } ] },
+        { "value": "regular", "label": "Regular" },
+        { "value": "large", "label": "Large" } ] },
     { "key": "density", "type": "select", "label": "Row height", "default": "comfortable",
       "options": [
         { "value": "comfortable", "label": "Comfortable" },
         { "value": "compact", "label": "Compact" } ] },
     { "key": "show_tags", "type": "boolean", "label": "Tags column", "default": true },
-    { "key": "identity", "type": "select", "label": "Identity column", "default": "sticky",
+    { "key": "identity", "type": "select", "label": "Your name and bio", "default": "sticky",
       "options": [
-        { "value": "sticky", "label": "Sticky on the left" },
-        { "value": "top", "label": "Block above the index" } ] }
+        { "value": "sticky", "label": "Fixed on the left" },
+        { "value": "top", "label": "Above the list" } ] }
   ]
 }

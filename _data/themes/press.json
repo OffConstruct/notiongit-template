@@ -4,8 +4,8 @@
   "id": "press",
   "name": "Press",
   "version": "1.0.0",
-  "summary": "The site as a cloth-bound book: a foil-printed cover home and bone paper reading pages.",
-  "description": "The home is a book cover: one cloth color printed in one foil ink, a large Caslon name, link rows and featured posts as spine bands. Posts open on bone paper beside a typographic cover panel. Works with no images at all. For researchers who want to be remembered.",
+  "summary": "For authors and researchers: a home page like a cloth-bound book cover, and calm pages for reading.",
+  "description": "The home page is a book cover: one cloth color, one foil-like ink, your name in large classic letters, your links, and featured posts as book spines. Posts open on cream paper beside a printed cover panel. Works with no pictures at all. For authors and researchers.",
   "categories": ["researchers", "writers"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
@@ -27,19 +27,19 @@
     "dark": { "bg": "#1b1a17", "text": "#ebe3d0", "muted": "#a89e86" }
   },
   "tweaks": [
-    { "key": "mode", "type": "select", "label": "Reading pages", "default": "auto",
+    { "key": "mode", "type": "select", "label": "Color scheme (reading pages)", "default": "auto",
       "options": [
         { "value": "auto", "label": "Match system" },
-        { "value": "light", "label": "Bone paper" },
-        { "value": "dark", "label": "Dark paper" } ] },
-    { "key": "accent", "type": "color", "label": "Link ink on paper", "role": "text", "default": "sienna", "custom": true,
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Link color", "role": "text", "default": "sienna", "custom": true,
       "presets": [
         { "value": "sienna", "label": "Sienna", "light": "#a04a2a", "dark": "#e39a78" },
         { "value": "teal", "label": "Deep teal", "light": "#1b4b5a", "dark": "#8cc7d4" },
         { "value": "olive", "label": "Olive", "light": "#5a5f1f", "dark": "#c9cf7f" },
-        { "value": "ink", "label": "Ink only", "light": "#1a1a18", "dark": "#ebe3d0" } ] },
-    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
-    { "key": "cloth", "type": "select", "label": "Cover cloth and foil", "default": "olive",
+        { "value": "ink", "label": "Black only", "light": "#1a1a18", "dark": "#ebe3d0" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "cloth", "type": "select", "label": "Cover colors", "default": "olive",
       "options": [
         { "value": "olive", "label": "Olive cloth, gold foil" },
         { "value": "aubergine", "label": "Aubergine, gold foil" },
@@ -54,8 +54,8 @@
         { "value": "off", "label": "No cover" } ] },
     { "key": "selected", "type": "select", "label": "Selected writing", "default": "spines",
       "options": [
-        { "value": "spines", "label": "Spine bands" },
+        { "value": "spines", "label": "Book spines" },
         { "value": "feature", "label": "One feature" } ] },
-    { "key": "avatar", "type": "boolean", "label": "Foil portrait on the cover", "default": true }
+    { "key": "avatar", "type": "boolean", "label": "Portrait on the cover", "default": true }
   ]
 }

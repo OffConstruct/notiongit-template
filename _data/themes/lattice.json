@@ -4,8 +4,8 @@
   "id": "lattice",
   "name": "Lattice",
   "version": "1.0.0",
-  "summary": "The lab front door: an identity sheet of academic links, then numbered sections on a ruled grid.",
-  "description": "Atkinson Hyperlegible on a 12-column grid. The home opens with an identity sheet (role, research statement, identifiers, photo), then numbered sections: Selected, Writing as a ruled table, an index of your pages with their descriptions, and About. For professors, lab leads and students.",
+  "summary": "For academics and labs: your photo, links to your profiles and papers, then your sections in a neat grid.",
+  "description": "A clear, orderly page made with an easy-to-read typeface. It opens with who you are: your role, a short statement of your research, links to your profiles and papers, and your photo. Numbered sections follow for selected work, writing, your other pages and About. For professors, lab leads and students.",
   "categories": ["researchers", "educators"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
@@ -32,14 +32,14 @@
         { "value": "auto", "label": "Match system" },
         { "value": "light", "label": "Light" },
         { "value": "dark", "label": "Dark" } ] },
-    { "key": "accent", "type": "color", "label": "Institution color", "role": "text", "default": "blue", "custom": true,
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "blue", "custom": true,
       "presets": [
-        { "value": "blue", "label": "Institutional blue", "light": "#1f4fa3", "dark": "#8fb0f0" },
+        { "value": "blue", "label": "Blue", "light": "#1f4fa3", "dark": "#8fb0f0" },
         { "value": "crimson", "label": "Crimson", "light": "#a3172e", "dark": "#f0919d" },
         { "value": "teal", "label": "Teal", "light": "#0f6b6b", "dark": "#6cc5bd" },
         { "value": "graphite", "label": "Graphite", "light": "#3a3f47", "dark": "#c3c9d2" } ] },
-    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
-    { "key": "masthead", "type": "select", "label": "Identity sheet", "default": "photo-right",
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "masthead", "type": "select", "label": "Top section", "default": "photo-right",
       "options": [
         { "value": "photo-right", "label": "Photo right" },
         { "value": "photo-left", "label": "Photo left" },
@@ -53,6 +53,6 @@
       "options": [
         { "value": "table", "label": "Ruled table" },
         { "value": "tiles", "label": "Bordered tiles" } ] },
-    { "key": "swatch", "type": "boolean", "label": "Accent swatch strip", "default": true }
+    { "key": "swatch", "type": "boolean", "label": "Show the color strip", "default": true }
   ]
 }

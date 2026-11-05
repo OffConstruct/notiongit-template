@@ -64,16 +64,25 @@ Done means the step 8 checklist in `docs/themes/authoring.md` passes.
 - Never write into `_pages/`, `_posts/` or `_data/`, except your own
   `_data/themes/<id>.json`. Those directories belong to the Notion sync.
 - Fixtures use the fictional Rowan Vale. No real people, no hotlinked
-  third-party images, no Notion URLs.
+  third-party images, no Notion URLs. Every fixture image is public domain
+  or CC0 and listed in `scripts/themes/fixtures/PROVENANCE.md`.
 - Slot files: no `<script>`, `<link>`, `<style>` or `style=`. Styling belongs
   in `theme.css`. Fonts come only from the manifest (Google Fonts).
 - `theme.css` is static: no front matter, no `@import`, no remote `url()`.
 - Every theme renders correctly in light, dark and follow-the-system modes,
   meets WCAG AA contrast, reflows at 320px, and honours reduced motion.
-- `classic` is the default and the fallback. Its look must not change. One
-  deliberate difference from the pre-theme template: every page, classic
-  included, now declares `<meta name="color-scheme">`, so in dark mode the
-  browser's scrollbars and form controls match the already-dark page.
+- `classic` is the default and the fallback, so it is the first look every
+  new site has. Change it only on purpose, keep it quiet, and check it in
+  every mode. Its home page shows the name, tagline, links, bio and the five
+  latest posts. Every page declares `<meta name="color-scheme">`, so in dark
+  mode the browser's scrollbars and form controls match the page.
+- `assets/ink/shared.css` loads after every theme's stylesheet: a one-row
+  phone menu with 44px links, and underlined footnote links. See
+  `docs/themes/README.md` section 8.
+- Summaries and labels are read by people who are not technical. A summary
+  says who the theme suits and what the home page shows. Use plain, US
+  spelling, and "Accent color" and "Use the design's own fonts" for the shared
+  tweaks.
 - In `theme.css`, booleans are `"on"`/`"off"` (never `true`/`false`) and a
   tweak key's `_` is `-` in its attribute: `drop_cap` is
   `[data-ink-drop-cap="on"]`. The validator rejects anything else.

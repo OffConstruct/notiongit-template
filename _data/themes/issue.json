@@ -4,8 +4,8 @@
   "id": "issue",
   "name": "Issue",
   "version": "1.0.1",
-  "summary": "The magazine cover: a cream sheet on a spot-color field, a Gloock masthead and numbered features.",
-  "description": "Every visit lands on the current issue. Your name is the masthead, the latest featured post is the cover story, and the archive is a numbered feature list in two columns. The color field carries the page with or without images. For newsletter writers, poets and zine makers.",
+  "summary": "For writers: a magazine cover with a bold title, your cover story and numbered features.",
+  "description": "Every visit lands on your latest issue, like a magazine cover. Your name is the title, your newest featured post is the cover story, and everything else is a numbered list of features in two columns. The strong background color carries the page with or without pictures. For newsletter writers, poets and zine makers.",
   "categories": ["writers"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
@@ -38,7 +38,7 @@
         { "value": "cobalt", "label": "Cobalt", "light": "#2b4bb8", "dark": "#223d99", "on": "#ffffff" },
         { "value": "sunflower", "label": "Sunflower", "light": "#f2b705", "dark": "#d9a404", "on": "#1a1a1a" },
         { "value": "moss", "label": "Moss", "light": "#3f5a3a", "dark": "#2f4530", "on": "#ffffff" } ] },
-    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
     { "key": "sheet", "type": "select", "label": "Frame", "default": "framed",
       "options": [
         { "value": "framed", "label": "Framed" },
@@ -49,7 +49,7 @@
         { "value": "featured", "label": "Latest featured post" },
         { "value": "latest", "label": "Latest post" },
         { "value": "none", "label": "None (your letter is the cover)" } ] },
-    { "key": "masthead", "type": "select", "label": "Masthead size", "default": "poster",
+    { "key": "masthead", "type": "select", "label": "Title size", "default": "poster",
       "options": [
         { "value": "poster", "label": "Poster" },
         { "value": "standard", "label": "Standard" },

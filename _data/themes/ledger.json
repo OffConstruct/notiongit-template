@@ -4,8 +4,8 @@
   "id": "ledger",
   "name": "Ledger",
   "version": "1.0.0",
-  "summary": "The maker's console: a sticky profile beside a grid of ventures with status chips and a mono-dated writing table.",
-  "description": "For indie makers and founders who run several things at once. Dark by default, with hairline panels in the spirit of modern builder tools. Featured posts become venture cells whose first tag is a status chip (live, sold, paused, shut-down), and every post sits in a table with mono dates and tags.",
+  "summary": "For founders and makers: your profile beside your projects, each with its status, and a list of your writing.",
+  "description": "For founders who run several projects at once. Dark by default, with fine lines like a modern dashboard. Featured posts become project cards, and the first topic of each shows as its status, such as live, sold or paused. Every post is listed in a table with its date and topics.",
   "categories": ["entrepreneurs", "developers"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
@@ -32,17 +32,17 @@
         { "value": "auto", "label": "Match system" },
         { "value": "light", "label": "Light" },
         { "value": "dark", "label": "Dark" } ] },
-    { "key": "accent", "type": "color", "label": "Signal color", "role": "text", "default": "green", "custom": true,
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "green", "custom": true,
       "presets": [
         { "value": "green", "label": "Signal green", "light": "#136c42", "dark": "#4cc38a" },
         { "value": "amber", "label": "Amber", "light": "#8a5a00", "dark": "#f0b44c" },
         { "value": "cyan", "label": "Cyan", "light": "#0b6680", "dark": "#5fc8e8" } ] },
-    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
     { "key": "layout", "type": "select", "label": "Home layout", "default": "sidebar",
       "options": [
         { "value": "sidebar", "label": "Profile sidebar" },
         { "value": "stacked", "label": "Single column, link-in-bio" } ] },
-    { "key": "ventures_columns", "type": "range", "label": "Venture columns", "min": 1, "max": 3, "step": 1, "unit": "", "default": 2 },
+    { "key": "ventures_columns", "type": "range", "label": "Project columns", "min": 1, "max": 3, "step": 1, "unit": "", "default": 2 },
     { "key": "writing_style", "type": "select", "label": "Writing on the home page", "default": "table",
       "options": [
         { "value": "table", "label": "Table rows" },
@@ -51,8 +51,8 @@
     { "key": "status_chips", "type": "boolean", "label": "Status colors on tags", "default": true },
     { "key": "nav_style", "type": "select", "label": "Navigation", "default": "numbered",
       "options": [
-        { "value": "numbered", "label": "Numbered keys" },
-        { "value": "slash", "label": "Slash paths" },
+        { "value": "numbered", "label": "Numbered" },
+        { "value": "slash", "label": "With slashes" },
         { "value": "plain", "label": "Plain" } ] }
   ]
 }

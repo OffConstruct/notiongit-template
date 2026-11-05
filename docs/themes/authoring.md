@@ -159,7 +159,8 @@ scripts/build-theme quire --preview --serve 4000
 
 This runs axe in real Chrome on every preview page in light, dark, and
 follow-the-system with the OS set to dark, and on the home page for every
-non-default tweak value, plus 320px and 200% zoom reflow and a keyboard walk.
+non-default tweak value, plus 320px and 200% zoom reflow, the phone menu at
+390px (one row, 44px links) and a keyboard walk.
 Zero findings is passing. It deletes its temp directory when it finishes;
 pass `--keep` to keep `report.json` (the path is printed; delete it
 afterwards).
@@ -228,6 +229,9 @@ plus `scripts/themes/fixtures/<category>/` if your task owns that overlay.
 | `site-stylesheet` | the theme stylesheet is missing or not linked | keep `assets/themes/<id>/theme.css` |
 | `site-liquid` | the page contains `Liquid error` | fix the Liquid in your slot |
 | `site-script` | a `<script>` other than JSON-LD (and, in previews, `preview.js`) | remove it |
+| `plain-language` | a summary, tweak label or option label uses jargon (kicker, measure, markdown, mono, sans, sticky) or British spelling (centred, colour, grey, programme, catalogue) | use the plain word the message names; summaries say who the theme suits and what the home page shows |
+| `fixture-overlay` | a category used by a theme has no `scripts/themes/fixtures/<category>/`, or an overlay with `replace_base_posts: true` lacks a post a preview page needs | add the overlay; keep the two post files the message names |
+| `fixture-provenance` | a fixture image is not listed in `scripts/themes/fixtures/PROVENANCE.md` | add a row with the source link and license (public domain or CC0 only) |
 | `site-external` | a `src`/`href` points at a host other than Google Fonts or the fixture content | serve images from `assets/themes/<id>/` |
 
 ## The skeleton

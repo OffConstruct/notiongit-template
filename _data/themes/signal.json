@@ -4,8 +4,8 @@
   "id": "signal",
   "name": "Signal",
   "version": "1.0.0",
-  "summary": "The Swiss name plate: a huge Archivo name, one accent bar per section, timetable post rows.",
-  "description": "For freelancers and consultants who sell a service. Your name fills the top of a strict 12-column grid, each section opens with a full-width accent bar and an oversized number, posts read like a timetable, and your email or CV becomes the one square button.",
+  "summary": "For professionals: your name in huge clean letters, colored section bars and posts listed like a timetable.",
+  "description": "Clean, confident and orderly. Your name fills the top of the page in large letters, each section opens with a full-width colored bar and a big number, your posts read like a timetable, and your email or CV becomes the one button. For freelancers and consultants who sell a service.",
   "categories": ["professionals"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
@@ -30,16 +30,16 @@
     { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
       "options": [
         { "value": "auto", "label": "Match system" },
-        { "value": "light", "label": "White" },
-        { "value": "dark", "label": "Black" } ] },
-    { "key": "accent", "type": "color", "label": "Signal color", "role": "surface", "default": "red", "custom": false,
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "surface", "default": "red", "custom": false,
       "presets": [
         { "value": "red", "label": "Red", "light": "#c8102e", "dark": "#c8102e", "on": "#ffffff" },
         { "value": "blue", "label": "Blue", "light": "#0033a0", "dark": "#0033a0", "on": "#ffffff" },
         { "value": "green", "label": "Green", "light": "#00754a", "dark": "#00754a", "on": "#ffffff" },
         { "value": "yellow", "label": "Yellow", "light": "#f5c518", "dark": "#f5c518", "on": "#000000" },
         { "value": "orange", "label": "Orange", "light": "#ff6f00", "dark": "#ff6f00", "on": "#000000" } ] },
-    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
     { "key": "nameplate", "type": "select", "label": "Name size", "default": "huge",
       "options": [
         { "value": "huge", "label": "Huge, full width" },
@@ -47,7 +47,7 @@
         { "value": "modest", "label": "Modest" } ] },
     { "key": "name_width", "type": "select", "label": "Name width", "default": "condensed",
       "options": [
-        { "value": "condensed", "label": "Condensed" },
+        { "value": "condensed", "label": "Narrow" },
         { "value": "normal", "label": "Normal" } ] },
     { "key": "bars", "type": "select", "label": "Section bars", "default": "accent",
       "options": [

@@ -71,6 +71,35 @@ VALIDATING = {
 }
 ANNOTATIONS = {"$schema", "$id", "title", "description", "$defs"}
 
+# Site owners are not technical. These words in a summary, a description or a
+# tweak or option label read as jargon (or as British spelling, which the
+# labels avoid), so each one names the plain wording to use instead.
+PLAIN_WORDS = {
+    "kicker": "label above the headline",
+    "measure": "line length or text width",
+    "markdown": "say what the reader sees, such as # signs",
+    "mono": "say what it looks like, such as code-style",
+    "sans": "say what it looks like, such as clean",
+    "sticky": "fixed",
+    "centred": "centered",
+    "colour": "color",
+    "grey": "gray",
+    "greys": "grays",
+    "programme": "program",
+    "catalogue": "catalog",
+    "nav": "menu",
+    "hairline": "fine line",
+    "lede": "intro",
+    "gutter": "margin",
+    "chip": "label",
+    "booktabs": "neat tables",
+    "masonry": "a wall of pictures",
+    "tabular": "say what it looks like, such as lined up",
+    "front matter": "say what the reader sees",
+    "12-column": "say what it looks like, such as orderly",
+}
+PLAIN_RE = re.compile(r"\b(" + "|".join(re.escape(w) for w in PLAIN_WORDS) + r")\b", re.IGNORECASE)
+
 
 class Report:
     def __init__(self) -> None:
@@ -478,6 +507,45 @@ def check_tweaks(root, path, data, report):
                 report.fail(r, "tweak-default", f"font tweak default {default!r} is not a pairing value")
 
 
+def check_plain_language(root, path, data, report):
+    r = rel(root, path)
+    strings = [("summary", data.get("summary")), ("description", data.get("description"))]
+    for t in data.get("tweaks") or []:
+        strings.append((f"tweak {t.get('key')!r} label", t.get("label")))
+        for o in (t.get("options") or []) + (t.get("presets") or []):
+            strings.append((f"tweak {t.get('key')!r} option {o.get('value')!r}", o.get("label")))
+    for where, text in strings:
+        if not isinstance(text, str):
+            continue
+        for m in PLAIN_RE.finditer(text):
+            word = m.group(1).lower()
+            report.fail(r, "plain-language", f"{where}: {m.group(1)!r} is jargon for site owners; use: {PLAIN_WORDS[word]}")
+
+
+def check_fixture_overlays(root, manifests, report):
+    """Every category a theme lists needs sample content of its own, so its
+    preview shows that kind of site instead of the base essays."""
+    fixtures = root / "scripts" / "themes" / "fixtures"
+    used = sorted({c for _, data in manifests.values() for c in (data.get("categories") or []) if isinstance(c, str)})
+    for category in used:
+        if not (fixtures / category).is_dir():
+            report.fail(f"scripts/themes/fixtures/{category}", "fixture-overlay",
+                        f"category {category!r} is used by a theme but has no fixture overlay directory")
+    # An overlay that drops the base posts must still build every SITE_PAGES post.
+    required = [re.sub(r"^(\d{4})/(\d{2})/(\d{2})/([^/]+)/index\.html$", r"\1-\2-\3-\4.md", p)
+                for p in SITE_PAGES if re.match(r"^\d{4}/", p)]
+    for overlay in sorted(fixtures.glob("*/overlay.yml")):
+        if re.search(r"^replace_base_posts:\s*true\s*$", overlay.read_text(encoding="utf-8"), re.M):
+            for name in required:
+                if not (overlay.parent / "_posts" / name).is_file():
+                    report.fail(rel(root, overlay), "fixture-overlay", f"replace_base_posts is true, so _posts/{name} is required (a preview page links it)")
+    provenance = fixtures / "PROVENANCE.md"
+    listed = provenance.read_text(encoding="utf-8") if provenance.is_file() else ""
+    for f in sorted(fixtures.glob("*/assets/fixtures/*")):
+        if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif") and f"`{rel(fixtures, f)}`" not in listed:
+            report.fail(rel(root, f), "fixture-provenance", "fixture image is not listed with its source and license in scripts/themes/fixtures/PROVENANCE.md")
+
+
 def check_contrast(root, path, data, report):
     r = rel(root, path)
     palette = data.get("palette") if isinstance(data.get("palette"), dict) else {}
@@ -820,10 +888,12 @@ def main(argv: list[str]) -> int:
             check_slot_files(root, theme_id, present, partials, report)
             check_tweaks(root, path, data, report)
             check_contrast(root, path, data, report)
+            check_plain_language(root, path, data, report)
             check_css(root, theme_id, data, report)
         if not args.theme:
             check_orphans(root, manifests, report)
             check_config(root, manifests, report)
+            check_fixture_overlays(root, manifests, report)
             if schema is not None:
                 check_categories_doc(root, schema, report)
 

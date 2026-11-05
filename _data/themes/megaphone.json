@@ -4,8 +4,8 @@
   "id": "megaphone",
   "name": "Megaphone",
   "version": "1.0.0",
-  "summary": "The claim: your tagline as a giant condensed headline on warm black, one bright button under it.",
-  "description": "Built around one loud sentence. Your tagline fills the first screen in condensed capitals with a single bright button beneath it, then numbered sections for About, Featured and Latest with oversized numerals, and a statement band from your bio. Dark first, with a cream light mode, for creators and personal brands.",
+  "summary": "For marketers and creators: your tagline as a giant headline on warm black, with one bright button under it.",
+  "description": "Built around one loud sentence. Your tagline fills the first screen in tall capitals with one bright button under it. Numbered sections follow for About, Featured and Latest, then a bold quote from your bio. Dark by default, with a cream light mode. For creators and personal brands.",
   "categories": ["marketing", "entrepreneurs"],
   "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
   "license": "MIT",
@@ -30,15 +30,15 @@
     { "key": "mode", "type": "select", "label": "Color scheme", "default": "dark",
       "options": [
         { "value": "auto", "label": "Match system" },
-        { "value": "light", "label": "Light (cream)" },
-        { "value": "dark", "label": "Dark (warm black)" } ] },
-    { "key": "accent", "type": "color", "label": "Signal color", "role": "surface", "default": "chartreuse", "custom": false,
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "surface", "default": "chartreuse", "custom": false,
       "presets": [
         { "value": "chartreuse", "label": "Chartreuse", "light": "#d4f53c", "dark": "#d4f53c", "on": "#131209" },
         { "value": "orange", "label": "Signal orange", "light": "#ff6b2c", "dark": "#ff6b2c", "on": "#131209" },
         { "value": "pink", "label": "Hot pink", "light": "#ff4fa3", "dark": "#ff4fa3", "on": "#131209" },
         { "value": "cyan", "label": "Cyan", "light": "#3ce0e8", "dark": "#3ce0e8", "on": "#131209" } ] },
-    { "key": "webfonts", "type": "boolean", "label": "Load web fonts", "default": true },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
     { "key": "cta", "type": "select", "label": "Main button", "default": "newsletter",
       "options": [
         { "value": "newsletter", "label": "Newsletter link" },
@@ -50,7 +50,7 @@
         { "value": "full", "label": "Full screen" },
         { "value": "large", "label": "Large" },
         { "value": "compact", "label": "Compact" } ] },
-    { "key": "marquee", "type": "select", "label": "Ticker strip", "default": "off",
+    { "key": "marquee", "type": "select", "label": "Scrolling text strip", "default": "off",
       "options": [
         { "value": "off", "label": "Off" },
         { "value": "tags", "label": "Your tags" },
@@ -61,6 +61,6 @@
         { "value": "square", "label": "Square" },
         { "value": "circle", "label": "Circle" },
         { "value": "hidden", "label": "Hidden" } ] },
-    { "key": "statement", "type": "boolean", "label": "Statement band", "default": true }
+    { "key": "statement", "type": "boolean", "label": "Show the statement section", "default": true }
   ]
 }

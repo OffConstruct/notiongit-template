@@ -54,8 +54,19 @@ assets/themes/<id>/theme.css    stylesheet (required; static, no front matter)
 assets/themes/<id>/*.svg|png|webp|avif   optional images, 200 KB in total
 _includes/themes/<id>/<slot>.html        one file per slot listed in the manifest
 _includes/themes/<id>/_<name>.html       optional partials, included by your slots
-scripts/themes/fixtures/<category>/      optional fixture overlay for your category
+scripts/themes/fixtures/<category>/      fixture overlay for your category (every category has one)
 ```
+
+A fixture overlay holds sample content for one kind of site: `_data/home.yml`,
+pages and posts, copied over the base fixtures. With an `overlay.yml` that
+says `replace_base_posts: true`, the base posts are dropped first, so the
+preview shows only that category's posts. Such an overlay must still provide
+`_posts/2026-02-14-the-harbour-at-low-tide.md` and
+`_posts/2025-11-03-keeping-a-commonplace-book.md` (any title, same slug),
+because the audit and the screenshots open those pages. Give one or two posts
+no `cover_image`: real sites often have posts without covers, and the theme
+must show them well. Images come only from
+`scripts/themes/fixtures/PROVENANCE.md`.
 
 Theme ids match `^[a-z]{2,24}$` and equal the file name. Reserved ids:
 `size first last empty blank nil default none themes ink preview previews
@@ -77,7 +88,7 @@ rejects unknown fields.
 | `author` | `{ "name": 1-60 chars, "url"?: https URL }` |
 | `license` | `"MIT"` |
 | `slots` | unique subset of the slots in section 3; may be `[]` |
-| `fonts` | 1 to 3 pairings (section 8) |
+| `fonts` | 1 to 3 pairings (section 9) |
 | `palette` | `light` and `dark`, each `{bg, text, muted}` as lowercase `#rrggbb` |
 | `tweaks` | 3 to 10 tweaks (section 4); `mode`, `accent` and `webfonts` are required |
 
@@ -325,7 +336,45 @@ Every theme meets, in every mode and tweak value:
 - no motion under `prefers-reduced-motion: reduce`;
 - hidden variants removed with `display:none`.
 
-## 8. Fonts
+## 8. Shared rules and spacing decisions
+
+`assets/ink/shared.css` loads after every theme's stylesheet. It holds only
+the rules every theme follows, so a theme does not need to repeat them:
+
+- **Phone menu (below 600px).** The `nav[aria-label="Main navigation"]` menu
+  is one row that scrolls sideways, with each link at least 44px tall. A
+  visible row is easier to find than a Menu button for people who are not
+  technical, and it never leaves one orphaned item on a second row. The
+  last link is cut off at the edge, which shows that the row scrolls. The
+  audit fails a theme whose menu wraps with one link on its last row, or
+  whose menu links are shorter than 44px.
+- **Footnote links** are underlined, so they never rely on color alone.
+
+Spacing decisions made in the November 2026 review, for theme authors to
+follow:
+
+- **Space between sections:** 56px on phones to about 104px on wide
+  screens. More than about 140px reads as a missing section.
+- **First screen:** never stretch the first section to the full screen
+  height with content pinned to its bottom; an empty band of 200px or more
+  between the tagline and the next item looks broken. Halo puts its cover
+  48 to 64px under the tagline; Megaphone centers its headline in at most
+  80% of the screen and drops the minimum height below 768px; Confetti's
+  first screen is at most 640px tall.
+- **Menus** sit in a top bar. Halo's menu used to sit along the bottom of
+  its poster, where it was hard to find and its links were 14px tall.
+- **A work and its caption are one unit.** Vitrine places the caption
+  against the plate's edge, whatever the artwork's shape, sizes plates by
+  height (at most 70% of the screen), and leaves 64 to 96px between works.
+- **Long lists on the home page** stop at about eight items and link to the
+  full list (Anamorph's reel).
+- **Text size:** body text at least 16px; captions and small labels at
+  least 15px on wide screens.
+- **Posts without a cover** get a designed tile: the title on a field
+  tinted with the accent color (Crate, Specimen) or a date set like a flyer
+  (Halo), never an empty box.
+
+## 9. Fonts
 
 - Google Fonts families only, loaded through the manifest's `google` field
   (`family=EB+Garamond:ital,wght@0,400;1,400`, at most 3 families per
