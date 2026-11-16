@@ -1,0 +1,11 @@
+<div class="ink-page lb-wrap lb-doc">
+  <header class="lb-doc-head">
+    <h1 class="lb-doc-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="lb-doc-dek">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="lb-prose page-content">
+    {{ content }}
+  </div>
+</div>

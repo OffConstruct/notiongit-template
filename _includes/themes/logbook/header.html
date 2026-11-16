@@ -1,0 +1,27 @@
+{%- assign lb_home = site.data.home -%}
+{%- assign lb_brand = lb_home.name | default: site.author.name | default: site.title -%}
+<header class="ink-header lb-header">
+  <div class="lb-wrap lb-bar">
+    {%- if page.layout == "home" and lb_home.name != blank %}
+    <div class="lb-mast">
+      <h1 class="lb-name">{{ lb_home.name }}</h1>
+      {%- if lb_home.tagline != blank %}
+      <p class="lb-tagline">{{ lb_home.tagline }}</p>
+      {%- endif %}
+    </div>
+    {%- else %}
+    <a class="lb-brand" href="{{ '/' | relative_url }}">{{ lb_brand }}</a>
+    {%- endif %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="lb-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="lb-nav-empty" role="status">Your menu will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+  <div class="lb-ribbon">{% include ink/motion.html %}</div>
+</header>

@@ -1,0 +1,35 @@
+<div class="ink-post lb-wrap lb-doc">
+  <article class="lb-article">
+    <header class="lb-doc-head">
+      <p class="lb-doc-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}"><span class="lb-date-num">{{ page.date | date: "%Y.%m.%d" }}</span><span class="lb-date-word">{{ page.date | date: "%B %-d, %Y" }}</span></time>
+        {%- for tag in page.tags %}
+        <a class="lb-tag" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+        {%- endfor %}
+      </p>
+      <h1 class="lb-doc-title">{{ page.title }}</h1>
+    </header>
+    {%- if page.cover_image %}
+    <img class="lb-cover" src="{{ page.cover_image }}" alt="">
+    {%- endif %}
+    <div class="lb-prose post-content">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="lb-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="lb-post-foot">
+      {%- if page.previous or page.next %}
+      <nav class="lb-pager" aria-label="More updates">
+        {%- if page.next %}
+        <a href="{{ page.next.url | relative_url }}"><span class="lb-pager-label">Newer</span> <span class="lb-pager-title">{{ page.next.title }}</span></a>
+        {%- endif %}
+        {%- if page.previous %}
+        <a href="{{ page.previous.url | relative_url }}"><span class="lb-pager-label">Older</span> <span class="lb-pager-title">{{ page.previous.title }}</span></a>
+        {%- endif %}
+      </nav>
+      {%- endif %}
+      <p class="lb-all"><a href="{{ '/blog/' | relative_url }}">See every update</a></p>
+    </footer>
+  </article>
+</div>

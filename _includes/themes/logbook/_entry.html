@@ -1,0 +1,15 @@
+{%- assign p = include.post -%}
+{%- assign href = p.url | relative_url -%}
+{%- if p.canonical_url -%}{%- assign href = p.canonical_url -%}{%- endif -%}
+<li class="lb-entry{% if p.featured %} is-featured{% endif %}{% if include.latest %} is-latest{% endif %}">
+  <time class="lb-date" datetime="{{ p.date | date_to_xmlschema }}">{%- if include.short %}<span class="lb-date-num">{{ p.date | date: "%m.%d" }}</span><span class="lb-date-word">{{ p.date | date: "%b %-d" }}</span>{%- else %}<span class="lb-date-num">{{ p.date | date: "%Y.%m.%d" }}</span><span class="lb-date-word">{{ p.date | date: "%b %-d, %Y" }}</span>{%- endif %}</time>
+  <span class="lb-dot" aria-hidden="true"></span>
+  {%- if p.tags and p.tags.size > 0 %}
+  <span class="lb-kind">{{ p.tags | first }}</span>
+  {%- endif %}
+  <h3 class="lb-title"><a href="{{ href }}">{{ p.title }}</a></h3>
+  {%- assign lb_ex = p.excerpt | strip_html | strip -%}
+  {%- if lb_ex != "" %}
+  <p class="lb-excerpt">{{ lb_ex | truncate: 180 }}</p>
+  {%- endif %}
+</li>

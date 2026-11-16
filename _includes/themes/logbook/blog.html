@@ -1,0 +1,29 @@
+<div class="ink-post-list lb-wrap lb-doc">
+  <header class="lb-doc-head">
+    <h1 class="lb-doc-title">{{ page.title | default: "Updates" }}</h1>
+    {%- if site.posts.size > 0 %}
+    <p class="lb-doc-meta">{{ site.posts.size }} {% if site.posts.size == 1 %}update{% else %}updates{% endif %}, newest first</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for y in years %}
+  <section class="lb-year" aria-labelledby="lb-year-{{ y.name }}">
+    <h2 class="lb-year-name" id="lb-year-{{ y.name }}">{{ y.name }}</h2>
+    <ol class="lb-log">
+      {%- for post in y.items %}
+      {%- assign lb_first = false %}{% if forloop.first and forloop.parentloop.first %}{% assign lb_first = true %}{% endif %}
+      {% include themes/logbook/_entry.html post=post latest=lb_first short=true %}
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

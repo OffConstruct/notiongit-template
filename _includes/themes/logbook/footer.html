@@ -1,0 +1,13 @@
+{%- assign lb_home = site.data.home -%}
+<footer class="ink-footer lb-footer">
+  <div class="lb-wrap lb-foot">
+    {%- if lb_home.social_links and lb_home.social_links.size > 0 %}
+    <ul class="lb-links" aria-label="Links">
+      {%- for link in lb_home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    <p class="lb-colophon">&copy; {{ 'now' | date: '%Y' }} {{ lb_home.name | default: site.author.name | default: site.title }}</p>
+  </div>
+</footer>
