@@ -1,0 +1,30 @@
+{%- assign hu_blog = site.pages | where: "layout", "blog" | first -%}
+{%- assign hu_blog_url = "/blog/" -%}
+{%- if hu_blog %}{% assign hu_blog_url = hu_blog.url %}{% endif -%}
+<div class="ink-post hu-wrap">
+  <article>
+    <header class="hu-page-head">
+      <h1 class="hu-title">{{ page.title }}</h1>
+      <p class="hu-date"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></p>
+      {%- if page.tags.size > 0 %}
+      <p class="hu-tags">
+        {%- for tag in page.tags %}
+        <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}
+        {%- endfor %}
+      </p>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <img class="hu-cover" src="{{ page.cover_image }}" alt="">
+    {%- endif %}
+    <div class="post-content hu-prose">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="hu-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="hu-post-footer">
+      <a href="{{ hu_blog_url | relative_url }}">All posts</a>
+    </footer>
+  </article>
+</div>

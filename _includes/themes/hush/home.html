@@ -1,0 +1,101 @@
+{%- assign home = site.data.home -%}
+{%- assign hu_owner = home.name | strip -%}
+{%- assign hu_ready = false -%}
+{%- if home -%}
+  {%- if hu_owner != "" or site.posts.size > 0 %}{% assign hu_ready = true %}{% endif -%}
+{%- endif -%}
+{%- assign hu_name = hu_owner | default: site.title -%}
+<div class="ink-home hu-home">
+  {%- if hu_ready %}
+  {%- assign hu_newest = site.posts | first %}
+  <section class="hu-fold"{% if hu_newest %} aria-labelledby="hu-newest"{% endif %}>
+    {%- if hu_newest %}
+    <h1 class="hu-sr">{{ hu_name }}</h1>
+    {%- endif %}
+    <div class="hu-ring">
+      {% include ink/motion.html %}
+      <div class="hu-center">
+        {%- if hu_newest %}
+        {%- assign hu_href = hu_newest.url | relative_url -%}
+        {%- if hu_newest.canonical_url %}{% assign hu_href = hu_newest.canonical_url %}{% endif -%}
+        {%- assign hu_len = hu_newest.title | size -%}
+        {%- assign hu_size = "short" -%}
+        {%- if hu_len > 34 %}{% assign hu_size = "long" %}{% endif -%}
+        {%- if hu_len > 64 %}{% assign hu_size = "longer" %}{% endif %}
+        <h2 class="hu-ring-title hu-ring-title--{{ hu_size }}" id="hu-newest"><a href="{{ hu_href }}"><span class="hu-sr">Newest: </span>{{ hu_newest.title }}</a></h2>
+        {%- else %}
+        <h1 class="hu-ring-title hu-ring-title--short">{{ hu_name }}</h1>
+        {%- endif %}
+      </div>
+    </div>
+    {%- if hu_newest %}
+    <p class="hu-fold-meta">
+      <time datetime="{{ hu_newest.date | date_to_xmlschema }}">{{ hu_newest.date | date: "%b %-d, %Y" }}</time>
+      {%- if hu_newest.tags.size > 0 %}
+      <span class="hu-fold-tags">{{ hu_newest.tags | join: ", " }}</span>
+      {%- endif %}
+    </p>
+    {%- endif %}
+  </section>
+
+  {%- assign hu_bio = home.bio | strip | markdownify | strip -%}
+  {%- assign hu_tagline = home.tagline | strip -%}
+  {%- if hu_bio != "" %}
+  {%- assign hu_parts = hu_bio | split: "<h2" %}
+  <div class="hu-wrap hu-bio">
+    {%- for part in hu_parts %}
+    {%- assign hu_part = part | strip %}
+    {%- if hu_part == "" %}{% continue %}{% endif %}
+    {%- if forloop.first %}
+    <section class="hu-prose hu-lead" aria-label="About">
+      {{ hu_part }}
+    </section>
+    {%- else %}
+    <section class="hu-prose hu-bio-more">
+      <h2{{ part }}
+    </section>
+    {%- endif %}
+    {%- endfor %}
+  </div>
+  {%- elsif hu_tagline != "" %}
+  <div class="hu-wrap hu-bio">
+    <p class="hu-lead">{{ hu_tagline }}</p>
+  </div>
+  {%- endif %}
+
+  {%- if site.posts.size > 1 %}
+  {%- assign hu_blog = site.pages | where: "layout", "blog" | first -%}
+  {%- assign hu_blog_url = "/blog/" -%}
+  {%- if hu_blog %}{% assign hu_blog_url = hu_blog.url %}{% endif %}
+  <section class="hu-wrap hu-list" aria-labelledby="hu-list-title">
+    <h2 class="hu-heading" id="hu-list-title"><span class="ink-variant" data-variant="list_heading:works">Works</span><span class="ink-variant" data-variant="list_heading:releases">Releases</span><span class="ink-variant" data-variant="list_heading:journal">Journal</span></h2>
+    <ul class="hu-works">
+      {%- for post in site.posts offset: 1 limit: 8 %}
+      {% include themes/hush/_row.html post=post %}
+      {%- endfor %}
+    </ul>
+    {%- if site.posts.size > 9 %}
+    <p class="hu-more"><a href="{{ hu_blog_url | relative_url }}">All {{ site.posts.size }} posts, by year</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+  {%- else %}
+  <section class="hu-fold hu-fold--empty">
+    <div class="hu-ring">
+      {% include ink/motion.html %}
+      <div class="hu-center">
+        <h1 class="hu-ring-title hu-ring-title--short">{{ site.title }}</h1>
+      </div>
+    </div>
+    <div class="hu-wrap">
+      {% include empty-state.html
+        variant="home-empty-state"
+        kicker="Setup in progress"
+        title="Your site is almost ready"
+        copy="Your Notion content will appear here after the first sync completes."
+        note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+      %}
+    </div>
+  </section>
+  {%- endif %}
+</div>

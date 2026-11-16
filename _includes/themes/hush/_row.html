@@ -1,0 +1,16 @@
+{%- assign hu_post = include.post -%}
+{%- assign hu_fmt = include.fmt | default: "%Y" -%}
+{%- assign hu_href = hu_post.url | relative_url -%}
+{%- if hu_post.canonical_url %}{% assign hu_href = hu_post.canonical_url %}{% endif -%}
+<li class="hu-work">
+  <p class="hu-work-row">
+    <a class="hu-work-title" href="{{ hu_href }}">{{ hu_post.title }}</a>
+    <time datetime="{{ hu_post.date | date_to_xmlschema }}">{{ hu_post.date | date: hu_fmt }}</time>
+  </p>
+  {%- if hu_post.excerpt %}
+  {%- assign hu_ex = hu_post.excerpt | strip_html | strip %}
+  {%- if hu_ex != "" %}
+  <p class="hu-work-excerpt">{{ hu_ex | truncate: 160 }}</p>
+  {%- endif %}
+  {%- endif %}
+</li>

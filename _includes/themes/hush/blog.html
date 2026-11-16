@@ -1,0 +1,28 @@
+<div class="ink-post-list hu-wrap">
+  <header class="hu-page-head">
+    <h1 class="hu-title">{{ page.title | default: "Works" }}</h1>
+    {%- if page.description and page.description != "" %}
+    <p class="hu-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign hu_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for y in hu_years %}
+  <section class="hu-year" aria-labelledby="hu-year-{{ y.name }}">
+    <h2 class="hu-year-head" id="hu-year-{{ y.name }}">{{ y.name }}</h2>
+    <ul class="hu-works">
+      {%- for post in y.items %}
+      {% include themes/hush/_row.html post=post fmt="%b %-d" %}
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>
