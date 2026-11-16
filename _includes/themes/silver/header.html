@@ -1,0 +1,41 @@
+{%- assign sv_home = site.data.home -%}
+{%- assign sv_name = sv_home.name | default: site.author.name | default: site.title -%}
+{%- assign sv_intro = false -%}
+{%- if page.layout == "home" and sv_home.name != blank %}{% assign sv_intro = true %}{% endif -%}
+<header class="ink-header sv-header{% if sv_intro %} sv-intro{% endif %}">
+  {%- capture sv_nav -%}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="sv-nav" aria-label="Main navigation">
+      <ul>
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        {%- assign sv_here = false %}
+        {%- if item.url == "/" %}{% if page.layout == "home" %}{% assign sv_here = true %}{% endif %}{% elsif page.url == item_url or page.url contains item.url %}{% assign sv_here = true %}{% endif %}
+        <li><a href="{{ item_url }}"{% if sv_here %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- else %}
+    <p class="sv-nav-empty" role="status">Your menu will appear after the first sync.</p>
+    {%- endif %}
+{%- endcapture -%}
+  {%- if sv_intro %}
+  <div class="sv-strip">{% include ink/motion.html %}</div>
+  <div class="sv-intro-body">
+    <div class="sv-bar sv-bar--intro">
+{{ sv_nav }}
+    </div>
+    <div class="sv-id">
+      <h1 class="sv-name">{{ sv_name }}</h1>
+      {%- if sv_home.tagline != blank %}
+      <p class="sv-tagline">{{ sv_home.tagline }}</p>
+      {%- endif %}
+    </div>
+  </div>
+  {%- else %}
+  <div class="sv-wrap sv-bar">
+    <p class="sv-mark"><a href="{{ '/' | relative_url }}"{% if page.layout == "home" %} aria-current="page"{% endif %}>{{ sv_name }}</a></p>
+{{ sv_nav }}
+  </div>
+  {%- endif %}
+</header>

@@ -1,0 +1,516 @@
+/* Silver theme for InkDrafts. Static CSS only: no front matter, no @import,
+   no remote url(). Tokens and tweak hooks: docs/themes/README.md.
+   One idea moves: a narrow strip of random dither on the home page's left
+   edge, where soft clouds of silver grain gather and thin, like a print
+   coming up in the developer tray. No text sits on it. Phones show no
+   strip. Contract: docs/themes/motion.md. */
+
+:root {
+  color-scheme: light;
+  --ink-bg: #ecebe8;
+  --ink-text: #121212;
+  --ink-muted: #5f5f5c;
+  --ink-accent: var(--tw-accent);
+  --ink-font-body: var(--tw-font-body);
+  --ink-font-display: var(--tw-font-display);
+  --ink-font-mono: var(--tw-font-mono);
+
+  --sv-rule: color-mix(in oklab, var(--ink-text) 14%, var(--ink-bg));
+  --sv-well: color-mix(in oklab, var(--ink-text) 7%, var(--ink-bg));
+  --sv-plate: color-mix(in oklab, var(--ink-accent) 6%, var(--ink-bg));
+  --sv-strip: clamp(56px, 10vw, 160px);
+  --sv-gutter: clamp(20px, 5vw, 72px);
+  --sv-max: 1320px;
+  --sv-section: clamp(56px, 8vw, 104px);
+  --sv-ratio: 4 / 5;
+  --sv-cols: 3;
+  --sv-gap: clamp(16px, 2.5vw, 32px);
+  --sv-measure: 40.5rem;
+  /* Past the widest grid, the extra width goes to both sides of the
+     content, so the strip stays on the window's left edge. */
+  --sv-extra: max(0px, (100vw - var(--sv-max) - var(--sv-strip) - 2 * var(--sv-gutter)) / 2);
+
+  /* Motion: the grain is the accent (ink by default) at a low share of the
+     paper, so it reads as texture, never as a picture. */
+  --motion-grain: color-mix(in oklab, var(--ink-accent) 11%, var(--ink-bg));
+  --sv-plate-grain: color-mix(in oklab, var(--ink-accent) 9%, var(--sv-plate));
+}
+
+:root[data-ink-mode="dark"] {
+  color-scheme: dark;
+  --ink-bg: #0e0e0e;
+  --ink-text: #e8e8e6;
+  --ink-muted: #8f8f8c;
+  --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+  --sv-well: color-mix(in oklab, var(--ink-text) 9%, var(--ink-bg));
+  /* A black ground swallows faint grain; raise it a little. */
+  --motion-grain: color-mix(in oklab, var(--ink-accent) 15%, var(--ink-bg));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-mode="auto"] {
+    color-scheme: dark;
+    --ink-bg: #0e0e0e;
+    --ink-text: #e8e8e6;
+    --ink-muted: #8f8f8c;
+    --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+    --sv-well: color-mix(in oklab, var(--ink-text) 9%, var(--ink-bg));
+    --motion-grain: color-mix(in oklab, var(--ink-accent) 15%, var(--ink-bg));
+  }
+}
+
+/* A custom accent has no dark hex; lift its lightness where supported. */
+@supports (color: oklch(from red l c h)) {
+  :root[data-ink-mode="dark"][data-ink-accent="custom"] {
+    --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-ink-mode="auto"][data-ink-accent="custom"] {
+      --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+    }
+  }
+}
+
+:root[data-ink-shape="square"] { --sv-ratio: 1 / 1; }
+:root[data-ink-shape="landscape"] { --sv-ratio: 3 / 2; }
+:root[data-ink-columns="two"] { --sv-cols: 2; }
+
+/* ---------- Base ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--ink-bg);
+  color: var(--ink-text);
+  font-family: var(--ink-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img { max-width: 100%; height: auto; }
+
+a {
+  color: inherit;
+  text-decoration-color: color-mix(in oklab, var(--ink-accent) 60%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--ink-accent); outline-offset: 3px; border-radius: 1px; }
+
+h1, h2, h3, h4 { font-family: var(--ink-font-display); font-weight: 400; line-height: 1.15; text-wrap: balance; }
+
+/* Content starts where the strip ends, on every page, so the left edge of
+   the name, the grid and the text is one line through the site. */
+.sv-wrap,
+.container {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding-inline: calc(var(--sv-strip) + var(--sv-gutter) + var(--sv-extra)) calc(var(--sv-gutter) + var(--sv-extra));
+}
+.main { display: block; padding-bottom: var(--sv-section); }
+
+/* ---------- Header: the home intro ---------- */
+
+.sv-intro {
+  display: grid;
+  grid-template-columns: var(--sv-strip) minmax(0, 1fr);
+  min-height: clamp(340px, 52svh, 520px);
+  /* The rule ends where the content ends, like the footer rule. */
+  background: linear-gradient(var(--sv-rule), var(--sv-rule)) left bottom / calc(100% - var(--sv-gutter) - var(--sv-extra)) 1px no-repeat;
+}
+.sv-strip {
+  position: relative;
+  border-right: 1px solid var(--sv-rule);
+}
+/* The grain surface fills the strip; its box is the strip's box. Without
+   JavaScript or WebGL, and with motion off, a still dot screen in the same
+   tone stands in for it. */
+.sv-strip > .ink-motion {
+  position: absolute;
+  inset: 0;
+  --ink-motion-fallback: var(--sv-grain);
+}
+/* A still, uneven dot screen: three offset lattices of different sizes, so
+   no regular grid shows. Used for the strip without motion and on plates. */
+.sv-strip > .ink-motion,
+.sv-plate {
+  --sv-grain:
+    radial-gradient(circle at 30% 40%, var(--sv-dot) 0 0.7px, transparent 1px) 0 0 / 7px 9px,
+    radial-gradient(circle at 70% 20%, var(--sv-dot) 0 0.7px, transparent 1px) 3px 5px / 11px 13px,
+    radial-gradient(circle at 50% 70%, var(--sv-dot) 0 0.8px, transparent 1.1px) 2px 1px / 17px 19px;
+}
+.sv-strip > .ink-motion { --sv-dot: var(--motion-grain); }
+.sv-intro-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+  min-width: 0;
+  padding: 28px calc(var(--sv-gutter) + var(--sv-extra)) clamp(40px, 5vw, 64px);
+}
+.sv-name {
+  margin: 0;
+  font-family: var(--ink-font-display);
+  font-size: clamp(3.25rem, 10vw, 9.25rem);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+.sv-tagline {
+  max-width: 34em;
+  margin: 24px 0 0;
+  color: var(--ink-muted);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* ---------- Header: other pages ---------- */
+
+.sv-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 40px;
+}
+.sv-wrap.sv-bar { padding-block: 28px 0; }
+.sv-mark {
+  min-width: 0;
+  margin: 0;
+  font-family: var(--ink-font-display);
+  font-size: 1.75rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.sv-mark a { text-decoration: none; }
+
+.sv-nav ul { display: flex; flex-wrap: wrap; gap: 0 28px; margin: 0; padding: 0; list-style: none; }
+.sv-nav a {
+  display: inline-block;
+  padding-block: 8px;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+.sv-nav a:hover { color: var(--ink-text); }
+.sv-nav a[aria-current="page"] {
+  color: var(--ink-text);
+  text-decoration: underline;
+  text-decoration-color: var(--ink-accent);
+  text-underline-offset: 0.4em;
+}
+.sv-nav-empty { margin: 0; color: var(--ink-muted); font-size: 0.9375rem; }
+
+/* ---------- Roster ---------- */
+
+.sv-roster { padding-top: clamp(48px, 6vw, 80px); }
+.sv-roster-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 24px;
+  margin-bottom: 28px;
+}
+.sv-label {
+  margin: 0;
+  color: var(--ink-text);
+  font-family: var(--ink-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.sv-years { margin: 0; color: var(--ink-muted); font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+
+.sv-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--sv-cols), minmax(0, 1fr));
+  gap: clamp(40px, 4.5vw, 64px) var(--sv-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sv-sitting-link { display: block; text-decoration: none; }
+.sv-sitting-link:focus-visible { outline-offset: 6px; }
+.sv-sitting-link:active .sv-frame { opacity: 0.86; }
+.sv-frame {
+  display: block;
+  aspect-ratio: var(--sv-ratio);
+  overflow: hidden;
+  background: var(--sv-well);
+}
+.sv-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+/* Photo color: as taken, always black and white, or black and white until
+   pointed at (only with a mouse; on touch screens photos stay as taken). */
+:root[data-ink-tone="bw"] .sv-frame img,
+:root[data-ink-tone="bw"] .sv-cover img { filter: grayscale(1) contrast(1.04); }
+@media (hover: hover) and (pointer: fine) {
+  :root[data-ink-tone="hover"] .sv-frame img { filter: grayscale(1) contrast(1.04); }
+  :root[data-ink-tone="hover"] .sv-sitting-link:hover .sv-frame img,
+  :root[data-ink-tone="hover"] .sv-sitting-link:focus-visible .sv-frame img { filter: none; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :root[data-ink-tone="hover"] .sv-frame img { transition: filter 0.6s ease; }
+}
+
+/* A post without a photo: its title set on a plate of the same shape. */
+.sv-plate {
+  display: flex;
+  align-items: flex-end;
+  --sv-dot: var(--sv-plate-grain);
+  padding: clamp(16px, 2vw, 24px);
+  border: 1px solid var(--sv-rule);
+  background: var(--sv-grain), var(--sv-plate);
+}
+.sv-plate-title {
+  font-family: var(--ink-font-display);
+  font-size: clamp(1.375rem, 2.4vw, 2.25rem);
+  font-style: italic;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.sv-cap {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+.sv-cap-title {
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+.sv-cap-year { flex: none; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+.sv-sitting-link:hover .sv-cap-title {
+  text-decoration: underline;
+  text-decoration-color: var(--ink-accent);
+  text-underline-offset: 0.22em;
+}
+
+.sv-more { margin: clamp(48px, 6vw, 72px) 0 0; }
+.sv-more a { display: inline-block; padding-block: 8px; text-decoration-color: var(--ink-accent); }
+
+/* ---------- Home: about ---------- */
+
+.sv-about {
+  display: grid;
+  /* The same tracks as the photo grid, so the bio starts on a column. */
+  grid-template-columns: repeat(var(--sv-cols), minmax(0, 1fr));
+  column-gap: var(--sv-gap);
+  margin-top: var(--sv-section);
+  padding-top: 16px;
+  border-top: 1px solid var(--sv-rule);
+}
+.sv-about .sv-label { margin-bottom: 20px; }
+.sv-about-body { grid-column: 2 / -1; max-width: 36em; }
+.sv-bio > :first-child { margin-top: 0; }
+.sv-prose.sv-bio h3 {
+  margin: 1.8em 0 0.4em;
+  color: var(--ink-muted);
+  font-family: var(--ink-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.sv-prose.sv-bio ul { padding-left: 0; list-style: none; }
+.sv-links { display: flex; flex-wrap: wrap; gap: 0 24px; margin: 24px 0 0; padding: 0; list-style: none; }
+.sv-links a { display: inline-block; padding-block: 8px; overflow-wrap: anywhere; }
+
+/* ---------- Page heads (blog, post, page) ---------- */
+
+.sv-page-head { padding-top: clamp(56px, 8vw, 104px); padding-bottom: clamp(32px, 4vw, 56px); }
+.sv-page-title {
+  max-width: 18ch;
+  margin: 0;
+  font-size: clamp(2.5rem, 5.6vw, 4.75rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+.sv-page-lede { max-width: 36em; margin: 16px 0 0; color: var(--ink-muted); }
+.sv-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 20px;
+  margin: 20px 0 0;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+}
+.sv-meta + .sv-meta { margin-top: 4px; }
+.sv-meta a { display: inline-block; padding-block: 4px; color: var(--ink-muted); }
+.sv-meta a:hover { color: var(--ink-text); }
+.sv-meta time { padding-block: 4px; }
+
+/* ---------- Post and page body ---------- */
+
+.sv-cover { margin: 0 0 clamp(40px, 6vw, 72px); }
+.sv-cover img { display: block; width: auto; max-width: 100%; max-height: 84svh; background: var(--sv-well); }
+
+/* Text keeps a reading measure; photos on their own break out to the full
+   grid width. */
+.sv-body { font-size: 1.125rem; line-height: 1.7; }
+.sv-body > *, .sv-body figcaption { max-width: var(--sv-measure); }
+.sv-body > figure,
+.sv-body > p:has(> img:only-child),
+.sv-body > p:has(> a:only-child > img:only-child) { max-width: none; }
+.sv-body > figure img,
+.sv-body > p > img:only-child,
+.sv-body > p > a:only-child > img:only-child { width: auto; max-height: 84svh; }
+.sv-prose { overflow-wrap: break-word; }
+.sv-prose > :first-child { margin-top: 0; }
+.sv-prose h2 { font-size: 2rem; letter-spacing: -0.01em; margin: 1.6em 0 0.5em; }
+.sv-prose h3 { font-size: 1.5rem; margin: 1.6em 0 0.4em; }
+.sv-prose p, .sv-prose ul, .sv-prose ol { margin: 0 0 1.1em; }
+.sv-prose li + li { margin-top: 0.3em; }
+.sv-prose li::marker { font-variant-numeric: normal; }
+.sv-prose img { display: block; margin-block: 2em; background: var(--sv-well); }
+.sv-prose figure { margin: 2em 0; }
+.sv-prose figcaption { margin-top: 12px; color: var(--ink-muted); font-size: 0.9375rem; }
+.sv-prose blockquote {
+  margin: 1.8em 0;
+  padding-left: 1.2em;
+  border-left: 1px solid var(--ink-accent);
+  font-family: var(--ink-font-display);
+  font-size: 1.5rem;
+  font-style: italic;
+  line-height: 1.35;
+}
+.sv-prose pre {
+  overflow-x: auto;
+  margin: 1.6em 0;
+  padding: 16px 20px;
+  background: var(--sv-well);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.sv-prose pre code { padding: 0; background: none; font-size: 1em; }
+code { font-family: var(--ink-font-mono); font-size: 0.88em; }
+:not(pre) > code { padding: 0.1em 0.3em; background: var(--sv-well); border-radius: 2px; }
+.sv-prose table { width: 100%; margin: 1.6em 0; border-collapse: collapse; font-size: 1rem; }
+.sv-prose th, .sv-prose td { padding: 12px 16px 12px 0; border-bottom: 1px solid var(--sv-rule); text-align: left; vertical-align: top; overflow-wrap: break-word; }
+.sv-prose th { font-weight: 500; }
+.sv-prose hr { margin-block: 2.4em; border: 0; border-top: 1px solid var(--sv-rule); }
+sup, sub { line-height: 0; }
+.footnotes { margin-top: 3em; color: var(--ink-muted); font-size: 0.9375rem; }
+
+.sv-post-foot { margin-top: var(--sv-section); padding-top: 16px; border-top: 1px solid var(--sv-rule); }
+.sv-post-foot a { display: inline-block; padding-block: 8px; text-decoration: none; }
+.sv-post-foot a:hover { text-decoration: underline; }
+
+/* Rouge highlighting, kept quiet. */
+.highlight .c, .highlight .c1, .highlight .cm { color: var(--ink-muted); font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kn { color: color-mix(in oklab, var(--ink-accent) 70%, var(--ink-text)); }
+.highlight .s, .highlight .s1, .highlight .s2 { color: color-mix(in oklab, var(--ink-accent) 45%, var(--ink-text)); }
+
+/* ---------- Footer ---------- */
+
+.sv-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 32px;
+  padding-block: 20px 40px;
+  border-top: 1px solid var(--sv-rule);
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+.sv-footer-inner p { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.sv-footer-links { display: flex; flex-wrap: wrap; gap: 0 24px; }
+.sv-footer a { display: inline-block; padding-block: 8px; text-decoration: none; }
+.sv-footer a:hover { color: var(--ink-text); text-decoration: underline; }
+
+/* ---------- Tags page (base markup) ---------- */
+
+.ink-tags.container { padding-top: clamp(56px, 8vw, 104px); }
+.tags-header h1 {
+  margin: 0 0 clamp(32px, 4vw, 56px);
+  font-size: clamp(2.5rem, 5.6vw, 4.75rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.tag-group { max-width: 52rem; margin-bottom: 40px; padding-top: 16px; border-top: 1px solid var(--sv-rule); scroll-margin-top: 24px; }
+.tag-group-name { display: flex; gap: 16px; align-items: baseline; margin: 0 0 8px; font-family: var(--ink-font-display); font-size: 1.5rem; }
+.tag-count { color: var(--ink-muted); font-family: var(--ink-font-body); font-size: 0.9375rem; }
+.tag-posts { display: grid; }
+.tag-post-link { display: flex; gap: 20px; padding-block: 8px; text-decoration: none; }
+.tag-post-link > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.tag-post-link:hover span:last-child { text-decoration: underline; text-decoration-color: var(--ink-accent); }
+.tag-post-date { min-width: 7.5em; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+
+/* ---------- Empty states (before the first sync) ---------- */
+
+.sv-empty, .empty-state { padding-block: clamp(48px, 10vw, 120px); }
+.sv-empty .empty-state { padding-block: 0; }
+.empty-state-mark { display: none; }
+.empty-state-kicker { margin: 0 0 8px; color: var(--ink-muted); font-size: 0.9375rem; letter-spacing: 0; text-transform: none; }
+.empty-state-title { margin: 0 0 16px; font-size: clamp(2rem, 4.4vw, 3.25rem); line-height: 1.05; letter-spacing: -0.02em; }
+.empty-state-copy { max-width: 32em; margin: 0 0 8px; }
+.empty-state-note { max-width: 32em; margin: 0; color: var(--ink-muted); }
+
+/* ---------- Tablets and phones ---------- */
+
+@media (max-width: 900px) {
+  .sv-about { grid-template-columns: minmax(0, 1fr); }
+  .sv-about-body { grid-column: 1 / -1; }
+}
+
+/* On phones the strip steps aside: the content takes the full width and
+   nothing moves. */
+@media (max-width: 720px) {
+  :root { --sv-strip: 0px; --sv-cols: 2; }
+  :root[data-ink-shape="landscape"], :root[data-ink-columns="two"] { --sv-cols: 1; }
+  .sv-intro {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    background-position: var(--sv-gutter) bottom;
+    background-size: calc(100% - 2 * var(--sv-gutter)) 1px;
+  }
+  .sv-strip { display: none; }
+  .sv-intro-body { gap: 56px; padding: 20px var(--sv-gutter) 40px; }
+  .sv-nav ul { gap: 0 20px; }
+  .sv-wrap.sv-bar { flex-direction: column; align-items: stretch; gap: 8px; padding-top: 20px; }
+  .sv-cap { flex-direction: column; gap: 0; }
+  .sv-plate-title { font-size: 1.25rem; }
+  .tag-post-link { flex-direction: column; gap: 0; }
+  .sv-prose table { font-size: 0.9375rem; }
+  .sv-prose th, .sv-prose td { padding-right: 12px; }
+}
+
+/* Small phones: one photo per row, at full width. */
+@media (max-width: 420px) {
+  :root { --sv-cols: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

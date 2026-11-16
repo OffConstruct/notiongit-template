@@ -1,0 +1,6 @@
+{%- assign sv_list = include.posts -%}
+<ul class="sv-grid">
+  {%- for post in sv_list %}
+  {% include themes/silver/_sitting.html post=post index=forloop.index0 %}
+  {%- endfor %}
+</ul>

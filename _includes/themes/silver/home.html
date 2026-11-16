@@ -1,0 +1,50 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home sv-home sv-wrap">
+  {%- if home and home.name != blank %}
+  {%- if site.posts.size > 0 %}
+  {%- assign sv_latest = site.posts | slice: 0, 12 -%}
+  {%- assign sv_first = site.posts | last -%}
+  {%- assign sv_from = sv_first.date | date: "%Y" -%}
+  {%- assign sv_to = site.posts.first.date | date: "%Y" -%}
+  <section class="sv-roster" aria-labelledby="sv-roster-title">
+    <div class="sv-roster-head">
+      <h2 class="sv-label" id="sv-roster-title">Latest work</h2>
+      <p class="sv-years">{% if sv_from == sv_to %}{{ sv_to }}{% else %}{{ sv_from }} to {{ sv_to }}{% endif %}</p>
+    </div>
+    {% include themes/silver/_roster.html posts=sv_latest %}
+    {%- if site.posts.size > 12 %}
+    <p class="sv-more"><a href="{{ '/blog/' | relative_url }}">See all {{ site.posts.size }} posts</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
+  {%- if home.bio != blank or home.social_links.size > 0 %}
+  <section class="sv-about" aria-labelledby="sv-about-title">
+    <h2 class="sv-label" id="sv-about-title">About</h2>
+    <div class="sv-about-body">
+      {%- if home.bio != blank %}
+      <div class="sv-prose sv-bio">{{ home.bio | markdownify | replace: "<h2", "<h3" | replace: "</h2>", "</h3>" }}</div>
+      {%- endif %}
+      {%- if home.social_links.size > 0 %}
+      <ul class="sv-links" aria-label="Links">
+        {%- for link in home.social_links %}
+        <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="sv-empty">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

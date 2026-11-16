@@ -1,0 +1,12 @@
+{%- assign sv_post = include.post -%}
+{%- assign sv_year = sv_post.date | date: "%Y" -%}
+<li class="sv-sitting">
+  <a class="sv-sitting-link" href="{{ sv_post.url | relative_url }}">
+    {%- if sv_post.cover_image %}
+    <span class="sv-frame"><img src="{{ sv_post.cover_image }}" alt=""{% if include.index > 2 %} loading="lazy"{% endif %} decoding="async"></span>
+    {%- else %}
+    <span class="sv-frame sv-plate"><span class="sv-plate-title">{{ sv_post.title }}</span></span>
+    {%- endif %}
+    <span class="sv-cap">{% if sv_post.cover_image %}<span class="sv-cap-title">{{ sv_post.title }}</span> {% endif %}<time class="sv-cap-year" datetime="{{ sv_post.date | date_to_xmlschema }}">{{ sv_year }}</time></span>
+  </a>
+</li>

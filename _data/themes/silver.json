@@ -1,0 +1,99 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "silver",
+  "name": "Silver",
+  "version": "1.0.0",
+  "summary": "For portrait and fashion photographers: your name large, then your sittings as a grid of portrait photos.",
+  "description": "A quiet, black-and-white home for portrait, fashion and studio photographers. The first screen shows your name in a large serif beside a thin strip of slowly moving darkroom grain. Below it, each post is a portrait-shaped photo in a three-column grid, with its title and year underneath, then your bio and links. Posts without a photo get a title card in the same shape.",
+  "categories": ["photographers"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "instrument",
+      "label": "Instrument Serif and Sans",
+      "google": "family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500",
+      "stacks": {
+        "body": "\"Instrument Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Instrument Serif\", \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "bodoni",
+      "label": "Bodoni Moda and Hanken Grotesk",
+      "google": "family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=Hanken+Grotesk:wght@400;500",
+      "stacks": {
+        "body": "\"Hanken Grotesk\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Bodoni Moda\", Didot, \"Bodoni 72\", Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "system",
+      "label": "System fonts",
+      "google": null,
+      "stacks": {
+        "body": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#ecebe8", "text": "#121212", "muted": "#5f5f5c" },
+    "dark": { "bg": "#0e0e0e", "text": "#e8e8e6", "muted": "#8f8f8c" }
+  },
+  "motion": {
+    "shader": "dithering",
+    "placement": "slot",
+    "speed": 0.1,
+    "frame": 10000,
+    "colors": {
+      "colorBack": "--ink-bg",
+      "colorFront": "--motion-grain"
+    },
+    "params": {
+      "shape": "simplex",
+      "type": "random",
+      "size": 2,
+      "scale": 0.5
+    }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "ink", "custom": true,
+      "presets": [
+        { "value": "ink", "label": "Ink only", "light": "#121212", "dark": "#e8e8e6" },
+        { "value": "selenium", "label": "Selenium", "light": "#6b4a4a", "dark": "#c9a3a3" },
+        { "value": "cyanotype", "label": "Cyanotype", "light": "#2d5876", "dark": "#9bbfd8" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "instrument" },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "tone", "type": "select", "label": "Photo color", "default": "color",
+      "options": [
+        { "value": "color", "label": "As taken" },
+        { "value": "hover", "label": "Black and white, color under the mouse" },
+        { "value": "bw", "label": "Always black and white" } ] },
+    { "key": "shape", "type": "select", "label": "Photo shape", "default": "portrait",
+      "options": [
+        { "value": "portrait", "label": "Portrait (4:5)" },
+        { "value": "square", "label": "Square" },
+        { "value": "landscape", "label": "Landscape (3:2)" } ] },
+    { "key": "columns", "type": "select", "label": "Photos per row", "default": "three",
+      "options": [
+        { "value": "three", "label": "Three" },
+        { "value": "two", "label": "Two" } ] }
+  ]
+}

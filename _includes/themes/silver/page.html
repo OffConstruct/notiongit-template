@@ -1,0 +1,11 @@
+<div class="ink-page sv-page sv-wrap">
+  <header class="sv-page-head">
+    <h1 class="sv-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="sv-page-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="sv-prose sv-body">
+    {{ content }}
+  </div>
+</div>

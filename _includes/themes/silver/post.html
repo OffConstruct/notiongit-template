@@ -1,0 +1,24 @@
+<article class="ink-post sv-post sv-wrap">
+  <header class="sv-page-head sv-post-head">
+    <h1 class="sv-page-title">{{ page.title }}</h1>
+    <p class="sv-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+      {%- for tag in page.tags %}
+      <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+      {%- endfor %}
+    </p>
+    {%- if page.canonical_url %}
+    {%- assign sv_host = page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." %}
+    <p class="sv-meta">First published on <a href="{{ page.canonical_url }}">{{ sv_host }}</a></p>
+    {%- endif %}
+  </header>
+  {%- if page.cover_image %}
+  <figure class="sv-cover"><img src="{{ page.cover_image }}" alt="{{ page.title | escape }}" decoding="async"></figure>
+  {%- endif %}
+  <div class="sv-prose sv-body">
+    {{ content }}
+  </div>
+  <footer class="sv-post-foot">
+    <a href="{{ '/blog/' | relative_url }}">All posts</a>
+  </footer>
+</article>
