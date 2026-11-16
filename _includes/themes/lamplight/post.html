@@ -1,0 +1,24 @@
+<article class="ink-post ll-post ll-col">
+  <header class="ll-page-head">
+    <h1 class="ll-page-title">{{ page.title }}</h1>
+    <p class="ll-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+      {%- for tag in page.tags %}
+      <a class="ll-pill" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+      {%- endfor %}
+    </p>
+    {%- if page.canonical_url %}
+    {%- assign ll_host = page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." %}
+    <p class="ll-meta">First published on <a href="{{ page.canonical_url }}">{{ ll_host }}</a></p>
+    {%- endif %}
+  </header>
+  {%- if page.cover_image %}
+  <figure class="ll-frame ll-cover"><img src="{{ page.cover_image }}" alt="" decoding="async"></figure>
+  {%- endif %}
+  <div class="ll-prose ll-body">
+    {{ content }}
+  </div>
+  <footer class="ll-post-foot">
+    <a href="{{ '/blog/' | relative_url }}">All posts</a>
+  </footer>
+</article>

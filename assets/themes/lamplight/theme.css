@@ -1,0 +1,382 @@
+/* Lamplight theme for InkDrafts. Static CSS only: no front matter, no
+   @import, no remote url(). Tokens and tweak hooks: docs/themes/README.md.
+   One idea moves: a soft pool of lamp light (grain-gradient, sphere) in
+   its own round slot beside the hero sentence. Text never sits on it.
+   Contract: docs/themes/motion.md. */
+
+/* The palette hexes stay literal in each mode block (check-themes matches
+   them against the manifest, so the blocks cannot drift); every other raw
+   color is one token here. */
+:root {
+  --ll-amber: #e8b04b;
+}
+
+:root {
+  color-scheme: light;
+  --ink-bg: #f7f2e8;
+  --ink-text: #2b241b;
+  --ink-muted: #6f6354;
+  --ink-accent: var(--tw-accent);
+  --ink-font-body: var(--tw-font-body);
+  --ink-font-display: var(--tw-font-display);
+  --ink-font-mono: var(--tw-font-mono);
+
+  --ll-rule: color-mix(in oklab, var(--ink-text) 13%, var(--ink-bg));
+  --ll-well: color-mix(in oklab, var(--ink-text) 5%, var(--ink-bg));
+  --ll-pill-line: color-mix(in oklab, var(--ink-accent) 38%, var(--ink-bg));
+  --ll-nav-ink: var(--ink-muted);
+  --ll-gutter: 20px;
+  --ll-inset: clamp(20px, 11vw, 176px);
+  --ll-section: clamp(56px, 8vw, 104px);
+
+  /* The lamp stays warm whatever the accent: mostly amber, a trace of accent. */
+  --ll-lamp: color-mix(in oklab, var(--ll-amber) 70%, var(--ink-accent));
+  /* The pool of lamp light: about a quarter lamp over the page. */
+  --motion-glow: color-mix(in oklab, var(--ll-lamp) 25%, var(--ink-bg));
+}
+
+:root[data-ink-mode="dark"] {
+  color-scheme: dark;
+  --ink-bg: #14120f;
+  --ink-text: #efe6d6;
+  --ink-muted: #a2978a;
+  --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+  /* Evening lamp: a little stronger, because dark grounds swallow light. */
+  --motion-glow: color-mix(in oklab, var(--ll-lamp) 22%, var(--ink-bg));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-mode="auto"] {
+    color-scheme: dark;
+    --ink-bg: #14120f;
+    --ink-text: #efe6d6;
+    --ink-muted: #a2978a;
+    --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+    --motion-glow: color-mix(in oklab, var(--ll-lamp) 22%, var(--ink-bg));
+  }
+}
+
+/* A custom accent has no dark hex; lift its lightness where supported. */
+@supports (color: oklch(from red l c h)) {
+  :root[data-ink-mode="dark"][data-ink-accent="custom"] {
+    --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-ink-mode="auto"][data-ink-accent="custom"] {
+      --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+    }
+  }
+}
+
+/* "Brighter" lamp: a little more light in both modes. The still fallback
+   uses the same color, so the setting also shows with motion or JavaScript off. */
+:root[data-ink-lamp="bright"] {
+  --motion-glow: color-mix(in oklab, var(--ll-lamp) 34%, var(--ink-bg));
+}
+:root[data-ink-mode="dark"][data-ink-lamp="bright"] {
+  --motion-glow: color-mix(in oklab, var(--ll-lamp) 30%, var(--ink-bg));
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-mode="auto"][data-ink-lamp="bright"] {
+    --motion-glow: color-mix(in oklab, var(--ll-lamp) 30%, var(--ink-bg));
+  }
+}
+
+/* ---------- Base ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--ink-bg);
+  color: var(--ink-text);
+  font-family: var(--ink-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img { max-width: 100%; height: auto; }
+
+a {
+  color: inherit;
+  text-decoration-color: color-mix(in oklab, var(--ink-accent) 70%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+a:hover { color: var(--ink-accent); text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--ink-accent); outline-offset: 3px; border-radius: 2px; }
+
+h1, h2, h3, h4 { font-family: var(--ink-font-display); font-weight: 400; line-height: 1.2; }
+
+/* One left-set reading column on every page. */
+.ll-col,
+.container {
+  /* On very wide screens the column drifts toward the center; its width
+     always leaves the inset and one gutter, so it never runs off screen. */
+  --ll-left: max(var(--ll-inset), (100% - 1360px) / 2);
+  width: min(100% - var(--ll-left) - var(--ll-gutter), 64ch);
+  margin-left: var(--ll-left);
+  margin-right: var(--ll-gutter);
+}
+.main .container { width: 100%; margin: 0; }
+.main { display: block; padding-bottom: var(--ll-section); }
+
+/* ---------- The lamp ----------
+   A round slot beside the hero sentence (below it on narrow screens). The
+   edge is feathered so the pool of light never reads as a disc. Without
+   JavaScript or WebGL, and with motion off, the fallback is the same glow,
+   still. */
+.ll-lamp {
+  position: relative;
+  aspect-ratio: 1;
+  width: clamp(112px, 32vw, 176px);
+  margin-top: 24px;
+}
+/* Narrow: the lamp sits under the button, so the bio comes up closer. */
+@media (max-width: 899.98px) {
+  .ll-hero + .ll-about { margin-top: 32px; }
+}
+.ll-lamp > .ink-motion {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  --ink-motion-fallback: radial-gradient(closest-side, var(--motion-glow) 30%, transparent);
+  -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent);
+  mask-image: radial-gradient(closest-side, #000 55%, transparent);
+}
+
+/* ---------- Header ---------- */
+
+.ll-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 32px;
+  padding-block: 28px 0;
+}
+.ll-name { min-width: 0; overflow-wrap: anywhere; margin: 0; font-weight: 600; font-size: 1rem; letter-spacing: 0.01em; }
+.ll-name a { text-decoration: none; }
+.ll-nav ul { display: flex; flex-wrap: wrap; gap: 4px 24px; margin: 0; padding: 0; list-style: none; }
+.ll-nav a { color: var(--ll-nav-ink); text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
+.ll-nav a:hover { color: var(--ink-text); }
+.ll-nav a[aria-current="page"] { color: var(--ink-text); text-decoration: underline; text-decoration-color: var(--ink-accent); text-decoration-thickness: 2px; text-underline-offset: 0.4em; }
+.ll-nav-empty { margin: 0; color: var(--ll-nav-ink); font-size: 0.9375rem; }
+
+/* ---------- Home ---------- */
+
+.ll-hero { padding-block: clamp(48px, 11vh, 120px) 0; }
+/* On wide screens the hero widens past the reading column into the empty
+   space on the right, and the lamp sits beside the sentence. */
+@media (min-width: 900px) {
+  .ll-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(220px, 24vw, 320px);
+    align-items: center;
+    column-gap: clamp(40px, 6vw, 96px);
+    width: min(1040px, 100vw - max(var(--ll-inset), (100vw - 1360px) / 2) - 3 * var(--ll-gutter));
+  }
+  .ll-lamp { width: 100%; margin-top: 0; }
+}
+.ll-lede {
+  max-width: 17em;
+  margin: 0;
+  font-size: clamp(1.75rem, 1.1rem + 2.4vw, 2.75rem);
+  line-height: 1.16;
+  letter-spacing: -0.005em;
+  overflow-wrap: break-word;
+}
+.ll-actions { margin-top: clamp(28px, 4vw, 40px); }
+.ll-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  background: var(--ink-accent);
+  color: var(--ink-bg);
+  font-weight: 600;
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.ll-cta:hover { color: var(--ink-bg); background: color-mix(in oklab, var(--ink-accent) 86%, var(--ink-text)); }
+.ll-cta:active { background: color-mix(in oklab, var(--ink-accent) 76%, var(--ink-text)); }
+.ll-reply { margin: 12px 0 0; color: var(--ink-muted); font-size: 0.9375rem; }
+
+html:not([data-ink-button="touch"]) [data-variant="button:touch"],
+html:not([data-ink-button="email"]) [data-variant="button:email"],
+html:not([data-ink-button="book"]) [data-variant="button:book"],
+html:not([data-ink-button="ask"]) [data-variant="button:ask"],
+html:not([data-ink-reply="day"]) [data-variant="reply:day"],
+html:not([data-ink-reply="days"]) [data-variant="reply:days"] { display: none; }
+
+.ll-about { margin-top: clamp(72px, 11vw, 136px); }
+.ll-bio > :first-child { margin-top: 0; }
+.ll-bio > p:first-child { font-size: 1.1875rem; line-height: 1.6; }
+/* Bio headings sit under the page title but stay below the list label. */
+.ll-bio h2 { font-size: 1.3125rem; }
+
+.ll-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 28px 0 0; padding: 0; list-style: none; }
+.ll-links a { font-weight: 500; }
+
+.ll-notes { margin-top: var(--ll-section); }
+.ll-label {
+  margin: 0;
+  padding-top: 28px;
+  border-top: 1px solid var(--ll-rule);
+  font-size: 1.625rem;
+  line-height: 1.2;
+  color: var(--ink-text);
+}
+.ll-more { margin: 28px 0 0; }
+.ll-more a { font-weight: 500; }
+
+/* ---------- Study notes ---------- */
+
+.ll-list { margin: 8px 0 0; padding: 0; list-style: none; }
+.ll-note { border-bottom: 1px solid var(--ll-rule); }
+.ll-note:last-child { border-bottom: 0; }
+.ll-note-link { display: block; padding-block: 20px; text-decoration: none; }
+.ll-note-link:hover { color: inherit; }
+.ll-note-link:active .ll-note-title { color: color-mix(in oklab, var(--ink-accent) 80%, var(--ink-text)); }
+.ll-note-text { display: block; min-width: 0; }
+.ll-note-title { display: block; font-family: var(--ink-font-display); font-size: 1.375rem; line-height: 1.25; overflow-wrap: break-word; text-wrap: balance; }
+.ll-note-link:hover .ll-note-title { color: var(--ink-accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+.ll-note-excerpt { display: block; max-width: 58ch; margin-top: 4px; color: var(--ink-muted); text-wrap: pretty; }
+.ll-note-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 12px; color: var(--ink-muted); font-size: 0.9375rem; }
+.ll-note-meta time { margin-right: 4px; font-variant-numeric: tabular-nums; }
+.ll-pill {
+  display: inline-block;
+  padding: 1px 12px;
+  border: 1px solid var(--ll-pill-line);
+  border-radius: 999px;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  font-weight: 500;
+  text-decoration: none;
+}
+html[data-ink-tags="off"] .ll-note .ll-pill { display: none; }
+
+.ll-note--feature .ll-note-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 200px);
+  gap: 28px;
+  align-items: center;
+  padding-block: 24px 28px;
+}
+.ll-note--feature .ll-note-title { font-size: 1.75rem; }
+
+/* A soft-edged frame: a rounded photo inside a thin warm mat. */
+.ll-frame {
+  display: block;
+  padding: 8px;
+  border-radius: 20px;
+  background: var(--ll-well);
+  box-shadow: inset 0 0 0 1px var(--ll-rule);
+}
+.ll-frame img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; }
+
+/* ---------- Pages and posts ---------- */
+
+.ll-page-head { padding-block: clamp(40px, 8vh, 88px) 8px; }
+.ll-page-title { margin: 0; font-size: clamp(2rem, 1.3rem + 2vw, 2.75rem); line-height: 1.15; overflow-wrap: break-word; text-wrap: balance; }
+.ll-page-lede { max-width: 58ch; margin: 16px 0 0; text-wrap: pretty; color: var(--ink-muted); font-size: 1.1875rem; }
+.ll-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 16px 0 0; color: var(--ink-muted); font-size: 0.9375rem; }
+.ll-meta time { margin-right: 4px; }
+a.ll-pill:hover { color: var(--ink-text); border-color: var(--ink-accent); }
+.ll-cover { margin: 32px 0 0; }
+.ll-cover img { aspect-ratio: auto; max-height: 70vh; }
+.ll-body { margin-top: 32px; }
+.ll-post-foot { margin-top: 56px; font-weight: 500; }
+.ll-post-foot a:active { color: var(--ink-accent); }
+.ll-listing .ll-list { margin-top: 24px; }
+
+/* ---------- Prose ---------- */
+
+.ll-prose { max-width: 57ch; overflow-wrap: break-word; }
+.ll-prose p, .ll-prose li { text-wrap: pretty; }
+.ll-prose > * { margin-block: 0; }
+.ll-prose > * + * { margin-top: 1.1em; }
+.ll-prose h2, .ll-prose h3, .ll-prose h4 { margin: 1.8em 0 0; }
+.ll-prose h2 { font-size: 1.625rem; }
+.ll-prose h3 { font-size: 1.3125rem; }
+.ll-prose h4 { font-family: var(--ink-font-body); font-weight: 600; font-size: 1.0625rem; }
+.ll-prose h2 + *, .ll-prose h3 + *, .ll-prose h4 + * { margin-top: 0.5em; }
+.ll-prose a { text-decoration-color: var(--ink-accent); }
+.ll-prose ul, .ll-prose ol { padding-left: 1.4em; }
+.ll-prose li + li { margin-top: 0.35em; }
+.ll-prose li::marker { color: var(--ink-muted); }
+.ll-prose img { display: block; border-radius: 12px; }
+.ll-prose figure img { margin-inline: auto; }
+.ll-prose figcaption { margin-top: 8px; color: var(--ink-muted); font-size: 0.9375rem; }
+blockquote { margin: 0; padding-left: 20px; border-left: 2px solid var(--ink-accent); color: var(--ink-muted); font-family: var(--ink-font-display); font-size: 1.1875rem; }
+code { font-family: var(--ink-font-mono); font-size: 0.88em; padding: 0.1em 0.3em; border-radius: 4px; background: var(--ll-well); }
+pre { overflow-x: auto; padding: 16px 20px; border-radius: 12px; background: var(--ll-well); box-shadow: inset 0 0 0 1px var(--ll-rule); font-size: 0.875rem; line-height: 1.55; }
+pre code { padding: 0; background: none; font-size: inherit; }
+.highlight { border-radius: 12px; }
+.highlight .c, .highlight .c1, .highlight .cm { color: var(--ink-muted); font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .nt { color: color-mix(in oklab, var(--ink-accent) 70%, var(--ink-text)); }
+.highlight .s, .highlight .s1, .highlight .s2 { color: color-mix(in oklab, var(--ink-accent) 40%, var(--ink-text)); }
+table { display: block; width: 100%; overflow-x: auto; border-collapse: collapse; font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--ll-rule); text-align: left; vertical-align: top; }
+th { font-weight: 600; }
+hr { border: 0; border-top: 1px solid var(--ll-rule); margin-block: 2.2em; }
+.footnotes { margin-top: 2.5em; padding-top: 16px; border-top: 1px solid var(--ll-rule); color: var(--ink-muted); font-size: 0.9375rem; }
+sup a { text-decoration: underline; }
+
+/* ---------- Footer ---------- */
+
+.ll-footer { margin-top: 0; }
+.ll-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding-block: 24px 40px;
+  border-top: 1px solid var(--ll-rule);
+  color: var(--ink-muted);
+}
+/* Small text sits on the children: the column's ch width must not shrink. */
+.ll-footer-inner p { min-width: 0; margin: 0; font-size: 0.9375rem; overflow-wrap: anywhere; }
+.ll-footer-links { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+
+/* ---------- Tags page (base markup) ---------- */
+
+.tags-header h1 { margin: 0; padding-block: clamp(40px, 8vh, 88px) 8px; font-size: clamp(2rem, 1.3rem + 2vw, 2.75rem); }
+.tag-group { margin-top: 40px; }
+.tag-group-name { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0 0 8px; font-size: 1.375rem; }
+.tag-count { color: var(--ink-muted); font-family: var(--ink-font-body); font-size: 0.9375rem; }
+.tag-posts { display: grid; border-top: 1px solid var(--ll-rule); }
+.tag-post-link { display: flex; flex-wrap: wrap; gap: 2px 16px; padding-block: 10px; border-bottom: 1px solid var(--ll-rule); text-decoration: none; }
+.tag-post-date { min-width: 7.5em; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+
+/* ---------- Empty states ---------- */
+
+.empty-state { padding-block: clamp(48px, 10vh, 112px) 24px; }
+.empty-state-mark { display: none; }
+.empty-state-kicker { margin: 0 0 12px; color: var(--ink-muted); font-size: 0.9375rem; font-weight: 500; }
+.empty-state-title { margin: 0; font-size: clamp(1.75rem, 1.2rem + 2vw, 2.5rem); }
+.empty-state-copy { margin: 16px 0 0; }
+.empty-state-note { margin: 8px 0 0; color: var(--ink-muted); }
+
+/* ---------- Narrow screens ---------- */
+
+@media (max-width: 720px) {
+  :root { --ll-inset: var(--ll-gutter); }
+  .ll-note--feature .ll-note-link { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .ll-note--feature .ll-frame { order: -1; }
+  .ll-note--feature .ll-note-title { font-size: 1.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

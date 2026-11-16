@@ -1,0 +1,11 @@
+<div class="ink-page ll-page ll-col">
+  <header class="ll-page-head">
+    <h1 class="ll-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="ll-page-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="ll-prose ll-body">
+    {{ content }}
+  </div>
+</div>

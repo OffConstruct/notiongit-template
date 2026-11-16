@@ -1,0 +1,21 @@
+{%- assign ll_post = include.post -%}
+{%- assign ll_excerpt = ll_post.excerpt | strip_html | strip | truncatewords: 24 -%}
+<li class="ll-note{% if include.feature %} ll-note--feature{% endif %}">
+  <a class="ll-note-link" href="{{ ll_post.url | relative_url }}">
+    <span class="ll-note-text">
+      <span class="ll-note-title">{{ ll_post.title }}</span>
+      {%- if ll_excerpt != "" %}
+      <span class="ll-note-excerpt">{{ ll_excerpt }}</span>
+      {%- endif %}
+      <span class="ll-note-meta">
+        <time datetime="{{ ll_post.date | date_to_xmlschema }}">{{ ll_post.date | date: "%b %-d, %Y" }}</time>
+        {%- for tag in ll_post.tags limit: 3 %}
+        <span class="ll-pill">{{ tag }}</span>
+        {%- endfor %}
+      </span>
+    </span>
+    {%- if include.feature and ll_post.cover_image %}
+    <span class="ll-frame"><img src="{{ ll_post.cover_image }}" alt="" decoding="async"></span>
+    {%- endif %}
+  </a>
+</li>

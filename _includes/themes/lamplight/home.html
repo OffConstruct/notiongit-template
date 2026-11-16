@@ -1,0 +1,83 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home ll-home ll-col">
+  {%- if home and home.name != blank %}
+  {%- comment %} The one button: the first email or booking link, else the
+  first link that is not the RSS feed. {% endcomment -%}
+  {%- assign ll_cta = "" -%}
+  {%- for link in home.social_links %}
+  {%- assign ll_pre = link.url | slice: 0, 7 %}
+  {%- assign ll_u = link.url | downcase %}
+  {%- assign ll_n = link.name | downcase %}
+  {%- if ll_pre == "mailto:" or ll_u contains "calendly." or ll_u contains "cal.com" or ll_n contains "book" or ll_n contains "schedule" %}{% assign ll_cta = link.url %}{% break %}{% endif %}
+  {%- endfor %}
+  {%- if ll_cta == "" %}
+  {%- for link in home.social_links %}{% unless link.url contains "feed.xml" %}{% assign ll_cta = link.url %}{% break %}{% endunless %}{% endfor %}
+  {%- endif %}
+  <section class="ll-hero" aria-labelledby="ll-lede">
+    <div class="ll-hero-text">
+    <h1 class="ll-lede" id="ll-lede">{{ home.tagline | default: home.name }}</h1>
+    {%- if ll_cta != "" %}
+    <div class="ll-actions">
+      <div class="ink-variant" data-variant="button:touch"><a class="ll-cta" href="{{ ll_cta }}">Get in touch</a></div>
+      <div class="ink-variant" data-variant="button:email"><a class="ll-cta" href="{{ ll_cta }}">Email me</a></div>
+      <div class="ink-variant" data-variant="button:book"><a class="ll-cta" href="{{ ll_cta }}">Book a first session</a></div>
+      <div class="ink-variant" data-variant="button:ask"><a class="ll-cta" href="{{ ll_cta }}">Ask about lessons</a></div>
+      <div class="ink-variant" data-variant="reply:day"><p class="ll-reply">I usually reply within a day.</p></div>
+      <div class="ink-variant" data-variant="reply:days"><p class="ll-reply">I usually reply within two days.</p></div>
+    </div>
+    {%- endif %}
+    </div>
+    <div class="ll-lamp">{% include ink/motion.html %}</div>
+  </section>
+
+  {%- if home.bio != blank %}
+  <section class="ll-about" aria-label="About">
+    <div class="ll-prose ll-bio">{{ home.bio | markdownify }}</div>
+  </section>
+  {%- endif %}
+
+  {%- assign ll_others = 0 -%}
+  {%- for link in home.social_links %}{% if link.url != ll_cta %}{% assign ll_others = ll_others | plus: 1 %}{% endif %}{% endfor -%}
+  {%- if ll_others > 0 %}
+  <ul class="ll-links" aria-label="Links">
+    {%- for link in home.social_links %}
+    {%- if link.url == ll_cta %}{% continue %}{% endif %}
+    <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  {%- assign ll_featured = site.posts | where: "featured", true | where_exp: "p", "p.cover_image" | first -%}
+  {%- assign ll_blog = site.pages | where: "url", "/blog/" | first -%}
+  {%- assign ll_list_name = ll_blog.title | default: "Posts" -%}
+  <section class="ll-notes" aria-labelledby="ll-notes-title">
+    <h2 class="ll-label" id="ll-notes-title">{{ ll_list_name }}</h2>
+    <ul class="ll-list">
+      {%- if ll_featured %}
+      {% include themes/lamplight/_note.html post=ll_featured feature=true %}
+      {%- endif %}
+      {%- assign ll_shown = 0 %}
+      {%- for post in site.posts %}
+      {%- if ll_featured and post.url == ll_featured.url %}{% continue %}{% endif %}
+      {%- if ll_shown >= 6 %}{% break %}{% endif %}
+      {% include themes/lamplight/_note.html post=post %}
+      {%- assign ll_shown = ll_shown | plus: 1 %}
+      {%- endfor %}
+    </ul>
+    {%- if site.posts.size > 7 %}
+    <p class="ll-more"><a href="{{ '/blog/' | relative_url }}">See all {{ site.posts.size }} posts</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="Setup in progress"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

@@ -1,0 +1,22 @@
+<div class="ink-post-list ll-col ll-listing">
+  <header class="ll-page-head">
+    <h1 class="ll-page-title">{{ page.title | default: "Posts" }}</h1>
+    {%- if page.description %}
+    <p class="ll-page-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <ul class="ll-list">
+    {%- for post in site.posts %}
+    {% include themes/lamplight/_note.html post=post %}
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+</div>

@@ -1,0 +1,212 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "lamplight",
+  "name": "Lamplight",
+  "version": "1.0.0",
+  "summary": "For tutors and coaches: your tagline in large type, one button to reach you, then your posts.",
+  "description": "For one-to-one tutors and exam coaches who want students and families to get in touch. The home page opens with your tagline as a large, calm sentence and one button that emails you or opens your booking page. Beside it, a soft pool of lamp light glows slowly. Your bio and posts follow in a single column.",
+  "categories": [
+    "educators"
+  ],
+  "audience": [],
+  "author": {
+    "name": "InkDrafts",
+    "url": "https://inkdrafts.com"
+  },
+  "license": "MIT",
+  "slots": [
+    "header",
+    "footer",
+    "home",
+    "blog",
+    "post",
+    "page"
+  ],
+  "fonts": [
+    {
+      "value": "young",
+      "label": "Young Serif and Figtree",
+      "google": "family=Young+Serif&family=Figtree:wght@400;500;600",
+      "stacks": {
+        "body": "Figtree, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Young Serif\", Georgia, \"Times New Roman\", serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": {
+      "bg": "#f7f2e8",
+      "text": "#2b241b",
+      "muted": "#6f6354"
+    },
+    "dark": {
+      "bg": "#14120f",
+      "text": "#efe6d6",
+      "muted": "#a2978a"
+    }
+  },
+  "tweaks": [
+    {
+      "key": "mode",
+      "type": "select",
+      "label": "Color scheme",
+      "default": "auto",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Match system"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "dark",
+          "label": "Dark"
+        }
+      ]
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "label": "Accent color",
+      "role": "text",
+      "default": "amber",
+      "custom": true,
+      "presets": [
+        {
+          "value": "amber",
+          "label": "Lamp amber",
+          "light": "#9a5c14",
+          "dark": "#e8b04b"
+        },
+        {
+          "value": "sage",
+          "label": "Sage",
+          "light": "#4f6b4a",
+          "dark": "#a3c296"
+        },
+        {
+          "value": "blue",
+          "label": "Ink blue",
+          "light": "#3f5f8a",
+          "dark": "#a3bde3"
+        }
+      ]
+    },
+    {
+      "key": "webfonts",
+      "type": "boolean",
+      "label": "Use the design's own fonts",
+      "default": true
+    },
+    {
+      "key": "motion",
+      "type": "select",
+      "label": "Motion",
+      "default": "on",
+      "options": [
+        {
+          "value": "on",
+          "label": "Moving"
+        },
+        {
+          "value": "still",
+          "label": "Still"
+        },
+        {
+          "value": "off",
+          "label": "Off"
+        }
+      ]
+    },
+    {
+      "key": "button",
+      "type": "select",
+      "label": "Button text",
+      "default": "touch",
+      "options": [
+        {
+          "value": "touch",
+          "label": "Get in touch"
+        },
+        {
+          "value": "email",
+          "label": "Email me"
+        },
+        {
+          "value": "book",
+          "label": "Book a first session"
+        },
+        {
+          "value": "ask",
+          "label": "Ask about lessons"
+        }
+      ]
+    },
+    {
+      "key": "reply",
+      "type": "select",
+      "label": "Note under the button",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "No note"
+        },
+        {
+          "value": "day",
+          "label": "I usually reply within a day"
+        },
+        {
+          "value": "days",
+          "label": "I usually reply within two days"
+        }
+      ]
+    },
+    {
+      "key": "lamp",
+      "type": "select",
+      "label": "Lamp light",
+      "default": "soft",
+      "options": [
+        {
+          "value": "soft",
+          "label": "Soft"
+        },
+        {
+          "value": "bright",
+          "label": "Brighter"
+        }
+      ]
+    },
+    {
+      "key": "tags",
+      "type": "boolean",
+      "label": "Show tags on posts",
+      "default": true
+    }
+  ],
+  "motion": {
+    "shader": "grain-gradient",
+    "placement": "slot",
+    "speed": 0.08,
+    "frame": 5200,
+    "colors": {
+      "colorBack": "--ink-bg",
+      "colors": [
+        "--ink-bg",
+        "--motion-glow"
+      ]
+    },
+    "params": {
+      "shape": "sphere",
+      "softness": 0.95,
+      "intensity": 0.12,
+      "noise": 0.2,
+      "scale": 1
+    }
+  }
+}
