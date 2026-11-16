@@ -1,0 +1,14 @@
+{%- comment -%} Sets hz_href (first mailto link, else the first link) and hz_note (the address, or the link's name). {%- endcomment -%}
+{%- assign hz_href = "" -%}
+{%- assign hz_note = "" -%}
+{%- for link in site.data.home.social_links -%}
+{%- if hz_href == "" and link.url contains "mailto:" -%}
+{%- assign hz_href = link.url -%}
+{%- assign hz_note = link.url | remove_first: "mailto:" | split: "?" | first -%}
+{%- endif -%}
+{%- endfor -%}
+{%- if hz_href == "" and site.data.home.social_links.size > 0 -%}
+{%- assign hz_first = site.data.home.social_links | first -%}
+{%- assign hz_href = hz_first.url -%}
+{%- assign hz_note = hz_first.name -%}
+{%- endif -%}

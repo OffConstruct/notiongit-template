@@ -1,0 +1,101 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home hz-home">
+  {%- assign hz_name = home.name | strip -%}
+  {%- if home and hz_name != "" %}
+  {%- include themes/horizon/_contact.html -%}
+  {%- assign hz_promise = home.tagline | strip -%}
+  {%- if hz_promise == "" %}{% assign hz_promise = hz_name | default: site.title %}{% endif -%}
+  {%- assign hz_len = hz_promise | size -%}
+  {%- assign hz_size = "xl" -%}
+  {%- if hz_len > 120 %}{% assign hz_size = "m" %}{% elsif hz_len > 64 %}{% assign hz_size = "l" %}{% endif %}
+  <div class="hz-wrap hz-hero">
+    <h1 class="hz-promise hz-promise--{{ hz_size }}">{{ hz_promise }}</h1>
+  </div>
+
+  <div class="hz-band">{% include ink/motion.html %}</div>
+
+  {%- if hz_href != "" %}
+  <div class="hz-wrap hz-act">
+    {% include themes/horizon/_button.html %}
+    <span class="hz-act-note">{{ hz_note }}</span>
+  </div>
+  {%- endif %}
+
+  {%- assign hz_bio = home.bio | strip | markdownify | strip -%}
+  {%- if hz_bio != "" %}
+  {%- assign hz_parts = hz_bio | split: "<h2" %}
+  <section class="hz-wrap hz-block" aria-labelledby="hz-bio-title">
+    <h2 class="hz-block-head" id="hz-bio-title"><span class="ink-variant" data-variant="bio_heading:work">How I work</span><span class="ink-variant" data-variant="bio_heading:about">About</span><span class="ink-variant" data-variant="bio_heading:offer">What I offer</span></h2>
+    <div class="hz-block-body">
+      {%- for part in hz_parts %}
+      {%- assign hz_part = part | strip %}
+      {%- if hz_part == "" %}{% continue %}{% endif %}
+      {%- if forloop.first %}
+      <div class="hz-lead hz-prose">
+        {{ hz_part }}
+      </div>
+      {%- else %}
+      {%- assign hz_head = part | split: "</h2>" | first %}
+      {%- assign hz_rest = part | remove_first: hz_head | remove_first: "</h2>" | strip %}
+      <div class="hz-item">
+        <h3 class="hz-item-head"{{ hz_head }}</h3>
+        <div class="hz-item-body hz-prose">
+          {{ hz_rest }}
+        </div>
+      </div>
+      {%- endif %}
+      {%- endfor %}
+    </div>
+  </section>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  {%- assign hz_blog = site.pages | where: "layout", "blog" | first -%}
+  {%- assign hz_blog_url = "/blog/" -%}
+  {%- if hz_blog %}{% assign hz_blog_url = hz_blog.url %}{% endif -%}
+  {%- assign hz_notes = "Notes" -%}
+  {%- if hz_blog and hz_blog.title != blank %}{% assign hz_notes = hz_blog.title %}{% endif -%}
+  {%- comment -%} One pass in date order. Up to 3 featured posts keep their excerpts; the rest of the 7 rows are the latest other posts. {%- endcomment -%}
+  {%- assign hz_featured = site.posts | where: "featured", true -%}
+  {%- assign hz_fcap = hz_featured.size | at_most: 3 -%}
+  {%- assign hz_ocap = 7 | minus: hz_fcap -%}
+  {%- assign hz_f = 0 -%}
+  {%- assign hz_o = 0 -%}
+  {%- assign hz_shown = 0 %}
+  <section class="hz-wrap hz-block" aria-labelledby="hz-notes-title">
+    <h2 class="hz-block-head" id="hz-notes-title">{{ hz_notes }}</h2>
+    <div class="hz-block-body">
+      <ul class="hz-posts">
+        {%- for post in site.posts %}
+        {%- if hz_f >= hz_fcap and hz_o >= hz_ocap %}{% break %}{% endif %}
+        {%- if post.featured and hz_f < hz_fcap %}
+        {% include themes/horizon/_postrow.html post=post excerpt=true %}
+        {%- assign hz_f = hz_f | plus: 1 %}
+        {%- elsif hz_o < hz_ocap %}
+        {% include themes/horizon/_postrow.html post=post %}
+        {%- assign hz_o = hz_o | plus: 1 %}
+        {%- else %}{% continue %}
+        {%- endif %}
+        {%- assign hz_shown = hz_shown | plus: 1 %}
+        {%- endfor %}
+      </ul>
+      {%- if site.posts.size > hz_shown %}
+      <p class="hz-more"><a href="{{ hz_blog_url | relative_url }}">All {{ site.posts.size }} posts</a></p>
+      {%- endif %}
+    </div>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="hz-wrap hz-hero">
+    {% include empty-state.html
+      variant="home-empty-state"
+      heading="h1"
+      kicker="Setup in progress"
+      title="Your site is almost ready"
+      copy="Your Notion content will appear here after the first sync completes."
+      note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+    %}
+  </div>
+  <div class="hz-band">{% include ink/motion.html %}</div>
+  {%- endif %}
+</div>

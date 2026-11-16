@@ -1,0 +1,17 @@
+{%- assign hz_name = site.data.home.name | strip | default: site.title -%}
+<header class="ink-header hz-header">
+  <div class="hz-wrap hz-header-inner">
+    <a class="hz-sitename" href="{{ '/' | relative_url }}">{{ hz_name }}</a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="hz-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- if item.url == "/" %}{% continue %}{% endif %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="hz-nav-empty" role="status">Your menu will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

@@ -1,0 +1,28 @@
+<div class="ink-post-list hz-wrap">
+  <header class="hz-page-head">
+    <h1 class="hz-title">{{ page.title | default: "Notes" }}</h1>
+    {%- if page.description and page.description != "" %}
+    <p class="hz-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign hz_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for y in hz_years %}
+  <section class="hz-row" aria-labelledby="hz-year-{{ y.name }}">
+    <h2 class="hz-row-head" id="hz-year-{{ y.name }}">{{ y.name }}</h2>
+    <ul class="hz-row-body hz-posts">
+      {%- for post in y.items %}
+      {% include themes/horizon/_postrow.html post=post excerpt=true datefmt="%b %-d" %}
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

@@ -1,0 +1,23 @@
+{%- assign home = site.data.home -%}
+{%- include themes/horizon/_contact.html -%}
+<footer class="ink-footer hz-footer">
+  <div class="hz-wrap">
+    {%- if hz_href != "" %}
+    <div class="hz-row hz-footer-contact">
+      <p class="hz-row-head">{{ home.name | strip | default: site.title }}</p>
+      <div class="hz-row-body">
+        <p class="hz-footer-line"><a href="{{ hz_href }}">{{ hz_note }}</a></p>
+        {%- if home.social_links.size > 1 %}
+        <ul class="hz-links" aria-label="Elsewhere">
+          {%- for link in home.social_links %}
+          {%- if link.url == hz_href %}{% continue %}{% endif %}
+          <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+          {%- endfor %}
+        </ul>
+        {%- endif %}
+      </div>
+    </div>
+    {%- endif %}
+    <p class="hz-copy">&copy; {{ 'now' | date: '%Y' }} {{ home.name | strip | default: site.author.name | default: site.title }}</p>
+  </div>
+</footer>

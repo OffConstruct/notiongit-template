@@ -1,0 +1,9 @@
+{%- assign hz_p = include.post -%}
+{%- assign hz_fmt = "%b %Y" -%}
+{%- if include.datefmt %}{% assign hz_fmt = include.datefmt %}{% endif -%}
+{%- assign hz_url = hz_p.url | relative_url -%}
+{%- if hz_p.canonical_url %}{% assign hz_url = hz_p.canonical_url %}{% endif -%}
+<li class="hz-post">
+  <a class="hz-post-link" href="{{ hz_url }}"><span class="hz-post-title">{{ hz_p.title }}</span>{% if include.excerpt and hz_p.excerpt %}{% assign hz_ex = hz_p.excerpt | strip_html | strip %}{% if hz_ex != "" %}<span class="hz-post-excerpt">{{ hz_ex | truncate: 160 }}</span>{% endif %}{% endif %}</a>
+  <time datetime="{{ hz_p.date | date_to_xmlschema }}">{{ hz_p.date | date: hz_fmt }}</time>
+</li>
