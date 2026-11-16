@@ -1,0 +1,13 @@
+{%- comment -%}
+  One ink motion surface for the active theme's manifest `motion` block. The
+  engine places the backdrop itself (_layouts/default.html); a theme whose
+  placement is "slot" includes this once from one of its slots:
+    {% include ink/motion.html %}
+    {% include ink/motion.html image=post.cover_image %}   (image shaders)
+  Renders nothing when the theme declares no motion. theme.css gives the
+  surface its box and its fallback background (--ink-motion-fallback).
+  Contract: docs/themes/motion.md.
+{%- endcomment -%}
+{%- if ink_theme.motion -%}
+<div class="ink-motion ink-motion--{{ ink_theme.motion.placement }}" aria-hidden="true" data-ink-motion-config="{{ ink_theme.motion | jsonify | escape }}"{% if include.image and include.image != "" %} data-ink-motion-image="{{ include.image | escape }}"{% endif %}></div>
+{%- endif -%}

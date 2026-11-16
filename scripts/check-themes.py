@@ -24,6 +24,23 @@ from urllib.parse import urlsplit
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCHEMA_PATH = REPO_ROOT / "scripts" / "themes" / "theme.schema.json"
+# The ink motion engine's curated shaders: parameters, ranges, color names.
+MOTION_SPEC_PATH = REPO_ROOT / "scripts" / "motion" / "shaders.json"
+MOTION_INCLUDE = "ink/motion.html"
+MOTION_SCRIPT = "/assets/ink/motion/core.js"
+PREVIEW_SCRIPT = "/assets/ink-preview/preview.js"
+# A same-origin path ending in one of the scripts above: optional baseurl
+# segments, then the exact path. No scheme, host, backslash, query or fragment.
+SITE_PATH_PREFIX = r"(?:/[A-Za-z0-9._~-]+)*"
+MOTION_SCRIPT_RE = re.compile(SITE_PATH_PREFIX + re.escape(MOTION_SCRIPT))
+PREVIEW_SCRIPT_RE = re.compile(SITE_PATH_PREFIX + re.escape(PREVIEW_SCRIPT))
+EVENT_HANDLER_RE = re.compile(r"\son[a-z]+\s*=")
+MOTION_OPTIONS = [("on", "Moving"), ("still", "Still"), ("off", "Off")]
+CSS_VAR_RE = re.compile(r"--[a-z][a-z0-9-]{0,40}")
+# image= takes a post's cover photo from a Liquid variable, never a literal URL.
+MOTION_IMAGE_RE = re.compile(r"\bimage\s*=\s*(\S+)")
+MOTION_IMAGE_VAR_RE = re.compile(r"(?:[a-z_]+\.)+cover_image")
+MOTION_MAX_SURFACES = 3  # the engine mounts at most this many per page (scripts/motion/src/core.js)
 
 ID_RE = re.compile(r"^[a-z]{2,24}$")
 RESERVED_IDS = {
@@ -366,8 +383,12 @@ LIQUID_COMMENT = re.compile(r"\{%-?\s*comment\s*-?%\}.*?\{%-?\s*endcomment\s*-?%
 INCLUDE_RE = re.compile(r"\{%-?\s*(include|include_relative|render)\s+([^\s%]+)", re.S)
 
 
-def check_slot_files(root, theme_id, present, partials, report):
+def check_slot_files(root, theme_id, present, partials, report, data=None):
+    """Returns the slot and partial files that include ink/motion.html, and
+    whether each passes an image=."""
     variant_keys = set()
+    motion = isinstance(data, dict) and isinstance(data.get("motion"), dict)
+    motion_includes = []
     for slot, f in list(present.items()) + list(partials.items()):
         r = rel(root, f)
         text = f.read_text(encoding="utf-8", errors="replace")
@@ -376,9 +397,25 @@ def check_slot_files(root, theme_id, present, partials, report):
             if needle in lowered:
                 report.fail(r, "liquid-script" if needle == "<script" else "liquid-inline-style",
                             f"slot files may not contain {what}; styling belongs in theme.css")
+        markup = LIQUID_TAG.sub(" ", lowered)
+        if EVENT_HANDLER_RE.search(markup):
+            report.fail(r, "liquid-script", "slot files may not use on...= event handler attributes; themes ship no JavaScript")
+        if "javascript:" in markup:
+            report.fail(r, "liquid-script", "slot files may not contain javascript: URLs; themes ship no JavaScript")
         if re.search(r"\sstyle\s*=", lowered):
             report.fail(r, "liquid-inline-style", "slot files may not use style= attributes; styling belongs in theme.css")
+        if "data-ink-motion" in lowered:
+            report.fail(r, "motion-include", f"write the motion surface with {{% include {MOTION_INCLUDE} %}}, not by hand (no data-ink-motion attributes in slot files)")
+        for m in re.finditer(r"\{%-?\s*include\s+" + re.escape(MOTION_INCLUDE) + r"\b([^%]*)%\}", text):
+            image = MOTION_IMAGE_RE.search(m.group(1))
+            if image and not MOTION_IMAGE_VAR_RE.fullmatch(image.group(1).rstrip("-")):
+                report.fail(r, "motion-include", f"image= takes a cover photo variable such as page.cover_image or post.cover_image, not {image.group(1)}")
+            motion_includes.append((r, image is not None))
         for kind, target in INCLUDE_RE.findall(re.sub(r"\{\{\s*(\w+)\s*\}\}", r"{{\1}}", text)):
+            if kind == "include" and target == MOTION_INCLUDE:
+                if not motion:
+                    report.fail(r, "liquid-include-scope", f"{{% include {MOTION_INCLUDE} %}} needs a motion block in the manifest (docs/themes/motion.md)")
+                continue
             ok = kind == "include" and (
                 target in ("empty-state.html", "post-card.html")
                 or target.startswith(f"themes/{theme_id}/")
@@ -405,6 +442,87 @@ def check_slot_files(root, theme_id, present, partials, report):
     if len(variant_keys) > 2:
         report.fail(rel(root, root / "_includes" / "themes" / theme_id), "liquid-variants",
                     f"at most 2 markup-variant tweaks are allowed, found {', '.join(sorted(variant_keys))}")
+    return motion_includes
+
+
+def load_motion_spec() -> dict | None:
+    try:
+        return json.loads(MOTION_SPEC_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def check_motion(root, path, data, motion_includes, report):
+    """The manifest's motion block against scripts/motion/shaders.json, the
+    motion tweak, and where the surface is placed. docs/themes/motion.md."""
+    r = rel(root, path)
+    motion = data.get("motion")
+    tweak = next((t for t in data.get("tweaks", []) if isinstance(t, dict) and t.get("key") == "motion"), None)
+    if not isinstance(motion, dict):
+        if tweak is not None:
+            report.fail(r, "motion-tweak", "the motion tweak is only for themes with a motion block")
+        return
+    spec = load_motion_spec()
+    if spec is None:
+        report.fail(rel(REPO_ROOT, MOTION_SPEC_PATH), "motion-shader", "scripts/motion/shaders.json is missing or not valid JSON")
+        return
+    shader = spec["shaders"].get(motion.get("shader"))
+    if shader is not None:
+        name = motion["shader"]
+        allowed = {**spec["sizing"], **shader["params"]}
+        for key, value in (motion.get("params") or {}).items():
+            p = allowed.get(key)
+            if p is None:
+                report.fail(r, "motion-shader", f"{name} has no parameter {key!r}; it takes {', '.join(sorted(allowed))}")
+                continue
+            if isinstance(value, str) and value.startswith("--") and p["type"] != "boolean":
+                if not CSS_VAR_RE.fullmatch(value):
+                    report.fail(r, "motion-shader", f"params.{key}: {value!r} is not a CSS custom property name")
+                continue
+            if p["type"] == "enum":
+                if value not in p["values"]:
+                    report.fail(r, "motion-shader", f"params.{key} must be one of {', '.join(p['values'])}")
+            elif p["type"] == "boolean":
+                if not isinstance(value, bool):
+                    report.fail(r, "motion-shader", f"params.{key} must be true or false")
+            elif not isinstance(value, (int, float)) or isinstance(value, bool) or not p["min"] <= value <= p["max"]:
+                report.fail(r, "motion-shader", f"params.{key} must be a number from {p['min']} to {p['max']} (or a --custom-property)")
+            elif "calm" in p and not p["calm"][0] <= value <= p["calm"][1]:
+                report.warn(r, "motion-calm", f"params.{key} {value} is outside the calm range {p['calm'][0]} to {p['calm'][1]} (docs/themes/motion.md)")
+        for key, value in (motion.get("colors") or {}).items():
+            c = shader["colors"].get(key)
+            if c is None:
+                report.fail(r, "motion-shader", f"{name} has no color {key!r}; it takes {', '.join(shader['colors'])}")
+            elif c.get("list") and not (isinstance(value, list) and 1 <= len(value) <= c["max"]):
+                report.fail(r, "motion-shader", f"colors.{key} is a list of 1 to {c['max']} custom property names")
+            elif not c.get("list") and not isinstance(value, str):
+                report.fail(r, "motion-shader", f"colors.{key} is one custom property name, such as \"--ink-accent\"")
+        speed = motion.get("speed")
+        calm = spec["motion"]["speed"]["calm"]
+        if isinstance(speed, (int, float)) and not isinstance(speed, bool):
+            if not shader["animated"] and speed:
+                report.warn(r, "motion-calm", f"{name} does not move; speed has no effect")
+            elif speed > calm[1]:
+                report.warn(r, "motion-calm", f"speed {speed} is above the calm range {calm[0]} to {calm[1]}")
+        if shader.get("image") == "required" and motion.get("placement") != "slot":
+            report.fail(r, "motion-include", f"{name} draws a post's cover photo, so its placement must be \"slot\", included with image=")
+    expected = [{"value": v, "label": l} for v, l in MOTION_OPTIONS]
+    if tweak is None:
+        report.fail(r, "motion-tweak", 'a theme with motion must declare the motion tweak: {"key": "motion", "type": "select", '
+                    '"options": on "Moving", still "Still", off "Off"} (docs/themes/motion.md)')
+    elif tweak.get("type") != "select" or tweak.get("options") != expected:
+        report.fail(r, "motion-tweak", 'the motion tweak must be a select with exactly the options '
+                    'on "Moving", still "Still" and off "Off", in that order')
+    placement = motion.get("placement")
+    if placement == "slot" and not motion_includes:
+        report.fail(r, "motion-include", f'placement "slot" needs {{% include {MOTION_INCLUDE} %}} in one of the theme\'s slots or partials')
+    if placement == "backdrop":
+        for f, _ in motion_includes:
+            report.fail(f, "motion-include", f'placement "backdrop" is placed by the engine; remove {{% include {MOTION_INCLUDE} %}}')
+    if shader is not None and shader.get("image") == "required" and placement == "slot":
+        for f, has_image in motion_includes:
+            if not has_image:
+                report.fail(f, "motion-include", f"{motion['shader']} needs the cover photo: {{% include {MOTION_INCLUDE} image=post.cover_image %}}")
 
 
 def check_tweaks(root, path, data, report):
@@ -770,9 +888,21 @@ class TagCollector(html.parser.HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.tags: list[tuple[str, dict]] = []
+        self.script_bodies: dict[int, str] = {}
+        self._script: int | None = None
 
     def handle_starttag(self, tag, attrs):
         self.tags.append((tag, {k: (v or "") for k, v in attrs}))
+        if tag == "script":
+            self._script = len(self.tags) - 1
+
+    def handle_data(self, data):
+        if self._script is not None:
+            self.script_bodies[self._script] = self.script_bodies.get(self._script, "") + data
+
+    def handle_endtag(self, tag):
+        if tag == "script":
+            self._script = None
 
 
 def source_hosts(source: pathlib.Path | None) -> set[str]:
@@ -793,7 +923,38 @@ def source_hosts(source: pathlib.Path | None) -> set[str]:
     return hosts
 
 
+def site_motion(theme_id: str, source: pathlib.Path | None) -> dict | None:
+    """The theme's manifest motion block, or None."""
+    for base in ([source] if source else []) + [REPO_ROOT]:
+        manifest = base / "_data" / "themes" / f"{theme_id}.json"
+        if manifest.is_file():
+            try:
+                motion = json.loads(manifest.read_text(encoding="utf-8")).get("motion")
+            except json.JSONDecodeError:
+                return None
+            return motion if isinstance(motion, dict) else None
+    return None
+
+
+def is_motion_script(src: str) -> bool:
+    """The engine's own module at the site's root or baseurl: no scheme, host,
+    backslash, query or fragment (so not data:, //host, /\\host or javascript:)."""
+    return MOTION_SCRIPT_RE.fullmatch(src) is not None
+
+
+def is_preview_script(src: str) -> bool:
+    return PREVIEW_SCRIPT_RE.fullmatch(src) is not None
+
+
+def is_javascript_url(value: str) -> bool:
+    """Browsers drop ASCII whitespace and control characters inside a scheme."""
+    return "".join(c for c in value if ord(c) > 0x20).lower().startswith("javascript:")
+
+
 def check_site(site: pathlib.Path, theme_id: str, source: pathlib.Path | None, preview: bool, report: Report) -> None:
+    motion_block = site_motion(theme_id, source)
+    motion = motion_block is not None
+    surfaces = 0
     for page in SITE_PAGES:
         if not (site / page).is_file():
             report.fail(page, "site-pages", "expected page was not built")
@@ -815,27 +976,57 @@ def check_site(site: pathlib.Path, theme_id: str, source: pathlib.Path | None, p
             report.fail(r, "site-theme-attr", f'<html> must carry data-ink-theme="{theme_id}"')
         if not any(t == "link" and a.get("href", "").endswith(css_href) for t, a in parser.tags):
             report.fail(r, "site-stylesheet", f"page does not link {css_href}")
-        for tag, attrs in parser.tags:
+        motion_scripts = 0
+        page_surfaces = 0
+        for i, (tag, attrs) in enumerate(parser.tags):
+            if "data-ink-motion-config" in attrs:
+                page_surfaces += 1
+                try:
+                    config = json.loads(attrs["data-ink-motion-config"])
+                except json.JSONDecodeError:
+                    config = None
+                if not motion or config != motion_block:
+                    report.fail(r, "site-motion", "an ink-motion surface's config differs from the manifest's motion block; only {% include ink/motion.html %} may render one")
+            handlers = sorted(a for a in attrs if a.startswith("on"))
+            if handlers:
+                report.fail(r, "site-script", f"<{tag}> carries an inline event handler ({', '.join(handlers)}); themes ship no JavaScript")
+            for attr in ("href", "src", "action", "formaction", "data", "poster"):
+                if is_javascript_url(attrs.get(attr) or ""):
+                    report.fail(r, "site-script", f"<{tag} {attr}> is a javascript: URL; themes ship no JavaScript")
             if tag == "script":
                 kind = attrs.get("type", "")
-                if kind == "application/ld+json":
-                    continue
-                if preview and kind == "application/json" and attrs.get("id") == "ink-manifest":
-                    continue
-                if preview and attrs.get("src", "").endswith("/assets/ink-preview/preview.js"):
-                    continue
-                report.fail(r, "site-script", f"unexpected <script{' src=' + attrs['src'] if attrs.get('src') else ''}>")
-            for attr in ("src", "href", "srcset", "poster", "data"):
+                allowed = kind == "application/ld+json"
+                # The ink motion engine: only for a theme with a motion block,
+                # one module from the site's own origin, no inline code.
+                if not allowed and motion and kind == "module" and is_motion_script(attrs.get("src", "")) \
+                        and not parser.script_bodies.get(i, "").strip():
+                    motion_scripts += 1
+                    allowed = motion_scripts == 1
+                if not allowed and preview and kind == "application/json" and attrs.get("id") == "ink-manifest":
+                    allowed = True
+                if not allowed and preview and is_preview_script(attrs.get("src", "")) \
+                        and not parser.script_bodies.get(i, "").strip():
+                    allowed = True
+                if not allowed:
+                    report.fail(r, "site-script", f"unexpected <script{' src=' + attrs['src'] if attrs.get('src') else ''}>")
+            # Allowed scripts still go through the host check below.
+            for attr in ("src", "href", "srcset", "poster", "data", "data-ink-motion-image"):
                 value = attrs.get(attr)
                 if not value:
                     continue
                 for url in value.split(",") if attr == "srcset" else [value]:
-                    url = url.strip().split(" ")[0]
+                    # Browsers read a backslash as "/" in http(s) URLs, so "/" + backslash + host is //host.
+                    url = "".join(c for c in url.strip().split(" ")[0] if c not in "\t\n\r").replace("\\", "/")
                     parts = urlsplit(url)
                     if parts.scheme in ("http", "https") or url.startswith("//"):
                         host = parts.hostname or ""
                         if host not in allowed_hosts:
                             report.fail(r, "site-external", f"<{tag} {attr}> points at {host}, which is neither a font host nor in the fixture content")
+        if page_surfaces > MOTION_MAX_SURFACES:
+            report.fail(r, "site-motion", f"{page_surfaces} ink-motion surfaces on one page; the engine runs at most {MOTION_MAX_SURFACES} (include ink/motion.html once, not per post)")
+        surfaces += page_surfaces
+    if motion and surfaces == 0:
+        report.fail("index.html", "site-motion", "the theme declares motion but no built page renders an ink-motion surface")
 
 
 # --- main ---------------------------------------------------------------------------
@@ -885,8 +1076,9 @@ def main(argv: list[str]) -> int:
             check_identity(root, stem, path, data, manifests, report)
             theme_id = stem
             present, partials = check_files(root, theme_id, data, report)
-            check_slot_files(root, theme_id, present, partials, report)
+            motion_includes = check_slot_files(root, theme_id, present, partials, report, data)
             check_tweaks(root, path, data, report)
+            check_motion(root, path, data, motion_includes, report)
             check_contrast(root, path, data, report)
             check_plain_language(root, path, data, report)
             check_css(root, theme_id, data, report)

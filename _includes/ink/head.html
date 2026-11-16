@@ -1,7 +1,10 @@
 {%- comment -%}
   Theme part of <head>: color-scheme, web fonts, the theme stylesheet, the
   rules every theme shares (assets/ink/shared.css), the validated tweak
-  values, and the owner's optional assets/css/custom.css.
+  values, and the owner's optional assets/css/custom.css. A theme with a
+  manifest `motion` block also gets assets/ink/motion.css and the motion
+  engine (a module script; skipped when the motion tweak is "off", except in
+  previews, where the customizer can switch it back on).
   Requires ink/resolve.html and ink/tweaks.html first (default.html does both).
 {%- endcomment %}
 <meta name="color-scheme" content="{{ ink_color_scheme }}">
@@ -9,6 +12,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link id="ink-fonts" href="https://fonts.googleapis.com/css2?{{ ink_pairing.google | escape }}&amp;display=swap" rel="stylesheet">
+{%- endif %}
+{%- if ink_theme.motion %}
+<link rel="stylesheet" href="{{ '/assets/ink/motion.css' | relative_url }}">
 {%- endif %}
 <link rel="stylesheet" href="{{ '/assets/themes/' | append: ink_id | append: '/theme.css' | relative_url }}">
 <link rel="stylesheet" href="{{ '/assets/ink/shared.css' | relative_url }}">
@@ -20,4 +26,9 @@
 {%- if site.inkdrafts_preview %}
 <script type="application/json" id="ink-manifest">{{ ink_theme | jsonify }}</script>
 <script src="{{ '/assets/ink-preview/preview.js' | relative_url }}" defer></script>
+{%- endif -%}
+{%- comment -%} After preview.js: deferred and module scripts run in document order, so
+  preview tweaks (?t_motion=off) are on <html> before the engine starts. {%- endcomment -%}
+{%- if ink_theme.motion and ink_motion_state != "off" or ink_theme.motion and site.inkdrafts_preview %}
+<script type="module" src="{{ '/assets/ink/motion/core.js' | relative_url }}"></script>
 {%- endif -%}

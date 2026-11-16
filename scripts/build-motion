@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#
+# Rebuilds the vendored ink motion engine, assets/ink/motion/, from the
+# pinned @paper-design/shaders package and scripts/motion/shaders.json.
+# Engine maintainers only: themes never run this. Needs Node 18+ and npm with
+# network access (npm pack and npx fetch the pinned versions).
+#
+# Usage:
+#   scripts/build-motion            rebuild assets/ink/motion/
+#   scripts/build-motion --check    fail if assets/ink/motion/ differs from a fresh build
+#   scripts/build-motion --out DIR  build into DIR instead
+#
+# Pins (package, sha512, esbuild) live in scripts/motion/shaders.json.
+# Docs: docs/themes/motion.md.
+
+set -euo pipefail
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+case "${1:-}" in
+  -h|--help) sed -n '7,12p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
+esac
+command -v node > /dev/null || { echo "build-motion: node is required" >&2; exit 1; }
+exec node "$repo_root/scripts/motion/build.mjs" "$@"

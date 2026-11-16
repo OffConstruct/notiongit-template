@@ -36,6 +36,8 @@ one, are listed in `docs/themes/authoring.md` under "Validator rules".
 - Do not write into `_pages/`, `_posts/` or `_data/` (except
   `_data/themes/<id>.json`). The Notion sync owns them.
 - No JavaScript in themes, and no remote files other than Google Fonts.
+  Motion comes only through a manifest `motion` block run by the shared
+  engine; see [`docs/themes/motion.md`](docs/themes/motion.md).
 - Sample content lives in `scripts/themes/fixtures/` and uses the fictional
   Rowan Vale. Every fixture image is listed with its license in
   `scripts/themes/fixtures/PROVENANCE.md`.

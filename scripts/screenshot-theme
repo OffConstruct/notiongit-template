@@ -100,7 +100,9 @@ for page in "${page_list[@]}"; do
         *) echo "screenshot-theme: mode must be light or dark" >&2; exit 2 ;;
       esac
       file="$out/$id$tag-$page-$width-$mode.png"
-      "$chrome" --headless --disable-gpu --hide-scrollbars --no-first-run --no-default-browser-check \
+      # SwiftShader: software WebGL, so ink motion surfaces render headless.
+      "$chrome" --headless --disable-gpu --use-angle=swiftshader --enable-unsafe-swiftshader \
+        --hide-scrollbars --no-first-run --no-default-browser-check \
         --user-data-dir="$work/chrome-$page-$width-$mode" \
         --blink-settings="preferredColorScheme=$scheme" \
         --window-size="$width,$height" --virtual-time-budget=4000 \

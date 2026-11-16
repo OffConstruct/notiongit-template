@@ -6,6 +6,7 @@
     {% include head.html %}
   </head>
   <body class="ink-body ink-body--{{ page.layout | default: 'page' }}{% if page.layout == 'home' %} home-body{% endif %}">
+    {%- if ink_theme.motion.placement == "backdrop" %}{% include ink/motion.html %}{% endif %}
     {% if ink_slots contains "header" %}{% include themes/{{ ink_id }}/header.html %}{% else %}{% include header.html %}{% endif %}
     <main class="main" id="main-content">
       {{ content }}

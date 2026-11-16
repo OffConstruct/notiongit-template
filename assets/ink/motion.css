@@ -1,0 +1,58 @@
+/* Ink motion surfaces. Linked only on pages whose theme declares `motion`,
+   before the theme's stylesheet, so theme.css can resize and restyle the
+   surface. The canvas is decoration: it never takes pointer events or focus,
+   and without JavaScript or WebGL the surface shows its fallback background.
+   Contract: docs/themes/motion.md. */
+.ink-motion {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  background: var(--ink-motion-fallback, transparent);
+}
+
+/* Engine-placed backdrop: the first element in <body>, fixed behind the page.
+   The page background (body { background: var(--ink-bg) }) propagates to the
+   viewport, so the backdrop paints above it and below the content. */
+.ink-motion--backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.ink-motion > canvas {
+  contain: strict;
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.ink-motion[data-ink-motion-ready] > canvas {
+  opacity: var(--ink-motion-opacity, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink-motion > canvas {
+    transition: none;
+  }
+}
+
+/* Off: the engine removes the canvas; this keeps a late frame from showing. */
+:root[data-ink-motion="off"] .ink-motion > canvas {
+  display: none;
+}
+
+/* High contrast (forced colors) keeps the theme's text in system colors, so
+   no shader may paint behind it; the engine also treats this as "off". */
+@media print, (forced-colors: active) {
+  .ink-motion > canvas {
+    display: none;
+  }
+}

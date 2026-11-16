@@ -1,0 +1,10 @@
+Paper Shaders
+Copyright 2026 Paper
+
+Powered by Paper Shaders:
+https://shaders.paper.design
+
+Bundled in InkDrafts as assets/ink/motion/ by scripts/build-motion from
+@paper-design/shaders@0.0.82.
+Modified: ShaderMount no longer injects a <style> element; the same rules
+ship in assets/ink/motion.css.

@@ -70,6 +70,7 @@ pages = [
     "2025/11/03/keeping-a-commonplace-book/index.html",
 ]
 fixtures = repo / "scripts" / "themes" / "fixtures"
+shader_specs = json.loads((repo / "scripts" / "motion" / "shaders.json").read_text())["shaders"]
 index = {"themes": {}}
 categories = set()
 for theme_id in sorted(filter(None, themes.split(","))):
@@ -86,7 +87,18 @@ for theme_id in sorted(filter(None, themes.split(","))):
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(site / page, target)
     shutil.copytree(site / "assets" / "themes" / theme_id, dest / "assets" / "themes" / theme_id)
-    shutil.copytree(site / "assets" / "ink", dest / "assets" / "ink")
+    # The ink motion engine ships only with themes that declare motion, and
+    # then only the files that theme loads: core.js, its one shader, and the
+    # noise texture when that shader samples it.
+    motion = manifest.get("motion")
+    shutil.copytree(site / "assets" / "ink", dest / "assets" / "ink",
+                    ignore=shutil.ignore_patterns("motion", *(() if motion else ("motion.css",))))
+    if motion:
+        engine, engine_out = site / "assets" / "ink" / "motion", dest / "assets" / "ink" / "motion"
+        (engine_out / "shaders").mkdir(parents=True)
+        needs_noise = shader_specs[motion["shader"]].get("noise", False)
+        for name in ["core.js", "LICENSE", "NOTICE", f"shaders/{motion['shader']}.js"] + (["noise.js"] if needs_noise else []):
+            shutil.copyfile(engine / name, engine_out / name)
     (dest / "assets" / "ink-preview").mkdir(parents=True)
     shutil.copyfile(site / "assets" / "ink-preview" / "preview.js", dest / "assets" / "ink-preview" / "preview.js")
     categories.add(manifest["categories"][0])

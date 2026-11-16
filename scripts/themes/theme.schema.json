@@ -63,13 +63,46 @@
       "minItems": 3,
       "maxItems": 10,
       "items": { "$ref": "#/$defs/tweak" }
-    }
+    },
+    "motion": { "$ref": "#/$defs/motion" }
   },
   "$defs": {
     "category": {
       "enum": ["developers", "designers", "writers", "researchers", "educators", "artists", "photographers", "musicians", "entrepreneurs", "marketing", "professionals"]
     },
     "audience": { "enum": ["personal"] },
+    "motion": {
+      "description": "Optional Paper Shaders surface run by the shared ink motion engine. Shader parameters, ranges and color names are checked against scripts/motion/shaders.json. A theme with motion also declares the motion tweak (on/still/off). Docs: docs/themes/motion.md.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shader", "placement"],
+      "properties": {
+        "shader": { "enum": ["dithering", "dot-grid", "fluted-glass", "god-rays", "grain-gradient", "halftone-dots", "image-dithering", "mesh-gradient", "neuro-noise", "paper-texture", "perlin-noise", "simplex-noise", "smoke-ring", "voronoi", "warp", "waves"] },
+        "placement": { "enum": ["backdrop", "slot"] },
+        "speed": { "oneOf": [{ "type": "number", "minimum": 0, "maximum": 1 }, { "$ref": "#/$defs/css_var" }] },
+        "frame": { "type": "number", "minimum": 0, "maximum": 1000000 },
+        "colors": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              { "$ref": "#/$defs/css_var" },
+              { "type": "array", "minItems": 1, "maxItems": 10, "items": { "$ref": "#/$defs/css_var" } }
+            ]
+          }
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              { "type": "number" },
+              { "type": "boolean" },
+              { "type": "string", "pattern": "^([A-Za-z0-9]{1,24}|--[a-z][a-z0-9-]{0,40})$" }
+            ]
+          }
+        }
+      }
+    },
+    "css_var": { "type": "string", "pattern": "^--[a-z][a-z0-9-]{0,40}$" },
     "hex": { "type": "string", "pattern": "^#[0-9a-f]{6}$" },
     "value": { "type": "string", "pattern": "^[a-z0-9-]{1,24}$" },
     "label": { "type": "string", "minLength": 1, "maxLength": 40 },

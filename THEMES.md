@@ -26,8 +26,9 @@ when it is the only theme in that category that needs extra sample content.
 
 - Your three theme paths, and your category's fixture overlay.
 - Nothing else. Do not edit `_layouts/`, `_includes/*.html`, `_includes/ink/`,
-  `_config.yml`, `scripts/`, other themes, or the docs, unless your task says
-  so. If the shared engine cannot do what you need, report it instead.
+  `assets/ink/`, `_config.yml`, `scripts/`, other themes, or the docs, unless
+  your task says so. If the shared engine (including the motion engine)
+  cannot do what you need, report it instead.
 
 ## The commands
 
@@ -60,7 +61,11 @@ Done means the step 8 checklist in `docs/themes/authoring.md` passes.
 ## Hard rules
 
 - No JavaScript in themes. Every tweak works through CSS: `data-ink-*`
-  attributes on `<html>` and `--tw-*` custom properties.
+  attributes on `<html>` and `--tw-*` custom properties. Themes still ship
+  no JavaScript when they move: motion comes only through the manifest's
+  `motion` block, run by the shared ink motion engine
+  ([`docs/themes/motion.md`](docs/themes/motion.md)), one quiet surface per
+  theme.
 - GitHub Pages safe mode: no plugins beyond `jekyll-feed`, `jekyll-seo-tag`
   and `jekyll-sitemap`, no custom Ruby.
 - Never add a `theme:` key anywhere in `_config.yml`. Jekyll reserves it for
@@ -98,6 +103,7 @@ Done means the step 8 checklist in `docs/themes/authoring.md` passes.
 
 - Design briefs: your task names the brief (one board entry per theme).
 - Content model, slots, tweak contract, Liquid recipes: `docs/themes/README.md`.
+- Motion (Paper Shaders surfaces, the `motion` block and tweak): `docs/themes/motion.md`.
 - Step-by-step recipe, validator rule list and fixes: `docs/themes/authoring.md`.
 - A minimal complete theme: `scripts/themes/skeleton/`. A full worked example:
   the `quire` theme.

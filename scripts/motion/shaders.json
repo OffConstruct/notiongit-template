@@ -1,0 +1,355 @@
+{
+  "_comment": "The ink motion engine's curated Paper Shaders subset. scripts/build-motion turns this into assets/ink/motion/shaders/<name>.js and checks it against the pinned package; scripts/check-themes.py validates manifest motion blocks against it. Ranges are Paper's own (from its type docs); `calm` is the range docs/themes/motion.md recommends for quiet surfaces. Docs: docs/themes/motion.md.",
+  "paper": {
+    "package": "@paper-design/shaders",
+    "version": "0.0.82",
+    "integrity": "sha512-eCxYQrrCxRVc4KG8sLSQecsq8Ymstbaq/FqZjq/fhOa6UiR1ZZfdMO5IJpHmwL0GYmfzvZVQ4l8ZOLux0uLVdg=="
+  },
+  "esbuild": "0.25.0",
+  "motion": {
+    "speed": { "min": 0, "max": 1, "calm": [0.05, 0.4] },
+    "frame": { "min": 0, "max": 1000000 }
+  },
+  "sizing": {
+    "fit": { "type": "enum", "values": { "none": 0, "contain": 1, "cover": 2 }, "uniform": "u_fit" },
+    "scale": { "type": "number", "min": 0.01, "max": 4, "uniform": "u_scale" },
+    "rotation": { "type": "number", "min": 0, "max": 360, "uniform": "u_rotation" },
+    "offsetX": { "type": "number", "min": -1, "max": 1, "uniform": "u_offsetX" },
+    "offsetY": { "type": "number", "min": -1, "max": 1, "uniform": "u_offsetY" },
+    "originX": { "type": "number", "min": 0, "max": 1, "uniform": "u_originX" },
+    "originY": { "type": "number", "min": 0, "max": 1, "uniform": "u_originY" },
+    "worldWidth": { "type": "number", "min": 0, "max": 5000, "uniform": "u_worldWidth" },
+    "worldHeight": { "type": "number", "min": 0, "max": 5000, "uniform": "u_worldHeight" }
+  },
+  "sizing_defaults": {
+    "object": { "fit": "contain", "scale": 1, "rotation": 0, "offsetX": 0, "offsetY": 0, "originX": 0.5, "originY": 0.5, "worldWidth": 0, "worldHeight": 0 },
+    "pattern": { "fit": "none", "scale": 1, "rotation": 0, "offsetX": 0, "offsetY": 0, "originX": 0.5, "originY": 0.5, "worldWidth": 0, "worldHeight": 0 }
+  },
+  "shaders": {
+    "mesh-gradient": {
+      "summary": "Soft color spots that drift and blend",
+      "fragment": "meshGradientFragmentShader",
+      "sizing": "object",
+      "animated": true,
+      "colors": {
+        "colors": { "list": true, "max": 10, "meta": "meshGradientMeta", "default": ["--ink-bg", "--ink-accent", "--ink-muted"] }
+      },
+      "params": {
+        "distortion": { "type": "number", "min": 0, "max": 1, "default": 0.8, "calm": [0.3, 0.8] },
+        "swirl": { "type": "number", "min": 0, "max": 1, "default": 0.1, "calm": [0, 0.3] },
+        "grainMixer": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "grainOverlay": { "type": "number", "min": 0, "max": 1, "default": 0, "calm": [0, 0.15] }
+      }
+    },
+    "grain-gradient": {
+      "summary": "Grainy color fields, like risograph ink",
+      "fragment": "grainGradientFragmentShader",
+      "sizing": "object",
+      "animated": true,
+      "noise": true,
+      "colors": {
+        "colorBack": { "default": "--ink-bg" },
+        "colors": { "list": true, "max": 7, "meta": "grainGradientMeta", "default": ["--ink-bg", "--ink-accent"] }
+      },
+      "params": {
+        "softness": { "type": "number", "min": 0, "max": 1, "default": 0.5, "calm": [0.6, 1] },
+        "intensity": { "type": "number", "min": 0, "max": 1, "default": 0.5, "calm": [0.05, 0.3] },
+        "noise": { "type": "number", "min": 0, "max": 1, "default": 0.25, "calm": [0.1, 0.35] },
+        "shape": { "type": "enum", "table": "GrainGradientShapes", "values": { "wave": 1, "dots": 2, "truchet": 3, "corners": 4, "ripple": 5, "blob": 6, "sphere": 7 }, "default": "corners" }
+      }
+    },
+    "dithering": {
+      "summary": "Two-color dithered shapes, like an old screen",
+      "fragment": "ditheringFragmentShader",
+      "sizing": "pattern",
+      "animated": true,
+      "colors": {
+        "colorBack": { "default": "--ink-bg" },
+        "colorFront": { "default": "--ink-accent" }
+      },
+      "params": {
+        "shape": { "type": "enum", "table": "DitheringShapes", "values": { "simplex": 1, "warp": 2, "dots": 3, "wave": 4, "ripple": 5, "swirl": 6, "sphere": 7 }, "default": "sphere" },
+        "type": { "type": "enum", "table": "DitheringTypes", "values": { "random": 1, "2x2": 2, "4x4": 3, "8x8": 4 }, "default": "4x4" },
+        "size": { "type": "number", "min": 0.5, "max": 20, "default": 2, "uniform": "u_pxSize", "calm": [2, 4] }
+      },
+      "sizing_overrides": { "scale": 0.6 }
+    },
+    "dot-grid": {
+      "summary": "A still grid of dots (does not move)",
+      "fragment": "dotGridFragmentShader",
+      "sizing": "pattern",
+      "animated": false,
+      "colors": {
+        "colorBack": { "default": "--ink-bg" },
+        "colorFill": { "default": "--ink-muted" },
+        "colorStroke": { "default": "--ink-accent" }
+      },
+      "params": {
+        "size": { "type": "number", "min": 1, "max": 100, "default": 2, "uniform": "u_dotSize", "calm": [1, 3] },
+        "gapX": { "type": "number", "min": 2, "max": 500, "default": 32 },
+        "gapY": { "type": "number", "min": 2, "max": 500, "default": 32 },
+        "strokeWidth": { "type": "number", "min": 0, "max": 50, "default": 0 },
+        "sizeRange": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "opacityRange": { "type": "number", "min": 0, "max": 1, "default": 0, "calm": [0.2, 0.8] },
+        "shape": { "type": "enum", "table": "DotGridShapes", "values": { "circle": 0, "diamond": 1, "square": 2, "triangle": 3 }, "default": "circle" }
+      }
+    },
+    "perlin-noise": {
+      "summary": "Slow two-color noise, like clouds or marble",
+      "fragment": "perlinNoiseFragmentShader",
+      "sizing": "pattern",
+      "animated": true,
+      "colors": {
+        "colorBack": { "default": "--ink-bg" },
+        "colorFront": { "default": "--ink-muted" }
+      },
+      "params": {
+        "proportion": { "type": "number", "min": 0, "max": 1, "default": 0.35 },
+        "softness": { "type": "number", "min": 0, "max": 1, "default": 0.1, "calm": [0.5, 1] },
+        "octaveCount": { "type": "number", "min": 1, "max": 8, "default": 1 },
+        "persistence": { "type": "number", "min": 0.3, "max": 1, "default": 1 },
+        "lacunarity": { "type": "number", "min": 1.5, "max": 10, "default": 1.5 }
+      }
+    },
+    "simplex-noise": {
+      "summary": "Flowing bands of color",
+      "fragment": "simplexNoiseFragmentShader",
+      "sizing": "pattern",
+      "animated": true,
+      "colors": {
+        "colors": { "list": true, "max": 10, "meta": "simplexNoiseMeta", "default": ["--ink-bg", "--ink-muted", "--ink-accent"] }
+      },
+      "params": {
+        "stepsPerColor": { "type": "number", "min": 1, "max": 10, "default": 2 },
+        "softness": { "type": "number", "min": 0, "max": 1, "default": 0, "calm": [0.6, 1] }
+      },
+      "sizing_overrides": { "scale": 0.6 }
+    },
+    "waves": {
+      "summary": "Rows of wavy lines (does not move)",
+      "fragment": "wavesFragmentShader",
+      "sizing": "pattern",
+      "animated": false,
+      "colors": {
+        "colorBack": { "default": "--ink-bg" },
+        "colorFront": { "default": "--ink-muted" }
+      },
+      "params": {
+        "shape": { "type": "number", "min": 0, "max": 3, "default": 0 },
+        "frequency": { "type": "number", "min": 0, "max": 2, "default": 0.5 },
+        "amplitude": { "type": "number", "min": 0, "max": 1, "default": 0.5 },
+        "spacing": { "type": "number", "min": 0, "max": 2, "default": 1.2 },
+        "proportion": { "type": "number", "min": 0, "max": 1, "default": 0.1, "calm": [0.03, 0.15] },
+        "softness": { "type": "number", "min": 0, "max": 1, "default": 0 }
+      },
+      "sizing_overrides": { "scale": 0.6 }
+    },
+    "warp": {
+      "summary": "Patterns that bend and swirl like liquid",
+      "fragment": "warpFragmentShader",
+      "sizing": "pattern",
+      "animated": true,
+      "noise": true,
+      "colors": {
+        "colors": { "list": true, "max": 10, "meta": "warpMeta", "default": ["--ink-bg", "--ink-accent"] }
+      },
+      "params": {
+        "proportion": { "type": "number", "min": 0, "max": 1, "default": 0.45 },
+        "softness": { "type": "number", "min": 0, "max": 1, "default": 1 },
+        "distortion": { "type": "number", "min": 0, "max": 1, "default": 0.25, "calm": [0.05, 0.3] },
+        "swirl": { "type": "number", "min": 0, "max": 1, "default": 0.8, "calm": [0.2, 0.8] },
+        "swirlIterations": { "type": "number", "min": 2, "max": 20, "default": 10 },
+        "shapeScale": { "type": "number", "min": 0, "max": 1, "default": 0.1 },
+        "shape": { "type": "enum", "table": "WarpPatterns", "values": { "checks": 0, "stripes": 1, "edge": 2 }, "default": "checks" }
+      }
+    },
+    "voronoi": {
+      "summary": "Cells like cracked glaze or leaf veins",
+      "fragment": "voronoiFragmentShader",
+      "sizing": "pattern",
+      "animated": true,
+      "noise": true,
+      "colors": {
+        "colors": { "list": true, "max": 5, "meta": "voronoiMeta", "default": ["--ink-bg", "--ink-muted"] },
+        "colorGlow": { "default": "--ink-bg" },
+        "colorGap": { "default": "--ink-text" }
+      },
+      "params": {
+        "stepsPerColor": { "type": "number", "min": 1, "max": 3, "default": 3 },
+        "distortion": { "type": "number", "min": 0, "max": 0.5, "default": 0.4, "calm": [0.1, 0.4] },
+        "gap": { "type": "number", "min": 0, "max": 0.1, "default": 0.04 },
+        "glow": { "type": "number", "min": 0, "max": 1, "default": 0 }
+      },
+      "sizing_overrides": { "scale": 0.5 }
+    },
+    "neuro-noise": {
+      "summary": "Fine glowing threads",
+      "fragment": "neuroNoiseFragmentShader",
+      "sizing": "pattern",
+      "animated": true,
+      "colors": {
+        "colorFront": { "default": "--ink-accent" },
+        "colorMid": { "default": "--ink-muted" },
+        "colorBack": { "default": "--ink-bg" }
+      },
+      "params": {
+        "brightness": { "type": "number", "min": 0, "max": 1, "default": 0.05, "calm": [0, 0.1] },
+        "contrast": { "type": "number", "min": 0, "max": 1, "default": 0.3, "calm": [0.1, 0.4] }
+      }
+    },
+    "god-rays": {
+      "summary": "Soft rays of light from one point",
+      "fragment": "godRaysFragmentShader",
+      "sizing": "object",
+      "animated": true,
+      "noise": true,
+      "colors": {
+        "colorBack": { "default": "--ink-bg" },
+        "colorBloom": { "default": "--ink-bg" },
+        "colors": { "list": true, "max": 5, "meta": "godRaysMeta", "default": ["--ink-muted", "--ink-accent"] }
+      },
+      "params": {
+        "density": { "type": "number", "min": 0, "max": 1, "default": 0.3 },
+        "spotty": { "type": "number", "min": 0, "max": 1, "default": 0.3 },
+        "midIntensity": { "type": "number", "min": 0, "max": 1, "default": 0.4 },
+        "midSize": { "type": "number", "min": 0, "max": 1, "default": 0.2 },
+        "intensity": { "type": "number", "min": 0, "max": 1, "default": 0.8, "calm": [0.1, 0.4] },
+        "bloom": { "type": "number", "min": 0, "max": 1, "default": 0.4 }
+      },
+      "sizing_overrides": { "offsetY": -0.55 }
+    },
+    "smoke-ring": {
+      "summary": "A ring of slow smoke",
+      "fragment": "smokeRingFragmentShader",
+      "sizing": "object",
+      "animated": true,
+      "noise": true,
+      "colors": {
+        "colorBack": { "default": "--ink-bg" },
+        "colors": { "list": true, "max": 10, "meta": "smokeRingMeta", "default": ["--ink-muted"] }
+      },
+      "params": {
+        "noiseScale": { "type": "number", "min": 0.01, "max": 5, "default": 3 },
+        "noiseIterations": { "type": "number", "min": 1, "max": 8, "default": 8 },
+        "radius": { "type": "number", "min": 0, "max": 1, "default": 0.25 },
+        "thickness": { "type": "number", "min": 0.01, "max": 1, "default": 0.65 },
+        "innerShape": { "type": "number", "min": 0, "max": 4, "default": 0.7 }
+      },
+      "sizing_overrides": { "scale": 0.8 }
+    },
+    "paper-texture": {
+      "summary": "Paper grain, folds and fibers (does not move)",
+      "fragment": "paperTextureFragmentShader",
+      "sizing": "object",
+      "animated": false,
+      "noise": true,
+      "image": "optional",
+      "mipmaps": ["u_image"],
+      "colors": {
+        "colorBack": { "default": "--ink-bg" },
+        "colorPaper": { "default": "--ink-bg" },
+        "colorShadow": { "default": "--ink-muted" }
+      },
+      "params": {
+        "blending": { "type": "number", "min": 0, "max": 1, "default": 1 },
+        "distortion": { "type": "number", "min": -1, "max": 1, "default": 0.75 },
+        "clip": { "type": "boolean", "default": false },
+        "angle": { "type": "number", "min": 0, "max": 360, "default": 300 },
+        "seed": { "type": "number", "min": 0, "max": 1000, "default": 4 },
+        "roughness": { "type": "number", "min": 0, "max": 1, "default": 0.4 },
+        "roughnessSize": { "type": "number", "min": 0, "max": 1, "default": 0.5 },
+        "roughnessRows": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "fiber": { "type": "number", "min": 0, "max": 1, "default": 0.4 },
+        "fiberSize": { "type": "number", "min": 0, "max": 1, "default": 0.5 },
+        "folds": { "type": "number", "min": 0, "max": 1, "default": 0.5 },
+        "foldSizeX": { "type": "number", "min": 0, "max": 1, "default": 1 },
+        "foldSizeY": { "type": "number", "min": 0, "max": 1, "default": 1 },
+        "foldOffsetX": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "foldOffsetY": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "wrinkles": { "type": "number", "min": 0, "max": 1, "default": 1 },
+        "wrinkleSize": { "type": "number", "min": 0, "max": 1, "default": 0.65 },
+        "crumples": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "crumpleCount": { "type": "number", "min": 2, "max": 15, "default": 6 },
+        "drops": { "type": "number", "min": 0, "max": 1, "default": 0.4 }
+      },
+      "sizing_overrides": { "fit": "cover", "scale": 1 }
+    },
+    "halftone-dots": {
+      "summary": "Turns a post's cover photo into printed dots",
+      "fragment": "halftoneDotsFragmentShader",
+      "sizing": "object",
+      "animated": false,
+      "image": "required",
+      "colors": {
+        "colorBack": { "default": "--ink-bg" },
+        "colorFront": { "default": "--ink-text" }
+      },
+      "params": {
+        "size": { "type": "number", "min": 0, "max": 1, "default": 0.5 },
+        "radius": { "type": "number", "min": 0, "max": 2, "default": 1.25 },
+        "contrast": { "type": "number", "min": 0, "max": 1, "default": 0.4 },
+        "originalColors": { "type": "boolean", "default": false },
+        "inverted": { "type": "boolean", "default": false },
+        "grainMixer": { "type": "number", "min": 0, "max": 1, "default": 0.2 },
+        "grainOverlay": { "type": "number", "min": 0, "max": 1, "default": 0.2 },
+        "grainSize": { "type": "number", "min": 0, "max": 1, "default": 0.5 },
+        "grid": { "type": "enum", "table": "HalftoneDotsGrids", "values": { "square": 0, "hex": 1 }, "default": "hex" },
+        "type": { "type": "enum", "table": "HalftoneDotsTypes", "values": { "classic": 0, "gooey": 1, "holes": 2, "soft": 3 }, "default": "gooey" }
+      },
+      "sizing_overrides": { "fit": "cover" }
+    },
+    "fluted-glass": {
+      "summary": "Shows a post's cover photo through ribbed glass",
+      "fragment": "flutedGlassFragmentShader",
+      "sizing": "object",
+      "animated": false,
+      "image": "required",
+      "mipmaps": ["u_image"],
+      "colors": {
+        "colorBack": { "default": "--ink-bg" },
+        "colorShadow": { "default": "--ink-text" },
+        "colorHighlight": { "default": "--ink-bg" }
+      },
+      "params": {
+        "shadows": { "type": "number", "min": 0, "max": 1, "default": 0.25 },
+        "highlights": { "type": "number", "min": 0, "max": 1, "default": 0.1 },
+        "size": { "type": "number", "min": 0, "max": 1, "default": 0.5 },
+        "shape": { "type": "enum", "table": "GlassGridShapes", "values": { "lines": 1, "linesIrregular": 2, "wave": 3, "zigzag": 4, "pattern": 5 }, "default": "lines" },
+        "angle": { "type": "number", "min": 0, "max": 180, "default": 0 },
+        "distortionShape": { "type": "enum", "table": "GlassDistortionShapes", "values": { "prism": 1, "lens": 2, "contour": 3, "cascade": 4, "flat": 5 }, "default": "prism" },
+        "distortion": { "type": "number", "min": 0, "max": 1, "default": 0.5 },
+        "shift": { "type": "number", "min": -1, "max": 1, "default": 0 },
+        "stretch": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "blur": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "edges": { "type": "number", "min": 0, "max": 1, "default": 0.25 },
+        "marginLeft": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "marginRight": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "marginTop": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "marginBottom": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "grainMixer": { "type": "number", "min": 0, "max": 1, "default": 0 },
+        "grainOverlay": { "type": "number", "min": 0, "max": 1, "default": 0 }
+      },
+      "sizing_overrides": { "fit": "cover" }
+    },
+    "image-dithering": {
+      "summary": "Turns a post's cover photo into dithered pixels",
+      "fragment": "imageDitheringFragmentShader",
+      "sizing": "object",
+      "animated": false,
+      "image": "required",
+      "colors": {
+        "colorFront": { "default": "--ink-text" },
+        "colorBack": { "default": "--ink-bg" },
+        "colorHighlight": { "default": "--ink-accent" }
+      },
+      "params": {
+        "type": { "type": "enum", "table": "DitheringTypes", "values": { "random": 1, "2x2": 2, "4x4": 3, "8x8": 4 }, "default": "8x8" },
+        "size": { "type": "number", "min": 0.5, "max": 20, "default": 2, "uniform": "u_pxSize" },
+        "colorSteps": { "type": "number", "min": 1, "max": 7, "default": 2 },
+        "originalColors": { "type": "boolean", "default": false },
+        "inverted": { "type": "boolean", "default": false }
+      },
+      "sizing_overrides": { "fit": "cover" }
+    }
+  }
+}

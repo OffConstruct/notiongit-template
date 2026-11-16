@@ -1,7 +1,8 @@
 {%- comment -%}
   Validates site.inkdrafts.tweaks against the active manifest. No output.
   Builds ink_attrs (attributes for <html>), ink_vars (declarations for
-  #ink-tweaks), ink_pairing, ink_webfonts and ink_color_scheme. Only manifest
+  #ink-tweaks), ink_pairing, ink_webfonts, ink_color_scheme and
+  ink_motion_state (the motion tweak's value; "off" without one). Only manifest
   strings and values validated here reach the page; an invalid or undeclared
   value falls back to the manifest default. Requires ink/resolve.html first.
   A hand-edited unquoted value reaches Liquid typed by YAML 1.1 (`2` is an
@@ -13,6 +14,7 @@
 {%- assign ink_pairing = ink_theme.fonts | first -%}
 {%- assign ink_webfonts = true -%}
 {%- assign ink_color_scheme = "light dark" -%}
+{%- assign ink_motion_state = "off" -%}
 {%- assign ink_user = site.inkdrafts.tweaks -%}
 {%- for tw in ink_theme.tweaks -%}
   {%- assign ink_raw = nil -%}
@@ -30,6 +32,8 @@
       {%- assign ink_attrs = ink_attrs | append: ' data-ink-' | append: ink_name | append: '="' | append: ink_val | append: '"' -%}
       {%- if tw.key == "mode" -%}
         {%- if ink_val == "light" or ink_val == "dark" -%}{%- assign ink_color_scheme = ink_val -%}{%- endif -%}
+      {%- elsif tw.key == "motion" -%}
+        {%- assign ink_motion_state = ink_val -%}
       {%- endif -%}
     {%- when "boolean" -%}
       {%- if ink_cand == "on" or ink_cand == "true" -%}{%- assign ink_val = true -%}

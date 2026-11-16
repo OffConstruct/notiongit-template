@@ -92,6 +92,7 @@ rejects unknown fields.
 | `fonts` | 1 to 3 pairings (section 9) |
 | `palette` | `light` and `dark`, each `{bg, text, muted}` as lowercase `#rrggbb` |
 | `tweaks` | 3 to 10 tweaks (section 4); `mode`, `accent` and `webfonts` are required |
+| `motion` | optional: one Paper Shaders surface run by the shared engine; needs the `motion` tweak. See [`motion.md`](motion.md) |
 
 No manifest string may contain `<` or `>`.
 
@@ -119,7 +120,8 @@ classes are the stable surface for owners' `custom.css`.
 Variables in scope in every slot: `site`, `page`, `content` (post and page
 slots), `ink_id`, `ink_theme` (your manifest), `ink_slots`. In `post-item`,
 the post is `include.post`. There is no `paginator`. Slot files may include
-only `themes/<your id>/...`, `empty-state.html` and `post-card.html`.
+only `themes/<your id>/...`, `empty-state.html` and `post-card.html`, and,
+in a theme with a `motion` block, `ink/motion.html` (see [`motion.md`](motion.md)).
 
 A theme that also overrides `post-item` should call it from its own `blog` or
 `home` slot like this:

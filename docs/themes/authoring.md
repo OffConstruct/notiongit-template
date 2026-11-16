@@ -72,6 +72,10 @@ Render `home.bio` and `home.social_links`, handle posts with and without
 `cover_image` and `excerpt`, and give every slot an empty state (the first
 build of a real site has no content).
 
+A theme that moves adds a `motion` block and the `motion` tweak to its
+manifest and styles the surface in `theme.css`; follow
+[`motion.md`](motion.md). It still has no JavaScript of its own.
+
 ## 4. Validate
 
 ```sh
@@ -219,7 +223,7 @@ plus `scripts/themes/fixtures/<category>/` if your task owns that overlay.
 | `css-external` | `@import`, `url(http...)`, `url(//...)` or `expression(` | fonts go in the manifest; images in `assets/themes/<id>/` |
 | `liquid-script` | `<script` in a slot or partial | remove it; themes have no JavaScript |
 | `liquid-inline-style` | `<style`, `<link` or `style=` in a slot or partial | move the styling to `theme.css` |
-| `liquid-include-scope` | an include outside `themes/<id>/`, `empty-state.html` and `post-card.html` | copy the markup into your own partial |
+| `liquid-include-scope` | an include outside `themes/<id>/`, `empty-state.html` and `post-card.html` (and `ink/motion.html` for a theme with motion) | copy the markup into your own partial |
 | `liquid-include-missing` | an include of `themes/<id>/_x.html` that does not exist | add the partial or fix the name |
 | `liquid-variants` | more than 2 markup-variant tweak keys in `data-variant` | rearrange with CSS instead |
 | `config-default-theme` | `_config.yml` has no `inkdrafts.theme_id`, or it names no manifest | leave `_config.yml` alone; it must say `classic` |
@@ -228,11 +232,16 @@ plus `scripts/themes/fixtures/<category>/` if your task owns that overlay.
 | `site-theme-attr` | `<html>` lacks `data-ink-theme="<id>"` | do not edit `_layouts/default.html` |
 | `site-stylesheet` | the theme stylesheet is missing or not linked | keep `assets/themes/<id>/theme.css` |
 | `site-liquid` | the page contains `Liquid error` | fix the Liquid in your slot |
-| `site-script` | a `<script>` other than JSON-LD (and, in previews, `preview.js`) | remove it |
+| `site-script` | a `<script>` other than JSON-LD (and, in previews, `preview.js`; with motion, the one engine module) | remove it |
 | `plain-language` | a summary, tweak label or option label uses jargon (kicker, measure, markdown, mono, sans, sticky) or British spelling (centred, colour, grey, programme, catalogue) | use the plain word the message names; summaries say who the theme suits and what the home page shows |
 | `fixture-overlay` | a category used by a theme has no `scripts/themes/fixtures/<category>/`, or an overlay with `replace_base_posts: true` lacks a post a preview page needs | add the overlay; keep the two post files the message names |
 | `fixture-provenance` | a fixture image is not listed in `scripts/themes/fixtures/PROVENANCE.md` | add a row with the source link and license (public domain or CC0 only) |
 | `site-external` | a `src`/`href` points at a host other than Google Fonts or the fixture content | serve images from `assets/themes/<id>/` |
+| `motion-shader` | a motion param or color the shader does not take, or a value outside Paper's range | see `motion.md` section 6 |
+| `motion-tweak` | motion without the `motion` tweak (on "Moving", still "Still", off "Off"), or the tweak without motion | copy the tweak from `motion.md` section 2 |
+| `motion-include` | `slot` placement without `{% include ink/motion.html %}`, `backdrop` with one, or an image shader without `image=` | `motion.md` section 3 |
+| `motion-calm` (warning) | motion faster than 0.4 or a param outside its calm range | slow it down |
+| `site-motion` | a theme with motion renders no surface on any page | include the surface in a slot that renders |
 
 ## The skeleton
 
