@@ -1,0 +1,30 @@
+<div class="ink-post-list sl-listing sl-shell">
+  <header class="sl-page-head">
+    <h1 class="sl-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="sl-page-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign sl_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  <div class="sl-split-body sl-split-body--wide">
+    {%- for y in sl_years %}
+    <div class="sl-year">
+      <h2 class="sl-year-label">{{ y.name }}</h2>
+      <ul class="sl-rows">
+        {%- for post in y.items %}
+        {% include themes/skylight/_row.html post=post %}
+        {%- endfor %}
+      </ul>
+    </div>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+</div>

@@ -1,0 +1,15 @@
+<div class="ink-page sl-page sl-shell">
+  <header class="sl-page-head">
+    <h1 class="sl-page-title">{{ page.title }}</h1>
+  </header>
+  <div class="sl-article">
+    <aside class="sl-aside">
+      {%- if page.description %}
+      <p class="sl-aside-lede">{{ page.description }}</p>
+      {%- endif %}
+    </aside>
+    <div class="sl-prose sl-body">
+      {{ content }}
+    </div>
+  </div>
+</div>

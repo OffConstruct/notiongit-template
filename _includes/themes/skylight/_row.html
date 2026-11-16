@@ -1,0 +1,8 @@
+{%- assign sl_post = include.post -%}
+<li class="sl-row">
+  <a class="sl-row-title" href="{{ sl_post.url | relative_url }}">{{ sl_post.title }}</a>
+  {%- if sl_post.tags.size > 0 %}
+  <span class="sl-row-tag">{{ sl_post.tags | first }}</span>
+  {%- endif %}
+  <time class="sl-row-date" datetime="{{ sl_post.date | date_to_xmlschema }}">{{ sl_post.date | date: "%b %-d" }}</time>
+</li>

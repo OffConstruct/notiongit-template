@@ -1,0 +1,115 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home sl-home">
+  {%- if home and home.name and home.name != "" %}
+  {%- assign sl_len = home.name | size -%}
+  {%- if sl_len <= 8 %}{% assign sl_fit = "xs" %}{% elsif sl_len <= 12 %}{% assign sl_fit = "s" %}{% elsif sl_len <= 18 %}{% assign sl_fit = "m" %}{% elsif sl_len <= 26 %}{% assign sl_fit = "l" %}{% else %}{% assign sl_fit = "xl" %}{% endif -%}
+  {%- assign sl_mail = "" -%}
+  {%- for link in home.social_links %}{% assign sl_pre = link.url | slice: 0, 7 %}{% if sl_pre == "mailto:" %}{% assign sl_mail = link.url %}{% break %}{% endif %}{% endfor -%}
+
+  <section class="sl-hero sl-shell" aria-labelledby="sl-name">
+    <h1 class="sl-name sl-name--{{ sl_fit }}" id="sl-name">{{ home.name }}</h1>
+    <div class="sl-side">
+      <div class="sl-window">{% include ink/motion.html %}</div>
+      {%- if home.tagline != blank or sl_mail != "" %}
+      <div class="sl-lede">
+        {%- if home.tagline != blank %}
+        <p class="sl-tagline">{{ home.tagline }}</p>
+        {%- endif %}
+        {%- if sl_mail != "" %}
+        <p class="sl-action"><a href="{{ sl_mail }}">Get in touch</a></p>
+        {%- endif %}
+      </div>
+      {%- endif %}
+    </div>
+  </section>
+
+  {%- assign sl_featured = site.posts | where: "featured", true -%}
+  {%- assign sl_works = sl_featured | where_exp: "p", "p.cover_image" -%}
+  {%- if sl_works.size == 0 %}{% assign sl_works = site.posts | where_exp: "p", "p.cover_image" %}{% endif -%}
+  {%- assign sl_works = sl_works | slice: 0, 6 -%}
+  {%- capture sl_work_urls %}{% for p in sl_works %}|{{ p.url }}|{% endfor %}{% endcapture -%}
+
+  {%- if sl_works.size > 0 %}
+  <section class="sl-section sl-shell" aria-labelledby="sl-work-title">
+    <h2 class="sl-label" id="sl-work-title">Selected work</h2>
+    <ul class="sl-index{% if sl_works.size == 1 %} sl-index--one{% endif %}">
+      {%- for post in sl_works %}
+      <li class="sl-work">
+        <a href="{{ post.url | relative_url }}">
+          <span class="sl-frame"><img src="{{ post.cover_image }}" alt="" {% if forloop.index > 2 %}loading="lazy" {% endif %}decoding="async"></span>
+          <span class="sl-cap">
+            <span class="sl-cap-title">{{ post.title }}</span>
+            <span class="sl-cap-meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time>{% if post.tags.size > 0 %}<span>{{ post.tags | first }}</span>{% endif %}</span>
+          </span>
+        </a>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endif %}
+
+  {%- assign sl_count = 0 -%}
+  {%- assign sl_year = "" -%}
+  {%- capture sl_rows -%}
+  {%- for post in site.posts -%}
+    {%- capture sl_key %}|{{ post.url }}|{% endcapture -%}
+    {%- if sl_work_urls contains sl_key %}{% continue %}{% endif -%}
+    {%- if sl_count >= 8 %}{% break %}{% endif -%}
+    {%- assign sl_y = post.date | date: "%Y" -%}
+    {%- if sl_y != sl_year -%}
+      {%- if sl_year != "" %}</ul></div>{% endif %}
+      <div class="sl-year"><h3 class="sl-year-label">{{ sl_y }}</h3><ul class="sl-rows">
+      {%- assign sl_year = sl_y -%}
+    {%- endif %}
+    {% include themes/skylight/_row.html post=post %}
+    {%- assign sl_count = sl_count | plus: 1 -%}
+  {%- endfor -%}
+  {%- if sl_year != "" %}</ul></div>{% endif -%}
+  {%- endcapture -%}
+
+  {%- if sl_count > 0 %}
+  <section class="sl-section sl-split sl-shell" aria-labelledby="sl-writing-title">
+    <h2 class="sl-label" id="sl-writing-title">Writing</h2>
+    <div class="sl-split-body">
+      {{ sl_rows }}
+      {%- assign sl_shown = sl_count | plus: sl_works.size -%}
+      {%- if site.posts.size > sl_shown %}
+      <p class="sl-more"><a href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} posts</a></p>
+      {%- endif %}
+    </div>
+  </section>
+  {%- endif %}
+
+  {%- if home.bio != blank or home.social_links.size > 0 %}
+  <section class="sl-section sl-split sl-shell" aria-labelledby="sl-studio-title">
+    <h2 class="sl-label" id="sl-studio-title">Studio</h2>
+    <div class="sl-split-body sl-studio">
+      {%- if home.bio != blank %}
+      <div class="sl-prose sl-bio">{{ home.bio | markdownify | replace: "<h2", "<h3" | replace: "</h2>", "</h3>" }}</div>
+      {%- endif %}
+      {%- if home.social_links.size > 0 %}
+      <div class="sl-directory">
+        <h3 class="sl-minor" id="sl-elsewhere-title">Elsewhere</h3>
+        <ul class="sl-links" aria-labelledby="sl-elsewhere-title">
+          {%- for link in home.social_links %}
+          <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+          {%- endfor %}
+        </ul>
+      </div>
+      {%- endif %}
+    </div>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="sl-shell sl-empty">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

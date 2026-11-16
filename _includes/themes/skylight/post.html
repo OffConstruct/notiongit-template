@@ -1,0 +1,31 @@
+<article class="ink-post sl-post sl-shell">
+  <header class="sl-page-head">
+    <h1 class="sl-page-title sl-post-title">{{ page.title }}</h1>
+  </header>
+  {%- if page.cover_image %}
+  <figure class="sl-cover"><img src="{{ page.cover_image }}" alt="" decoding="async"></figure>
+  {%- endif %}
+  <div class="sl-article">
+    <aside class="sl-aside" aria-label="About this post">
+      <p><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></p>
+      <p>{{ content | number_of_words | divided_by: 230 | plus: 1 }} min read</p>
+      {%- if page.tags.size > 0 %}
+      <ul class="sl-tags" aria-label="Tags">
+        {%- for tag in page.tags %}
+        <li><a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+      {%- if page.canonical_url %}
+      {%- assign sl_host = page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." %}
+      <p>First published on <a href="{{ page.canonical_url }}">{{ sl_host }}</a></p>
+      {%- endif %}
+    </aside>
+    <div class="sl-prose sl-body">
+      {{ content }}
+    </div>
+  </div>
+  <footer class="sl-post-foot">
+    <a href="{{ '/blog/' | relative_url }}"><span aria-hidden="true">&larr;</span> All writing</a>
+  </footer>
+</article>

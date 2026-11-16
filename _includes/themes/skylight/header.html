@@ -1,0 +1,19 @@
+{%- assign sl_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<header class="ink-header sl-header">
+  <div class="sl-shell sl-bar">
+    <a class="sl-mark" href="{{ '/' | relative_url }}"{% if page.layout == "home" %} aria-current="page"{% endif %}>{{ sl_name }}</a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="sl-nav" aria-label="Main navigation">
+      <ul>
+        {%- for item in site.data.nav %}
+        {%- if item.url == "/" %}{% continue %}{% endif %}
+        {%- assign item_url = item.url | relative_url %}
+        <li><a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- else %}
+    <p class="sl-nav-empty" role="status">Your menu will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>
