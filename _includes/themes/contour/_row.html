@@ -1,0 +1,13 @@
+{%- assign ct_post = include.post -%}
+{%- assign ct_href = ct_post.url | relative_url -%}
+{%- if ct_post.canonical_url %}{% assign ct_href = ct_post.canonical_url %}{% endif -%}
+<li class="ct-row">
+  <a class="ct-row-title" href="{{ ct_href }}">{{ ct_post.title }}</a>
+  <time class="ct-row-date" datetime="{{ ct_post.date | date_to_xmlschema }}">{{ ct_post.date | date: "%b %-d" }}</time>
+  {%- if ct_post.canonical_url or ct_post.tags.size > 0 %}
+  <p class="ct-row-meta">
+    {%- if ct_post.canonical_url %}<span class="ct-row-host">At {{ ct_post.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</span>{% endif -%}
+    {%- if ct_post.tags.size > 0 %}<span class="ct-row-tags">{% for tag in ct_post.tags %}<span>{{ tag }}</span>{% endfor %}</span>{% endif -%}
+  </p>
+  {%- endif %}
+</li>

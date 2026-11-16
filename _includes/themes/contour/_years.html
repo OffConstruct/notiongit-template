@@ -1,0 +1,13 @@
+{%- assign ct_years = include.posts | group_by_exp: "p", "p.date | date: '%Y'" -%}
+<div class="ct-years">
+  {%- for y in ct_years %}
+  <section class="ct-year" aria-labelledby="ct-year-{{ include.prefix }}{{ y.name }}">
+    <h{{ include.level | default: 3 }} class="ct-year-head" id="ct-year-{{ include.prefix }}{{ y.name }}">{{ y.name }}</h{{ include.level | default: 3 }}>
+    <ol class="ct-rows">
+      {%- for post in y.items %}
+      {% include themes/contour/_row.html post=post %}
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+</div>

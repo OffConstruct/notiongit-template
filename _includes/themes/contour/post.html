@@ -1,0 +1,32 @@
+{%- assign ct_blog = site.pages | where: "layout", "blog" | first -%}
+{%- assign ct_blog_url = "/blog/" -%}
+{%- if ct_blog %}{% assign ct_blog_url = ct_blog.url %}{% endif -%}
+<div class="ink-post ct-wrap">
+  <article>
+    <header class="ct-page-head">
+      <h1 class="ct-title">{{ page.title }}</h1>
+      <p class="ct-post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        {%- if page.tags.size > 0 %}
+        <span class="ct-post-tags">
+          {%- for tag in page.tags %}
+          <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+          {%- endfor %}
+        </span>
+        {%- endif %}
+      </p>
+    </header>
+    {%- if page.cover_image %}
+    <img class="ct-cover" src="{{ page.cover_image }}" alt="">
+    {%- endif %}
+    <div class="post-content ct-prose">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="ct-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="ct-post-footer">
+      <a href="{{ ct_blog_url | relative_url }}">All writing</a>
+    </footer>
+  </article>
+</div>

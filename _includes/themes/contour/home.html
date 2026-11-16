@@ -1,0 +1,107 @@
+{%- assign home = site.data.home -%}
+{%- assign ct_owner = home.name | strip -%}
+{%- assign ct_ready = false -%}
+{%- if home -%}
+  {%- if ct_owner != "" or site.posts.size > 0 %}{% assign ct_ready = true %}{% endif -%}
+{%- endif -%}
+{%- assign ct_name = ct_owner | default: site.title -%}
+{%- assign ct_blog = site.pages | where: "layout", "blog" | first -%}
+{%- assign ct_blog_url = "/blog/" -%}
+{%- assign ct_blog_title = "Writing" -%}
+{%- if ct_blog %}{% assign ct_blog_url = ct_blog.url %}{% assign ct_blog_title = ct_blog.title | default: "Writing" %}{% endif -%}
+{%- assign ct_bio = home.bio | strip | markdownify | strip -%}
+{%- assign ct_parts = ct_bio | split: "<h2" -%}
+{%- assign ct_tagline = home.tagline | strip -%}
+<div class="ink-home ct-home">
+  <div class="ct-grid">
+    <section class="ct-field" aria-labelledby="ct-name">
+      <div class="ct-map">
+        <div class="ct-plate">
+          {% include ink/motion.html %}
+        </div>
+        {%- if ct_ready and site.posts.size > 0 %}
+        {%- assign ct_newest = site.posts | first %}
+        {%- assign ct_oldest = site.posts | last %}
+        {%- assign ct_last = ct_newest.date | date: "%Y" %}
+        {%- assign ct_first = ct_oldest.date | date: "%Y" %}
+        <p class="ct-legend">
+          <span>{{ site.posts.size }} {% if site.posts.size == 1 %}post{% else %}posts{% endif %}</span>
+          <span>{% if ct_first == ct_last %}{{ ct_last }}{% else %}{{ ct_first }} to {{ ct_last }}{% endif %}</span>
+        </p>
+        {%- endif %}
+      </div>
+      <h1 class="ct-name" id="ct-name">{{ ct_name }}</h1>
+      {%- if ct_ready %}
+      {%- if ct_tagline != "" %}
+      <p class="ct-tagline">{{ ct_tagline }}</p>
+      {%- endif %}
+      {%- assign ct_lead = ct_parts | first | strip %}
+      {%- if ct_bio != "" and ct_lead != "" %}
+      <div class="ct-bio ct-prose">
+        {{ ct_lead }}
+      </div>
+      {%- endif %}
+      {%- if home.social_links.size > 0 %}
+      <ul class="ct-social" aria-label="Links">
+        {%- for link in home.social_links %}
+        <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+      {%- endif %}
+    </section>
+
+    <div class="ct-main">
+      {%- if ct_ready %}
+      <section class="ct-writing" aria-labelledby="ct-writing-title">
+        <h2 class="ct-heading" id="ct-writing-title">{{ ct_blog_title }}</h2>
+        {%- if site.posts.size > 0 %}
+        {%- assign ct_recent = site.posts | slice: 0, 8 %}
+        {% include themes/contour/_years.html posts=ct_recent %}
+        {%- if site.posts.size > 8 %}
+        <p class="ct-more"><a href="{{ ct_blog_url | relative_url }}">All {{ site.posts.size }} posts, by year</a></p>
+        {%- endif %}
+        {%- else %}
+        <p class="ct-none">Your posts will appear here after you publish them in Notion.</p>
+        {%- endif %}
+      </section>
+
+      {%- if ct_parts.size > 1 %}
+      {%- for part in ct_parts offset: 1 %}
+      <section class="ct-prose ct-about">
+        <h2{{ part }}
+      </section>
+      {%- endfor %}
+      {%- endif %}
+
+      {%- assign ct_shown = 0 %}
+      {%- for item in site.data.nav %}{% if item.url != "/" %}{% assign ct_shown = ct_shown | plus: 1 %}{% endif %}{% endfor %}
+      {%- if ct_shown > 0 %}
+      <section class="ct-elsewhere" aria-labelledby="ct-elsewhere-title">
+        <h2 class="ct-heading" id="ct-elsewhere-title">Elsewhere on this site</h2>
+        <ul class="ct-pages">
+          {%- for item in site.data.nav %}
+          {%- if item.url == "/" %}{% continue %}{% endif %}
+          {%- assign ct_page = site.pages | where: "url", item.url | first %}
+          <li>
+            <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+            {%- if ct_page.description and ct_page.description != "" %}
+            <span class="ct-page-desc">{{ ct_page.description }}</span>
+            {%- endif %}
+          </li>
+          {%- endfor %}
+        </ul>
+      </section>
+      {%- endif %}
+      {%- else %}
+      {% include empty-state.html
+        variant="home-empty-state"
+        kicker="Setup in progress"
+        title="Your site is almost ready"
+        copy="Your Notion content will appear here after the first sync completes."
+        note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+      %}
+      {%- endif %}
+    </div>
+  </div>
+</div>
