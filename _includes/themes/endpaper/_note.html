@@ -1,0 +1,11 @@
+{%- assign post = include.post -%}
+<li class="ep-note">
+  <a class="ep-note-link" href="{{ post.url | relative_url }}">
+    <span class="ep-note-title">{{ post.title }}</span>
+    {%- assign ep_ex = post.excerpt | strip_html | strip | truncatewords: 26 %}
+    {%- if ep_ex != blank %}
+    <span class="ep-note-excerpt">{{ ep_ex }}</span>
+    {%- endif %}
+    <time class="ep-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
+  </a>
+</li>

@@ -1,0 +1,84 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "endpaper",
+  "name": "Endpaper",
+  "version": "1.0.0",
+  "summary": "For literature teachers and book clubs: your name on a bookplate over slow marbled paper, then your notes by topic.",
+  "description": "For humanities and literature teachers, lecturers and reading-group hosts who share reading notes and lists. The home page opens with a band of marbled paper that drifts very slowly, with your name and tagline on a paper label. Below it come a contents list of your pages, your notes grouped into chapters by topic, and a short note about you.",
+  "categories": ["educators"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page", "tags"],
+  "fonts": [
+    {
+      "value": "newsreader",
+      "label": "Newsreader and Instrument Sans",
+      "google": "family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Instrument+Sans:wght@500",
+      "stacks": {
+        "body": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "display": "\"Instrument Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "garamond",
+      "label": "EB Garamond and Work Sans",
+      "google": "family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Work+Sans:wght@500",
+      "stacks": {
+        "body": "\"EB Garamond\", Garamond, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "display": "\"Work Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f6f1e7", "text": "#1f2a30", "muted": "#625e55" },
+    "dark": { "bg": "#15191b", "text": "#e8e2d6", "muted": "#a19b8f" }
+  },
+  "motion": {
+    "shader": "warp",
+    "placement": "slot",
+    "speed": 0.08,
+    "frame": 8000,
+    "colors": {
+      "colors": ["--motion-paper", "--motion-ink", "--motion-paper"]
+    },
+    "params": {
+      "shape": "stripes",
+      "proportion": 0.5,
+      "softness": 0.6,
+      "distortion": 0.12,
+      "swirl": 0.45,
+      "swirlIterations": 8,
+      "shapeScale": 0.3,
+      "rotation": 352
+    }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "teal", "custom": true,
+      "presets": [
+        { "value": "teal", "label": "Deep teal", "light": "#1e4d5c", "dark": "#6fa4b3" },
+        { "value": "oxblood", "label": "Oxblood", "light": "#7a2e28", "dark": "#dc9a8f" },
+        { "value": "navy", "label": "Ink blue", "light": "#2b4570", "dark": "#9fb5de" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "newsreader" },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "band", "type": "select", "label": "Marbled band on the home page", "default": "tall",
+      "options": [
+        { "value": "tall", "label": "Tall" },
+        { "value": "short", "label": "Short" } ] },
+    { "key": "chapters", "type": "boolean", "label": "Group notes by topic, like chapters", "default": true },
+    { "key": "leaders", "type": "boolean", "label": "Dotted lines in the contents list", "default": true }
+  ]
+}

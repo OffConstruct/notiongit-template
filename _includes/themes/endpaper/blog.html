@@ -1,0 +1,30 @@
+<div class="ink-post-list ep-col ep-index">
+  <header class="ep-page-head">
+    <h1 class="ep-title">{{ page.title | default: "Notes" }}</h1>
+    {%- if site.posts.size > 0 %}<p class="ep-dek">{{ site.posts.size }} {% if site.posts.size == 1 %}note{% else %}notes{% endif %}, newest first. <a href="{{ '/tags/' | relative_url }}">Browse by topic</a></p>{% endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="From Notion"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign ep_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for y in ep_years %}
+  <section class="ep-year" aria-labelledby="ep-y{{ y.name }}">
+    <h2 class="ep-year-title" id="ep-y{{ y.name }}">{{ y.name }}</h2>
+    <ol class="ep-contents ep-contents--dated">
+      {%- for post in y.items %}
+      <li><a href="{{ post.url | relative_url }}">
+        <span class="ep-entry">{{ post.title }}</span>
+        <span class="ep-leader" aria-hidden="true"></span>
+        <time class="ep-extent" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d" }}</time>
+      </a></li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

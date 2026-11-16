@@ -1,0 +1,135 @@
+{%- assign home = site.data.home -%}
+{%- assign ep_blog = site.pages | where: "layout", "blog" | first -%}
+{%- assign ep_list = ep_blog.title | default: "Notes" -%}
+<div class="ink-home ep-home">
+  {%- if home and home.name != blank %}
+  {%- assign ep_len = home.name | size -%}
+  {%- if ep_len <= 16 %}{% assign ep_fit = "s" %}{% elsif ep_len <= 28 %}{% assign ep_fit = "m" %}{% else %}{% assign ep_fit = "l" %}{% endif %}
+  <section class="ep-band" aria-labelledby="ep-name">
+    {% include ink/motion.html %}
+    <div class="ep-plate">
+      <h1 class="ep-name ep-name--{{ ep_fit }}" id="ep-name">{{ home.name }}</h1>
+      {%- if home.tagline != blank %}
+      <p class="ep-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+    </div>
+  </section>
+
+  <div class="ep-col">
+    {%- if home.social_links.size > 0 %}
+    <ul class="ep-links" aria-label="Links">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+
+    {%- assign ep_items = "" | split: "" %}
+    {%- for item in site.data.nav %}{% if item.url != "/" %}{% assign ep_items = ep_items | push: item %}{% endif %}{% endfor %}
+    {%- comment %} Reading times only say something when the pages differ. {% endcomment %}
+    {%- assign ep_mins = "" | split: "" %}
+    {%- for item in ep_items %}
+    {%- assign ep_page = site.pages | where: "url", item.url | first %}
+    {%- if ep_page and ep_page.content and item.url != "/blog/" %}{% assign ep_m = ep_page.content | number_of_words | divided_by: 230 | plus: 1 %}{% assign ep_mins = ep_mins | push: ep_m %}{% endif %}
+    {%- endfor %}
+    {%- assign ep_mins_u = ep_mins | uniq %}
+    {%- if ep_items.size > 0 %}
+    <section class="ep-section" aria-labelledby="ep-contents">
+      <h2 class="ep-head" id="ep-contents">Contents</h2>
+      <ol class="ep-contents">
+        {%- for item in ep_items %}
+        {%- assign ep_page = site.pages | where: "url", item.url | first %}
+        <li><a href="{{ item.url | relative_url }}">
+          <span class="ep-entry">{{ item.title }}</span>
+          {%- if item.url == "/blog/" %}
+          <span class="ep-leader" aria-hidden="true"></span>
+          <span class="ep-extent">{{ site.posts.size }} {% if site.posts.size == 1 %}note{% else %}notes{% endif %}</span>
+          {%- elsif ep_page and ep_page.content and ep_mins_u.size > 1 %}
+          {%- assign ep_min = ep_page.content | number_of_words | divided_by: 230 | plus: 1 %}
+          <span class="ep-leader" aria-hidden="true"></span>
+          <span class="ep-extent">{{ ep_min }} min read</span>
+          {%- endif %}
+        </a></li>
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- endif %}
+
+    <section class="ep-section" aria-labelledby="ep-notes">
+      <h2 class="ep-head" id="ep-notes">{{ ep_list }}</h2>
+      {%- if site.posts.size > 0 %}
+      <div class="ink-variant" data-variant="chapters:on">
+        {%- assign ep_roman = "I,II,III,IV,V" | split: "," %}
+        {%- assign ep_groups = site.posts | group_by_exp: "p", "p.tags | first" %}
+        {%- assign ep_n = 0 %}{% assign ep_other = "|" %}
+        {%- for g in ep_groups %}
+        {%- if g.name == blank or ep_n >= 5 %}
+        {%- for p in g.items %}{% assign ep_other = ep_other | append: p.url | append: "|" %}{% endfor %}
+        {%- else %}
+        <section class="ep-chapter">
+          <h3 class="ep-chapter-title">{{ ep_roman[ep_n] }}. {{ g.name | slice: 0 | upcase }}{{ g.name | slice: 1, 200 }}</h3>
+          <ol class="ep-notes">
+            {%- for post in g.items limit: 3 %}
+            {% include themes/endpaper/_note.html post=post %}
+            {%- endfor %}
+          </ol>
+          {%- if g.items.size > 3 %}
+          {%- assign ep_more = g.items.size | minus: 3 %}
+          <p class="ep-more"><a href="{{ '/tags/' | relative_url }}#{{ g.name | slugify }}">{{ ep_more }} more on {{ g.name }}</a></p>
+          {%- endif %}
+        </section>
+        {%- assign ep_n = ep_n | plus: 1 %}
+        {%- endif %}
+        {%- endfor %}
+        {%- if ep_other != "|" %}
+        <section class="ep-chapter">
+          <h3 class="ep-chapter-title">Other notes</h3>
+          <ol class="ep-notes">
+            {%- assign ep_k = 0 %}
+            {%- for post in site.posts %}
+            {%- assign ep_key = "|" | append: post.url | append: "|" %}
+            {%- if ep_other contains ep_key and ep_k < 3 %}
+            {% include themes/endpaper/_note.html post=post %}
+            {%- assign ep_k = ep_k | plus: 1 %}
+            {%- endif %}
+            {%- endfor %}
+          </ol>
+        </section>
+        {%- endif %}
+      </div>
+      <div class="ink-variant" data-variant="chapters:off">
+        <ol class="ep-notes">
+          {%- for post in site.posts limit: 8 %}
+          {% include themes/endpaper/_note.html post=post %}
+          {%- endfor %}
+        </ol>
+      </div>
+      <p class="ep-all"><a href="{{ ep_blog.url | default: '/blog/' | relative_url }}">Everything in {{ ep_list }}, newest first</a></p>
+      {%- else %}
+      <p class="ep-none">Your posts will appear here, grouped by their first tag, after you publish one in Notion.</p>
+      {%- endif %}
+    </section>
+
+    {%- if home.bio != blank %}
+    <section class="ep-section ep-about" aria-labelledby="ep-about">
+      <h2 class="ep-head" id="ep-about">A note on this site</h2>
+      {%- if home.profile_picture != blank %}
+      <img class="ep-portrait" src="{{ home.profile_picture }}" alt="" width="88" height="88" loading="lazy">
+      {%- endif %}
+      <div class="ep-prose ep-bio">{{ home.bio | markdownify | replace: '<h3', '<h4' | replace: '</h3>', '</h4>' | replace: '<h2', '<h3' | replace: '</h2>', '</h3>' }}</div>
+    </section>
+    {%- endif %}
+  </div>
+  {%- else %}
+  <div class="ep-col">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="Setup in progress"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

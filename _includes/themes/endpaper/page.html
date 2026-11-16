@@ -1,0 +1,12 @@
+<div class="ink-page">
+  <div class="ep-strip" aria-hidden="true"></div>
+  <article class="ep-col ep-article">
+    <header class="ep-page-head">
+      <h1 class="ep-title">{{ page.title }}</h1>
+      {%- if page.description %}<p class="ep-dek">{{ page.description }}</p>{% endif %}
+    </header>
+    <div class="ep-prose page-content">
+      {{ content }}
+    </div>
+  </article>
+</div>

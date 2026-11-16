@@ -1,0 +1,15 @@
+<header class="ink-header ep-header">
+  <div class="ep-shell ep-header-inner">
+    <a class="ep-brand" href="{{ '/' | relative_url }}">{{ site.data.home.name | default: site.title }}</a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="ep-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% elsif page.collection == "posts" and item.url == "/blog/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="ep-nav-empty" role="status">The menu will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

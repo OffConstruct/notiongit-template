@@ -1,0 +1,33 @@
+{%- assign ep_blog = site.pages | where: "layout", "blog" | first -%}
+<div class="ink-post">
+  <div class="ep-strip" aria-hidden="true"></div>
+  <article class="ep-col ep-article">
+    <header class="ep-page-head">
+      <h1 class="ep-title">{{ page.title }}</h1>
+      <p class="ep-meta">
+        <time class="ep-date" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        {%- assign ep_min = content | number_of_words | divided_by: 230 | plus: 1 %}
+        <span>{{ ep_min }} min read</span>
+      </p>
+      {%- if page.tags.size > 0 %}
+      <ul class="ep-tags" aria-label="Topics">
+        {%- for tag in page.tags %}<li><a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>{% endfor %}
+      </ul>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <figure class="ep-cover"><img src="{{ page.cover_image }}" alt=""></figure>
+    {%- endif %}
+    <div class="ep-prose post-content">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="ep-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <nav class="ep-post-foot" aria-label="More notes">
+      {%- if page.previous %}<a href="{{ page.previous.url | relative_url }}"><span class="ep-foot-label">Older note</span> <span class="ep-foot-title">{{ page.previous.title }}</span></a>{% endif %}
+      {%- if page.next %}<a href="{{ page.next.url | relative_url }}"><span class="ep-foot-label">Newer note</span> <span class="ep-foot-title">{{ page.next.title }}</span></a>{% endif %}
+      <a href="{{ ep_blog.url | default: '/blog/' | relative_url }}"><span class="ep-foot-label">Back to</span> <span class="ep-foot-title">{{ ep_blog.title | default: "Notes" }}</span></a>
+    </nav>
+  </article>
+</div>

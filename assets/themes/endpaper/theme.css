@@ -1,0 +1,593 @@
+/* Hallmark · endpaper · shape: contents-first book object · signature: a marbled endpaper band with the name on a paper book plate · genre: editorial */
+/* critique: one quiet surface (the band); no text ever sits on the motion; labels untracked, sentence case; heads left-aligned, only the plate centered. */
+/* Hallmark · waive 24b · 6px 10px 14px 18px 22px · optical spacing tuned to the serif line height, kept from the judged mock */
+
+/* Endpaper theme for InkDrafts. Static CSS only: no front matter, no
+   @import, no remote url(). Tokens and tweak hooks: docs/themes/README.md.
+   One idea moves: a band of marbled endpaper at the top of the home page,
+   drifting as slowly as ink on water, with the owner's name on a paper
+   book plate laid over it. Posts and pages get the same paper as a flat,
+   still strip. Motion contract: docs/themes/motion.md. */
+
+:root {
+  color-scheme: light;
+  --ink-bg: #f6f1e7;
+  --ink-text: #1f2a30;
+  --ink-muted: #625e55;
+  --ink-accent: var(--tw-accent);
+  --ink-font-body: var(--tw-font-body);
+  --ink-font-display: var(--tw-font-display);
+  --ink-font-mono: var(--tw-font-mono);
+
+  /* The serif carries the reading; the "display" stack of each pairing is
+     the small label face (menu, counts, reading time). */
+  --ep-serif: var(--ink-font-body);
+  --ep-label: var(--ink-font-display);
+
+  --ep-rule: color-mix(in oklab, var(--ink-text) 14%, var(--ink-bg));
+  --ep-dots: color-mix(in oklab, var(--ink-muted) 70%, var(--ink-bg));
+  --ep-wash: color-mix(in oklab, var(--ink-text) 5%, var(--ink-bg));
+  --ep-ochre: #b08a4a;
+  --ep-ochre-night: #c9a46a;
+  --ep-plate-night: #d9d1c1;
+  --ep-plate-muted-night: #554f46;
+
+  /* The book plate: a paper label, cream in both modes. */
+  --ep-plate: #fbf8f1;
+  --ep-plate-ink: #1f2a30;
+  --ep-plate-muted: #5c584f;
+  --ep-plate-rule: color-mix(in oklab, var(--ep-ochre) 45%, var(--ep-plate));
+  --ep-shade: color-mix(in oklab, var(--ink-text) 45%, transparent);
+  --ep-shade-soft: color-mix(in oklab, var(--ink-text) 10%, transparent);
+  --ep-shadow: 0 1px 0 var(--ep-shade-soft), 0 18px 36px -22px var(--ep-shade);
+
+  --ep-gutter: clamp(16px, 4vw, 32px);
+  --ep-measure: 44rem;
+  --ep-section: clamp(56px, 8vw, 96px);
+  --ep-band: clamp(220px, 38svh, 360px);
+
+  /* Marbling: a light tint of the accent as the paper, the same tint
+     warmed a little with ochre as the ink, combed into long, slightly
+     tilted veins (warp, stripes) the way marbled endpapers are. The gap
+     stays narrow, so the band reads as tinted paper, not a dark stripe. */
+  --motion-paper: color-mix(in oklab, var(--ink-accent) 30%, var(--ink-bg));
+  --motion-ink: color-mix(in oklab, var(--motion-paper) 82%, var(--ep-ochre));
+}
+
+:root[data-ink-mode="dark"] {
+  color-scheme: dark;
+  --ink-bg: #15191b;
+  --ink-text: #e8e2d6;
+  --ink-muted: #a19b8f;
+  --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+  --ep-ochre: var(--ep-ochre-night);
+  --ep-plate: var(--ep-plate-night);
+  --ep-plate-muted: var(--ep-plate-muted-night);
+  --ep-shade: color-mix(in oklab, var(--ink-bg) 70%, transparent);
+  --ep-shade-soft: color-mix(in oklab, var(--ink-bg) 30%, transparent);
+  --motion-paper: color-mix(in oklab, var(--ink-accent) 42%, var(--ink-bg));
+  --motion-ink: color-mix(in oklab, var(--motion-paper) 78%, var(--ep-ochre));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-mode="auto"] {
+    color-scheme: dark;
+    --ink-bg: #15191b;
+    --ink-text: #e8e2d6;
+    --ink-muted: #a19b8f;
+    --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+    --ep-ochre: var(--ep-ochre-night);
+    --ep-plate: var(--ep-plate-night);
+    --ep-plate-muted: var(--ep-plate-muted-night);
+    --ep-shade: color-mix(in oklab, var(--ink-bg) 70%, transparent);
+    --ep-shade-soft: color-mix(in oklab, var(--ink-bg) 30%, transparent);
+    --motion-paper: color-mix(in oklab, var(--ink-accent) 42%, var(--ink-bg));
+    --motion-ink: color-mix(in oklab, var(--motion-paper) 78%, var(--ep-ochre));
+  }
+}
+
+/* A custom accent has no dark hex; lift its lightness where supported. */
+@supports (color: oklch(from red l c h)) {
+  :root[data-ink-mode="dark"][data-ink-accent="custom"] {
+    --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-ink-mode="auto"][data-ink-accent="custom"] {
+      --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+    }
+  }
+}
+
+:root[data-ink-band="short"] {
+  --ep-band: clamp(160px, 24svh, 240px);
+}
+
+/* ---------- Base ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--ink-bg);
+  color: var(--ink-text);
+  font-family: var(--ep-serif);
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; height: auto; }
+
+a {
+  color: var(--ink-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+a:hover { text-decoration-thickness: 2px; }
+a:active { text-decoration-thickness: 3px; }
+:focus-visible { outline: 2px solid var(--ink-accent); outline-offset: 3px; }
+
+h1, h2, h3, h4 { font-family: var(--ep-serif); font-weight: 500; line-height: 1.15; text-wrap: balance; }
+
+.main { display: block; padding-bottom: var(--ep-section); }
+
+.ep-shell {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: var(--ep-gutter);
+}
+.ep-col {
+  width: 100%;
+  max-width: calc(var(--ep-measure) + 2 * var(--ep-gutter));
+  margin-inline: auto;
+  padding-inline: var(--ep-gutter);
+}
+
+/* ---------- Header and footer ---------- */
+
+.ep-header { border-bottom: 1px solid var(--ep-rule); }
+.ep-header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 28px;
+  padding-block: 6px;
+}
+.ep-brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 0;
+  color: var(--ink-text);
+  font-size: 1.1875rem;
+  font-weight: 500;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.ep-brand:hover { color: var(--ink-accent); }
+.ep-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 22px;
+  font-family: var(--ep-label);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.ep-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+.ep-nav a:hover { color: var(--ink-text); }
+.ep-nav a[aria-current="page"] {
+  color: var(--ink-text);
+  text-decoration: underline;
+  text-decoration-color: var(--ink-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+}
+.ep-nav-empty { margin: 0; color: var(--ink-muted); font-family: var(--ep-label); font-size: 0.9375rem; }
+
+.ep-footer { border-top: 1px solid var(--ep-rule); }
+.ep-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px 24px;
+  padding-block: 18px 24px;
+  color: var(--ink-muted);
+  font-family: var(--ep-label);
+  font-size: 0.9375rem;
+}
+.ep-footer-inner > span { min-width: 0; overflow-wrap: anywhere; }
+.ep-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink-muted);
+  text-decoration-color: var(--ep-dots);
+}
+.ep-footer a:hover { color: var(--ink-text); }
+
+/* ---------- The endpaper ---------- */
+
+/* Still marbling for every place the canvas is not: before it fades in,
+   with motion off, without JavaScript or WebGL, and on the post strip. */
+.ep-band > .ink-motion {
+  --ink-motion-fallback:
+    radial-gradient(70% 16% at 22% 26%, var(--motion-ink), transparent 72%),
+    radial-gradient(60% 14% at 68% 52%, var(--motion-ink), transparent 72%),
+    radial-gradient(80% 18% at 34% 84%, var(--motion-ink), transparent 72%),
+    linear-gradient(172deg, transparent 8%, var(--motion-ink) 22%, transparent 34%, transparent 62%, var(--motion-ink) 74%, transparent 88%),
+    var(--motion-paper);
+}
+
+.ep-band {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: var(--ep-band);
+  padding: 32px var(--ep-gutter);
+}
+.ep-band > .ink-motion {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.ep-plate {
+  position: relative;
+  width: min(100%, 34rem);
+  min-width: 0;
+  padding: clamp(22px, 3vw, 30px) clamp(22px, 4vw, 48px);
+  background: var(--ep-plate);
+  color: var(--ep-plate-ink);
+  text-align: center;
+  box-shadow: var(--ep-shadow);
+}
+.ep-plate::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid var(--ep-plate-rule);
+  pointer-events: none;
+}
+.ep-name {
+  margin: 0;
+  min-width: 0;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+.ep-name::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 1px;
+  margin: 14px auto 0;
+  background: var(--ep-ochre);
+}
+.ep-name--s { font-size: clamp(2.25rem, 4.4vw, 3.25rem); }
+.ep-name--m { font-size: clamp(1.875rem, 3.6vw, 2.75rem); }
+.ep-name--l { font-size: clamp(1.625rem, 3vw, 2.25rem); }
+.ep-tagline {
+  margin: 12px 0 0;
+  overflow-wrap: anywhere;
+  color: var(--ep-plate-muted);
+  font-size: 1.0625rem;
+  font-style: italic;
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+/* Posts and pages: a thin edge of the same paper, flat and still. */
+.ep-strip {
+  height: clamp(6px, 0.8vw, 10px);
+  background: var(--motion-paper);
+}
+
+/* ---------- Home ---------- */
+
+.ep-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 24px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--ep-label);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.ep-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink-text);
+  text-decoration: underline;
+  text-decoration-color: var(--ink-accent);
+  text-underline-offset: 5px;
+}
+
+.ep-section { margin-top: var(--ep-section); }
+.ep-links + .ep-section { margin-top: clamp(40px, 6vw, 72px); }
+.ep-head {
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ep-rule);
+  font-size: clamp(1.5rem, 2.6vw, 1.75rem);
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Contents with dotted leaders. */
+.ep-contents { margin: 0; padding: 0; list-style: none; }
+.ep-contents a {
+  display: flex;
+  align-items: baseline;
+  align-items: last baseline;
+  gap: 12px;
+  min-height: 44px;
+  padding-block: 8px;
+  color: var(--ink-text);
+  text-decoration: none;
+}
+.ep-entry {
+  min-width: 0;
+  font-size: 1.3125rem;
+  line-height: 1.3;
+  overflow-wrap: break-word;
+}
+.ep-leader {
+  flex: 1 1 24px;
+  min-width: 24px;
+  border-bottom: 1px dotted var(--ep-dots);
+  transform: translateY(-0.3em);
+}
+:root[data-ink-leaders="off"] .ep-leader { border-bottom-color: transparent; }
+.ep-extent {
+  flex: none;
+  color: var(--ink-muted);
+  font-family: var(--ep-label);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.ep-contents a:hover .ep-entry,
+.ep-contents a:focus-visible .ep-entry {
+  color: var(--ink-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+.ep-contents a:focus-visible { outline-offset: 2px; }
+
+/* Reading notes, grouped into chapters. */
+:root:not([data-ink-chapters="off"]) [data-variant="chapters:off"],
+:root[data-ink-chapters="off"] [data-variant="chapters:on"] { display: none; }
+
+.ep-chapter { margin-top: 48px; }
+.ep-chapter:first-child { margin-top: 28px; }
+.ep-chapter-title {
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ep-rule);
+  color: var(--ink-muted);
+  font-family: var(--ep-label);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.ep-notes { margin: 0; padding: 0; list-style: none; }
+.ep-note { border-bottom: 1px solid var(--ep-rule); }
+.ep-note-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  padding-block: 16px;
+  color: var(--ink-text);
+  text-decoration: none;
+}
+.ep-note-title {
+  font-size: 1.3125rem;
+  font-weight: 500;
+  line-height: 1.25;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+.ep-note-excerpt { color: var(--ink-muted); font-size: 1.0625rem; line-height: 1.5; overflow-wrap: anywhere; }
+.ep-date { color: var(--ink-muted); font-size: 1rem; font-style: italic; }
+.ep-note-link:hover .ep-note-title,
+.ep-note-link:focus-visible .ep-note-title {
+  text-decoration: underline;
+  text-decoration-color: var(--ink-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+.ep-note-link:active .ep-note-title { text-decoration-thickness: 2px; }
+
+.ep-more, .ep-all { margin: 14px 0 0; font-family: var(--ep-label); font-size: 0.9375rem; font-weight: 500; }
+.ep-all { margin-top: 32px; }
+.ep-more a, .ep-all a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink-text);
+  text-decoration-color: var(--ink-accent);
+  text-underline-offset: 5px;
+}
+.ep-none { margin: 16px 0 0; color: var(--ink-muted); }
+
+.ep-portrait {
+  display: block;
+  width: 88px;
+  height: 88px;
+  margin: 24px 0 0;
+  object-fit: cover;
+  border: 1px solid var(--ep-rule);
+  background: var(--ep-wash);
+}
+.ep-bio { margin-top: 20px; max-width: 62ch; }
+
+/* ---------- Lists, posts and pages ---------- */
+
+.ep-index, .ep-article { padding-top: clamp(36px, 6vw, 72px); }
+.ep-page-head { margin-bottom: clamp(28px, 4vw, 44px); }
+.ep-title {
+  margin: 0;
+  min-width: 0;
+  font-size: clamp(2.125rem, 5vw, 3.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+.ep-dek { margin: 14px 0 0; color: var(--ink-muted); font-size: 1.125rem; }
+.ep-dek a { color: var(--ink-text); text-decoration-color: var(--ink-accent); }
+.ep-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 20px;
+  margin: 16px 0 0;
+  color: var(--ink-muted);
+}
+.ep-meta span { font-family: var(--ep-label); font-size: 0.9375rem; font-weight: 500; }
+.ep-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--ep-label);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.ep-tags a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink-text);
+  text-decoration-color: var(--ink-accent);
+  text-underline-offset: 5px;
+}
+
+.ep-year { margin-top: 40px; scroll-margin-top: 24px; }
+.ep-year:first-of-type { margin-top: 0; }
+.ep-year-title {
+  margin: 0 0 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ep-rule);
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-style: italic;
+}
+.ep-contents--dated .ep-entry { font-size: 1.1875rem; }
+
+.ep-cover { margin: 0; }
+.ep-cover > img {
+  display: block;
+  margin-bottom: clamp(28px, 4vw, 44px);
+  width: 100%;
+  max-height: 70svh;
+  object-fit: cover;
+  background: var(--ep-wash);
+}
+
+.ep-prose { overflow-wrap: break-word; line-height: 1.65; }
+.ep-prose > :first-child { margin-top: 0; }
+.ep-prose h2 { margin: 2em 0 0.5em; font-size: 1.625rem; }
+.ep-prose h3 { margin: 1.8em 0 0.4em; font-size: 1.3125rem; }
+.ep-prose h4 { margin: 1.6em 0 0.3em; font-size: 1.1875rem; }
+.ep-prose img { display: block; margin-block: 1.5em; }
+.ep-prose code { font-family: var(--ink-font-mono); font-size: 0.82em; }
+.ep-prose pre {
+  overflow-x: auto;
+  padding: 16px 18px;
+  background: var(--ep-wash);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.ep-prose pre code { font-size: inherit; }
+.ep-prose blockquote {
+  margin: 1.6em 0;
+  padding-left: 20px;
+  border-left: 2px solid var(--ep-ochre);
+  font-style: italic;
+}
+.ep-prose table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+.ep-prose th, .ep-prose td { padding: 8px 16px 8px 0; border-bottom: 1px solid var(--ep-rule); text-align: left; vertical-align: top; }
+.ep-prose th { font-family: var(--ep-label); font-size: 0.9375rem; font-weight: 500; }
+.ep-prose hr { width: 48px; margin: 2.4em auto; border: 0; border-top: 1px solid var(--ep-ochre); }
+.ep-prose .footnotes { margin-top: 3em; color: var(--ink-muted); font-size: 1rem; }
+.ep-prose .footnotes a { color: var(--ink-text); }
+
+.ep-bio h3, .ep-bio h4 { margin: 1.8em 0 0.2em; color: var(--ink-muted); font-family: var(--ep-label); font-size: 1rem; font-weight: 500; line-height: 1.4; }
+
+.ep-canonical { color: var(--ink-muted); }
+.ep-post-foot {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0 24px;
+  margin-top: var(--ep-section);
+  border-top: 1px solid var(--ep-rule);
+}
+.ep-post-foot a {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  min-width: 0;
+  padding-block: 14px;
+  color: var(--ink-text);
+  text-decoration: none;
+}
+.ep-foot-label { color: var(--ink-muted); font-family: var(--ep-label); font-size: 0.9375rem; font-weight: 500; }
+.ep-foot-title { overflow-wrap: break-word; line-height: 1.3; }
+.ep-post-foot a:hover .ep-foot-title,
+.ep-post-foot a:focus-visible .ep-foot-title {
+  text-decoration: underline;
+  text-decoration-color: var(--ink-accent);
+  text-underline-offset: 5px;
+}
+
+/* ---------- Empty states (before the first sync) ---------- */
+
+.empty-state { padding-block: clamp(40px, 8vw, 96px); max-width: 36em; }
+.empty-state-mark { display: none; }
+.empty-state-kicker { margin: 0; color: var(--ink-muted); font-family: var(--ep-label); font-size: 0.9375rem; }
+.empty-state-title { margin: 10px 0; font-variant-numeric: tabular-nums; font-size: clamp(2rem, 5vw, 2.75rem); }
+.empty-state-note { color: var(--ink-muted); }
+
+/* ---------- Phones ---------- */
+
+@media (max-width: 600px) {
+  body { font-size: 1.125rem; }
+  .ep-header-inner { flex-wrap: nowrap; flex-direction: column; align-items: stretch; gap: 0; }
+  .ep-nav { gap: 0 14px; }
+  .ep-band { padding-block: 24px; }
+  .ep-entry, .ep-note-title { font-size: 1.1875rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

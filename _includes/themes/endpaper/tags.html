@@ -1,0 +1,30 @@
+<div class="ink-tags ep-col ep-index">
+  <header class="ep-page-head">
+    <h1 class="ep-title">Topics</h1>
+    <p class="ep-dek">Every note, grouped by its tags, from A to Z.</p>
+  </header>
+  {%- assign tags_list = site.tags | sort %}
+  {%- if tags_list.size == 0 %}
+  {% include empty-state.html
+    kicker="From Notion"
+    title="Your tags will appear here"
+    copy="Tags from your published posts will be collected here automatically."
+  %}
+  {%- else %}
+  {%- for tag in tags_list %}
+  <section class="ep-year" id="{{ tag[0] | slugify }}" aria-labelledby="ep-t-{{ tag[0] | slugify }}">
+    <h2 class="ep-year-title" id="ep-t-{{ tag[0] | slugify }}">{{ tag[0] | slice: 0 | upcase }}{{ tag[0] | slice: 1, 200 }}</h2>
+    <ol class="ep-contents ep-contents--dated">
+      {%- assign sorted_posts = tag[1] | sort: 'date' | reverse %}
+      {%- for post in sorted_posts %}
+      <li><a href="{{ post.url | relative_url }}">
+        <span class="ep-entry">{{ post.title }}</span>
+        <span class="ep-leader" aria-hidden="true"></span>
+        <time class="ep-extent" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time>
+      </a></li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>
