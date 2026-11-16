@@ -51,7 +51,12 @@ private keys, or private assistant configuration (`AGENTS.md`, which only
 points at the theme docs, is the one allowed assistant file).
 
 The browser runtime is deliberately pure HTML and CSS. Do not add client-side
-JavaScript. Jekyll extensions must be available in GitHub Pages safe mode and
+JavaScript. The one exception is the shared ink motion engine in
+`assets/ink/motion/`: a generated bundle of Paper Shaders (Apache-2.0), linked
+only on themes whose manifest declares `motion`, and never needed to read a
+page. Rebuild it with `scripts/build-motion` and check it with
+`scripts/build-motion --check`; do not edit it by hand. See
+[`docs/themes/motion.md`](docs/themes/motion.md). Jekyll extensions must be available in GitHub Pages safe mode and
 must be declared through the `github-pages`-compatible dependency set in the
 `Gemfile`; do not add custom Ruby plugins.
 

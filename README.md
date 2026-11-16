@@ -21,7 +21,8 @@ includes, stylesheet, and generic configuration. It is compatible with the
 MIT-licensed presentation layer imported from the source revision documented
 in the repository history. The directly declared Jekyll/GitHub Pages
 dependencies are separate components and retain their own licenses and
-notices.
+notices. The motion engine bundles Paper Shaders under the Apache License 2.0; its
+license and notice are in `assets/ink/motion/LICENSE` and `NOTICE`.
 
 Repositories generated from this template are not automatically covered by
 one license. The person or organization using the template retains rights to
@@ -129,6 +130,23 @@ each) in page and post content, post covers and the home profile picture are
 copied into `assets/notion/` and linked from there, so they keep working after
 Notion's own links expire. Externally hosted image URLs work too. Never paste
 a private URL or a credential into a public page.
+
+### Motion
+
+Some themes have one slow, quiet moving surface, such as a soft gradient
+behind the home page header. It comes from the shared motion engine
+(`assets/ink/motion/`, built on the Apache-2.0
+[Paper Shaders](https://shaders.paper.design)), not from theme scripts. Those
+themes add a **Motion** option: `on` (Moving), `still` (one still frame) or
+`off` (no animation, and the engine is not loaded). Visitors who ask their
+device for reduced motion always see the still frame, and the page reads the
+same without JavaScript. Set it in `_config.yml`:
+
+```yaml
+inkdrafts:
+  tweaks:
+    motion: "still"
+```
 
 ### Custom domains
 
