@@ -1,0 +1,487 @@
+/* Readme theme for InkDrafts. One narrow column of text, set like a
+   well-kept README, with a slow 1-bit dither field in the margin of the home
+   page. Static CSS only. Tokens and tweak hooks: docs/themes/README.md;
+   the margin surface: docs/themes/motion.md. */
+
+:root {
+  color-scheme: light;
+  --ink-bg: #e9e8e3;
+  --ink-text: #2b2b27;
+  --ink-muted: #66655d;
+  --ink-accent: var(--tw-accent);
+  --ink-font-body: var(--tw-font-body);
+  --ink-font-display: var(--tw-font-display);
+  --ink-font-mono: var(--tw-font-mono);
+  --rd-rule: color-mix(in oklab, var(--ink-text) 14%, var(--ink-bg));
+  --rd-code-bg: color-mix(in oklab, var(--ink-text) 6%, var(--ink-bg));
+  --rd-frame: 1440px;
+  --rd-gutter: clamp(20px, 7vw, 112px);
+  --rd-col: 34rem;
+  --rd-prose: 38rem;
+  /* The dither field: the accent at 8% on the page, one ink color. */
+  --motion-tint: color-mix(in oklab, var(--ink-accent) 8%, var(--ink-bg));
+  --motion-back: var(--ink-bg);
+  --motion-shape: simplex;
+  --motion-scale: 0.7;
+}
+
+:root[data-ink-mode="dark"] {
+  color-scheme: dark;
+  --ink-bg: #1a1a18;
+  --ink-text: #d9d8d2;
+  --ink-muted: #8f8e85;
+  --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+  --motion-tint: color-mix(in oklab, var(--ink-accent) 12%, var(--ink-bg));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-mode="auto"] {
+    color-scheme: dark;
+    --ink-bg: #1a1a18;
+    --ink-text: #d9d8d2;
+    --ink-muted: #8f8e85;
+    --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+    --motion-tint: color-mix(in oklab, var(--ink-accent) 12%, var(--ink-bg));
+  }
+}
+
+/* A custom accent has no dark hex; lift its lightness where supported. */
+@supports (color: oklch(from red l c h)) {
+  :root[data-ink-mode="dark"][data-ink-accent="custom"] {
+    --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-ink-mode="auto"][data-ink-accent="custom"] {
+      --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+    }
+  }
+}
+
+/* Home page pattern tweak: the dither's shape, each sized so one period is
+   taller than the panel and the field never visibly repeats. */
+:root[data-ink-pattern="swirl"] { --motion-shape: warp; --motion-scale: 1.1; }
+:root[data-ink-pattern="tide"] { --motion-shape: wave; --motion-scale: 1; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--ink-bg);
+  color: var(--ink-text);
+  font-family: var(--ink-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+}
+
+img { max-width: 100%; height: auto; }
+
+a {
+  color: var(--ink-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+}
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--ink-accent); outline-offset: 3px; border-radius: 1px; }
+
+h1, h2, h3, h4 { font-family: var(--ink-font-display); line-height: 1.25; }
+
+.rd-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* The frame: every page shares one left edge, capped and centered. */
+.rd-frame,
+.ink-footer .container {
+  width: 100%;
+  max-width: var(--rd-frame);
+  margin-inline: auto;
+  padding-inline: var(--rd-gutter) 20px;
+}
+
+.main { display: block; padding-block: 0 96px; }
+
+/* Header */
+.rd-header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 32px;
+  padding-block: 28px 0;
+}
+.rd-brand {
+  color: var(--ink-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+.ink-body--home .rd-brand { display: none; }
+.rd-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  font-family: var(--ink-font-mono);
+  font-size: 0.9375rem;
+}
+.rd-nav a { color: var(--ink-muted); text-decoration: none; }
+.rd-nav a:hover { color: var(--ink-text); }
+.rd-nav a[aria-current="page"] {
+  color: var(--ink-text);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+.rd-nav-empty { margin: 0; color: var(--ink-muted); font-size: 0.9375rem; }
+
+/* Footer (base markup) */
+.ink-footer { color: var(--ink-muted); font-family: var(--ink-font-mono); font-size: 0.9375rem; }
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  max-width: var(--rd-prose);
+  padding-block: 20px 40px;
+  border-top: 1px solid var(--rd-rule);
+}
+.ink-footer a { color: inherit; }
+
+/* Labels: the README's ## headings, set in the code font. The owner's own
+   headings keep their case. */
+.rd-label,
+.rd-bio h2 {
+  margin: 48px 0 12px;
+  font-family: var(--ink-font-mono);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--ink-muted);
+}
+.rd-label::before,
+.rd-bio h2::before { content: "## "; opacity: 0.6; }
+
+/* Home: a text column and a margin panel that holds the dither field. */
+.rd-home {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, min(36%, 32rem));
+  grid-template-areas: "intro panel" "col panel";
+  grid-template-rows: auto 1fr;
+  column-gap: clamp(32px, 5vw, 80px);
+  padding-top: 72px;
+}
+.rd-intro {
+  grid-area: intro;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: var(--rd-col);
+  min-width: 0;
+}
+.rd-intro-text { min-width: 0; overflow-wrap: anywhere; }
+.rd-col { grid-area: col; max-width: var(--rd-col); min-width: 0; }
+.rd-col--empty { grid-row: 1 / -1; }
+
+.rd-name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.rd-tagline { margin: 4px 0 0; color: var(--ink-muted); }
+
+.rd-panel {
+  grid-area: panel;
+  position: sticky;
+  top: 16px;
+  align-self: start;
+  height: calc(100vh - 32px);
+  height: calc(100svh - 32px);
+  min-height: 320px;
+  max-height: 960px;
+}
+.rd-panel > .ink-motion {
+  position: absolute;
+  inset: 0;
+  /* Fade all four edges, so the field has no hard border. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, #000 64px, #000 calc(100% - 32px), transparent),
+    linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 64px), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent, #000 64px, #000 calc(100% - 32px), transparent),
+    linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 64px), transparent);
+  mask-composite: intersect;
+  --ink-motion-fallback:
+    repeating-linear-gradient(0deg, var(--motion-tint) 0 1px, transparent 1px 4px),
+    var(--motion-back);
+}
+/* While the canvas is there, it fades in over the plain page color. */
+.rd-panel > .ink-motion:has(> canvas) { --ink-motion-fallback: var(--motion-back); }
+.rd-avatar {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  margin-top: 4px;
+  overflow: hidden;
+  object-fit: cover;
+  border-radius: 2px;
+  background: var(--rd-code-bg);
+  color: transparent;
+  filter: grayscale(1) contrast(1.05);
+}
+:root[data-ink-show-avatar="off"] .rd-avatar { display: none; }
+
+/* Bio */
+.rd-bio { margin-top: 32px; }
+.rd-bio > :first-child { margin-top: 0; }
+.rd-bio ul { margin: 0; padding: 0; list-style: none; }
+.rd-bio li { position: relative; padding: 2px 0 2px 1.4em; }
+.rd-bio li::before {
+  content: "-";
+  position: absolute;
+  left: 0;
+  font-family: var(--ink-font-mono);
+  color: var(--ink-muted);
+}
+
+/* Post rows (home and archive) */
+.rd-rows { margin: 0; padding: 0; list-style: none; }
+.rd-row {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 12px;
+  padding-block: 4px;
+}
+.rd-date {
+  font-family: var(--ink-font-mono);
+  font-size: 0.9375rem;
+  line-height: 1.85;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rd-row-main { min-width: 0; overflow-wrap: anywhere; }
+.rd-row-title { color: var(--ink-text); text-decoration: none; }
+.rd-row-title:hover { text-decoration: underline; text-decoration-color: currentColor; }
+.rd-row-title:active,
+.rd-pager-link:active { color: var(--ink-muted); }
+.rd-star {
+  margin-left: 8px;
+  font-family: var(--ink-font-mono);
+  color: var(--ink-accent);
+}
+
+/* Posts on the home page tweak (up to 12 are in the markup). */
+.rd-writing .rd-row:nth-child(n + 9) { display: none; }
+:root[data-ink-home-posts="5"] .rd-writing .rd-row:nth-child(n + 6) { display: none; }
+:root[data-ink-home-posts="12"] .rd-writing .rd-row:nth-child(n + 9) { display: grid; }
+
+.rd-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin: 16px 0 0;
+  font-family: var(--ink-font-mono);
+  font-size: 0.9375rem;
+}
+.rd-key { color: var(--ink-muted); }
+.rd-key [aria-hidden] { color: var(--ink-accent); }
+
+.rd-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--ink-font-mono);
+  font-size: 0.9375rem;
+}
+.rd-links li { min-width: 0; }
+.rd-links a { color: var(--ink-muted); overflow-wrap: anywhere; }
+.rd-links a:hover { color: var(--ink-text); }
+
+/* Pages, posts and the archive: one column on the same left edge. */
+.rd-archive,
+.rd-post,
+.rd-page { padding-top: 72px; }
+.rd-archive > *,
+.rd-article { max-width: var(--rd-prose); }
+.rd-page-head { margin-bottom: 32px; }
+.rd-page-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 1.875rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+.rd-standfirst { margin: 8px 0 0; color: var(--ink-muted); font-size: 1.125rem; }
+.rd-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0 0 12px;
+  font-family: var(--ink-font-mono);
+  font-size: 0.9375rem;
+  color: var(--ink-muted);
+}
+.rd-meta > * { min-width: 0; overflow-wrap: anywhere; }
+.rd-tag { color: var(--ink-muted); text-decoration: none; }
+.rd-tag:hover { color: var(--ink-text); text-decoration: underline; }
+.rd-archive .rd-group:first-of-type .rd-label { margin-top: 0; }
+.rd-archive .rd-more { margin-top: 32px; }
+
+.rd-cover { margin: 0 0 32px; }
+.rd-cover img { display: block; width: 100%; border-radius: 2px; }
+
+/* Prose */
+.rd-prose { overflow-wrap: break-word; }
+.rd-prose p, .rd-prose ul, .rd-prose ol, .rd-prose blockquote,
+.rd-prose pre, .rd-prose table, .rd-prose figure { margin: 0 0 1.1em; }
+.rd-body h2 { margin: 2.2em 0 0.6em; font-size: 1.25rem; font-weight: 600; }
+.rd-body h3 { margin: 1.8em 0 0.5em; font-size: 1.0625rem; font-weight: 600; }
+.rd-body ul, .rd-body ol { padding-left: 1.4em; }
+.rd-body li { margin-bottom: 0.3em; }
+.rd-body img { display: block; border-radius: 2px; }
+.rd-body blockquote {
+  margin-left: 0;
+  padding-left: 16px;
+  border-left: 2px solid var(--rd-rule);
+  color: var(--ink-muted);
+}
+code, kbd, samp, pre { font-family: var(--ink-font-mono); }
+.rd-prose :not(pre) > code {
+  padding: 1px 5px;
+  font-size: 0.88em;
+  background: var(--rd-code-bg);
+  border-radius: 3px;
+}
+.rd-prose pre,
+.rd-prose .highlight {
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  background: var(--rd-code-bg);
+  border-radius: 3px;
+}
+.rd-prose pre { padding: 16px; }
+.rd-prose .highlight pre { margin: 0; background: transparent; }
+.rd-prose .highlight { margin-bottom: 1.1em; }
+.highlight .c, .highlight .c1, .highlight .cm, .highlight .cs { color: var(--ink-muted); font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kr { font-weight: 600; }
+.rd-prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.rd-prose th, .rd-prose td { padding: 6px 14px 6px 0; border-bottom: 1px solid var(--rd-rule); text-align: left; }
+.rd-prose th { font-weight: 600; }
+.rd-prose hr { border: 0; border-top: 1px solid var(--rd-rule); margin: 2em 0; }
+.footnotes { margin-top: 3em; color: var(--ink-muted); font-size: 0.9375rem; }
+.footnotes ol { padding-left: 1.4em; }
+
+.rd-canonical { margin: 32px 0 0; color: var(--ink-muted); }
+.rd-post-foot { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--rd-rule); }
+.rd-pager { display: grid; gap: 8px; }
+.rd-pager-link {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  color: var(--ink-text);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.rd-pager-link:hover .rd-pager-title { text-decoration: underline; }
+.rd-pager-dir {
+  line-height: 1.85;
+  font-family: var(--ink-font-mono);
+  font-size: 0.9375rem;
+  color: var(--ink-muted);
+}
+.rd-back { margin: 20px 0 0; font-family: var(--ink-font-mono); font-size: 0.9375rem; }
+
+/* Tags page (base markup) */
+.ink-tags { width: 100%; max-width: var(--rd-frame); margin-inline: auto; padding: 72px 20px 0 var(--rd-gutter); }
+.ink-tags > * { max-width: var(--rd-prose); }
+.tags-header h1, .page-title { margin: 0 0 32px; font-size: 1.875rem; font-weight: 600; }
+.tag-group { margin-block: 32px; }
+.tag-group-name {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  margin: 0 0 8px;
+  font-family: var(--ink-font-mono);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+.tag-group-name > * { min-width: 0; }
+.tag-group-name::before { content: "## "; opacity: 0.6; }
+.tag-count { font-weight: 400; }
+.tag-posts { display: grid; }
+.tag-post-link { display: flex; gap: 12px; padding-block: 4px; color: var(--ink-text); text-decoration: none; overflow-wrap: anywhere; }
+.tag-post-link > * { min-width: 0; }
+.tag-post-link:hover { text-decoration: underline; }
+.tag-post-date { flex: none; min-width: 6.5rem; color: var(--ink-muted); font-family: var(--ink-font-mono); font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+
+/* Empty states (before the first sync) */
+.empty-state { max-width: var(--rd-col); padding: 0; }
+.empty-state-mark { display: none; }
+.empty-state-kicker { margin: 0 0 8px; font-family: var(--ink-font-mono); font-size: 0.9375rem; color: var(--ink-muted); }
+.empty-state-kicker::before { content: "## "; opacity: 0.6; }
+.empty-state-title { margin: 0 0 12px; font-size: 1.25rem; font-weight: 600; }
+.empty-state-copy { margin: 0 0 8px; }
+.empty-state-note { margin: 0; color: var(--ink-muted); }
+
+/* Phones and narrow windows: one column of text. The field needs a tall
+   margin to read as a field, so it is left out here rather than squeezed. */
+@media (max-width: 760px) {
+  .rd-frame,
+  .ink-footer .container,
+  .ink-tags { padding-inline: 20px; }
+  .rd-header-inner { padding-top: 20px; }
+  .rd-home {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "intro" "panel" "col";
+    grid-template-rows: auto;
+    padding-top: 40px;
+  }
+  .rd-col--empty { grid-row: auto; }
+  .rd-panel { display: none; }
+  .rd-avatar { width: 48px; height: 48px; }
+  .rd-bio { margin-top: 28px; }
+  .rd-label, .rd-bio h2 { margin-top: 40px; }
+  .rd-archive, .rd-post, .rd-page { padding-top: 40px; }
+  .ink-tags { padding-top: 40px; }
+}
+
+/* The one-row phone menu scrolls; a soft right edge says there is more. */
+@media (max-width: 599.98px) {
+  .rd-nav {
+    padding-inline-end: 24px;
+    -webkit-mask-image: linear-gradient(to left, transparent, #000 24px);
+    mask-image: linear-gradient(to left, transparent, #000 24px);
+  }
+}
+
+@media (max-width: 420px) {
+  .rd-row { grid-template-columns: minmax(0, 1fr); gap: 0; padding-block: 7px; }
+  .rd-date { line-height: 1.5; }
+}
+
+@media print {
+  .rd-panel { display: none; }
+  .rd-home { display: block; padding-top: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

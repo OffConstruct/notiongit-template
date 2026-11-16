@@ -1,0 +1,74 @@
+{%- assign home = site.data.home -%}
+{%- assign rd_name = home.name | strip -%}
+{%- assign rd_tagline = home.tagline | strip -%}
+{%- assign rd_pic = home.profile_picture | strip -%}
+{%- assign rd_bio = home.bio | strip -%}
+{%- assign rd_blog = site.pages | where: "layout", "blog" | first -%}
+{%- if rd_blog %}{% assign rd_blog_url = rd_blog.url | relative_url %}{% else %}{% assign rd_blog_url = '/blog/' | relative_url %}{% endif -%}
+<div class="ink-home rd-home rd-frame">
+  <div class="rd-panel" aria-hidden="true">
+    {% include ink/motion.html %}
+  </div>
+
+  {%- if rd_name != "" %}
+  <header class="rd-intro">
+    {%- if rd_pic != "" %}
+    <img class="rd-avatar" src="{{ home.profile_picture }}" alt="" width="56" height="56">
+    {%- endif %}
+    <div class="rd-intro-text">
+      <h1 class="rd-name">{{ home.name }}</h1>
+      {%- if rd_tagline != "" %}
+      <p class="rd-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+    </div>
+  </header>
+
+  <div class="rd-col">
+    {%- if rd_bio != "" %}
+    <div class="rd-prose rd-bio">{{ home.bio | markdownify }}</div>
+    {%- endif %}
+
+    {%- if site.posts.size > 0 %}
+    {%- assign rd_shown_featured = false %}
+    <section class="rd-writing" aria-labelledby="rd-writing">
+      <h2 class="rd-label" id="rd-writing">Writing</h2>
+      <ol class="rd-rows">
+        {%- for post in site.posts limit: 12 %}
+        {%- if post.featured %}{% assign rd_shown_featured = true %}{% endif %}
+        <li class="rd-row{% if post.featured %} rd-row--featured{% endif %}">
+          <time class="rd-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+          <span class="rd-row-main"><a class="rd-row-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>{% if post.featured %}<span class="rd-star" aria-hidden="true">*</span><span class="rd-sr"> (featured)</span>{% endif %}</span>
+        </li>
+        {%- endfor %}
+      </ol>
+      <p class="rd-more">
+        {%- if rd_shown_featured %}<span class="rd-key"><span aria-hidden="true">*</span> featured</span>{% endif -%}
+        <a href="{{ rd_blog_url }}">All {{ site.posts.size }} post{% if site.posts.size != 1 %}s{% endif %}</a>
+      </p>
+    </section>
+    {%- endif %}
+
+    {%- if home.social_links.size > 0 %}
+    <section class="rd-elsewhere" aria-labelledby="rd-elsewhere">
+      <h2 class="rd-label" id="rd-elsewhere">Elsewhere</h2>
+      <ul class="rd-links">
+        {%- for link in home.social_links %}
+        <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endif %}
+  </div>
+  {%- else %}
+  <div class="rd-col rd-col--empty">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

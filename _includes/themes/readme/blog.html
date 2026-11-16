@@ -1,0 +1,35 @@
+<div class="ink-post-list rd-archive rd-frame">
+  <header class="rd-page-head">
+    <h1 class="rd-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="rd-standfirst">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign rd_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- assign rd_has_featured = site.posts | where: "featured", true %}
+  {%- for y in rd_years %}
+  <section class="rd-group" aria-labelledby="rd-y-{{ y.name }}">
+    <h2 class="rd-label" id="rd-y-{{ y.name }}">{{ y.name }}</h2>
+    <ol class="rd-rows">
+      {%- for post in y.items %}
+      <li class="rd-row">
+        <time class="rd-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+        <span class="rd-row-main"><a class="rd-row-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>{% if post.featured %}<span class="rd-star" aria-hidden="true">*</span><span class="rd-sr"> (featured)</span>{% endif %}</span>
+      </li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+  {%- if rd_has_featured.size > 0 %}
+  <p class="rd-more"><span class="rd-key"><span aria-hidden="true">*</span> featured</span></p>
+  {%- endif %}
+  {%- endif %}
+</div>

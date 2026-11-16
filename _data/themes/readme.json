@@ -1,0 +1,79 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "readme",
+  "name": "Readme",
+  "version": "1.0.0",
+  "summary": "For software developers who write now and then: one narrow column of text, with a slow pixel pattern in the margin.",
+  "description": "Your home page reads like a well-kept project page: your name, your bio with small code-style headings, and a list of your posts with their dates. On computers and tablets, a quiet pattern of tiny dots drifts beside the text like an old screen left on. Posts and pages are a single, easy-to-read column. Suits developers who write once in a while.",
+  "categories": ["developers"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "geist",
+      "label": "Geist",
+      "google": "family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500",
+      "stacks": {
+        "body": "\"Geist\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "display": "\"Geist\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "mono": "\"Geist Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "plex",
+      "label": "IBM Plex",
+      "google": "family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500",
+      "stacks": {
+        "body": "\"IBM Plex Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "display": "\"IBM Plex Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "mono": "\"IBM Plex Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#e9e8e3", "text": "#2b2b27", "muted": "#66655d" },
+    "dark": { "bg": "#1a1a18", "text": "#d9d8d2", "muted": "#8f8e85" }
+  },
+  "motion": {
+    "shader": "dithering",
+    "placement": "slot",
+    "speed": 0.1,
+    "frame": 3000,
+    "colors": { "colorBack": "--motion-back", "colorFront": "--motion-tint" },
+    "params": { "shape": "--motion-shape", "type": "4x4", "size": 3, "scale": "--motion-scale" }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "ink", "custom": true,
+      "presets": [
+        { "value": "ink", "label": "Ink (same as the text)", "light": "#2b2b27", "dark": "#d9d8d2" },
+        { "value": "blue", "label": "Blue", "light": "#2c4f9e", "dark": "#93b1ee" },
+        { "value": "green", "label": "Green", "light": "#2e6337", "dark": "#8fc79b" },
+        { "value": "amber", "label": "Amber", "light": "#7f4a06", "dark": "#e2ad62" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "geist" },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "pattern", "type": "select", "label": "Home page pattern", "default": "drift",
+      "options": [
+        { "value": "drift", "label": "Drifting" },
+        { "value": "swirl", "label": "Swirling" },
+        { "value": "tide", "label": "Waves" } ] },
+    { "key": "home_posts", "type": "select", "label": "Posts on the home page", "default": "8",
+      "options": [
+        { "value": "5", "label": "5" },
+        { "value": "8", "label": "8" },
+        { "value": "12", "label": "12" } ] },
+    { "key": "show_avatar", "type": "boolean", "label": "Show profile picture", "default": true }
+  ]
+}

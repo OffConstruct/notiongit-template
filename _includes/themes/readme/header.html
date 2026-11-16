@@ -1,0 +1,18 @@
+<header class="ink-header rd-header">
+  <div class="rd-frame rd-header-inner">
+    {%- assign rd_brand = site.data.home.name | default: site.title | strip %}
+    {%- if rd_brand != "" %}
+    <a class="rd-brand" href="{{ '/' | relative_url }}">{{ rd_brand }}</a>
+    {%- endif %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="rd-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="rd-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

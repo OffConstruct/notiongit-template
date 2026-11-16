@@ -1,0 +1,42 @@
+{%- assign rd_first = content | split: "</p>" | first | strip_html | strip -%}
+{%- assign rd_dek = page.excerpt | strip_html | strip -%}
+{%- assign rd_blog = site.pages | where: "layout", "blog" | first -%}
+{%- if rd_blog %}{% assign rd_blog_url = rd_blog.url | relative_url %}{% else %}{% assign rd_blog_url = '/blog/' | relative_url %}{% endif -%}
+<div class="ink-post rd-post rd-frame">
+  <article class="rd-article">
+    <header class="rd-page-head">
+      <p class="rd-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
+        {%- for tag in page.tags %}
+        <a class="rd-tag" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">#{{ tag }}</a>
+        {%- endfor %}
+      </p>
+      <h1 class="rd-page-title">{{ page.title }}</h1>
+      {%- if rd_dek != "" and rd_dek != rd_first %}
+      <p class="rd-standfirst">{{ rd_dek }}</p>
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <figure class="rd-cover"><img src="{{ page.cover_image }}" alt=""></figure>
+    {%- endif %}
+    <div class="rd-prose rd-body">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="rd-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="rd-post-foot">
+      {%- if page.previous or page.next %}
+      <nav class="rd-pager" aria-label="More writing">
+        {%- if page.next %}
+        <a class="rd-pager-link" href="{{ page.next.url | relative_url }}" rel="next"><span class="rd-pager-dir">Newer</span><span class="rd-pager-title">{{ page.next.title }}</span></a>
+        {%- endif %}
+        {%- if page.previous %}
+        <a class="rd-pager-link" href="{{ page.previous.url | relative_url }}" rel="prev"><span class="rd-pager-dir">Older</span><span class="rd-pager-title">{{ page.previous.title }}</span></a>
+        {%- endif %}
+      </nav>
+      {%- endif %}
+      <p class="rd-back"><a href="{{ rd_blog_url }}">All writing</a></p>
+    </footer>
+  </article>
+</div>
