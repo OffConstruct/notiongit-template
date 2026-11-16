@@ -1,0 +1,12 @@
+{%- assign co_post = include.post -%}
+{%- assign co_href = co_post.url | relative_url -%}
+{%- if co_post.canonical_url %}{% assign co_href = co_post.canonical_url %}{% endif -%}
+<li class="co-entry">
+  <time class="co-date" datetime="{{ co_post.date | date_to_xmlschema }}">{{ co_post.date | date: "%Y-%m-%d" }}</time>
+  <div class="co-entry-body">
+    <a class="co-entry-title" href="{{ co_href }}">{{ co_post.title }}</a>
+    {%- if co_post.tags.size > 0 %}
+    <p class="co-topics"><span class="co-sr">Topics: </span>{{ co_post.tags | join: ", " }}</p>
+    {%- endif %}
+  </div>
+</li>

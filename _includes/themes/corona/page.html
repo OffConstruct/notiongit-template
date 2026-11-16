@@ -1,0 +1,11 @@
+<div class="ink-page co-col">
+  <header class="co-page-head">
+    <h1 class="co-title">{{ page.title }}</h1>
+    {%- if page.description and page.description != "" %}
+    <p class="co-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="page-content co-prose">
+    {{ content }}
+  </div>
+</div>

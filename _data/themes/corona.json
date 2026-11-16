@@ -1,0 +1,77 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "corona",
+  "name": "Corona",
+  "version": "0.1.0",
+  "summary": "For astronomers and other researchers: your name under a dim ring of slow light, then a dated log of your posts.",
+  "description": "A dark, quiet page for astronomers and other researchers. The home page shows one small ring of smoke that glows like an eclipse above your name, then a short bio and a log of your posts: the date on the left, the title and topics on the right. It needs no photos. In light mode the ring is gray. The heading above your posts can read Observing log, Notes or Recent writing.",
+  "categories": ["researchers"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "spectral",
+      "label": "Book serif with typewriter dates",
+      "google": "family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400",
+      "stacks": {
+        "body": "Spectral, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "display": "Spectral, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "\"Space Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "plex",
+      "label": "Clean and modern",
+      "google": "family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Mono:wght@400",
+      "stacks": {
+        "body": "\"IBM Plex Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"IBM Plex Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "\"IBM Plex Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f3f1ea", "text": "#16171b", "muted": "#5f5c55" },
+    "dark": { "bg": "#0b0c10", "text": "#e9e6dc", "muted": "#9b978b" }
+  },
+  "motion": {
+    "shader": "smoke-ring",
+    "placement": "slot",
+    "speed": 0.06,
+    "frame": 9000,
+    "colors": { "colorBack": "--ink-bg", "colors": ["--co-core", "--co-halo"] },
+    "params": { "radius": 0.36, "thickness": "--co-thickness", "innerShape": 0.9, "noiseScale": 0.6, "noiseIterations": 3, "scale": 1.15 }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "dark",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "gold", "custom": true,
+      "presets": [
+        { "value": "gold", "label": "Pale gold", "light": "#7a5c1c", "dark": "#d8c38a" },
+        { "value": "moon", "label": "Moonlight", "light": "#3d5a7a", "dark": "#a9bdd6" },
+        { "value": "copper", "label": "Copper", "light": "#8c4a2b", "dark": "#e2a585" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "spectral" },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "ring", "type": "select", "label": "Ring size", "default": "small",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "large", "label": "Large" } ] },
+    { "key": "log_heading", "type": "select", "label": "Heading above your posts", "default": "log",
+      "options": [
+        { "value": "log", "label": "Observing log" },
+        { "value": "notes", "label": "Notes" },
+        { "value": "writing", "label": "Recent writing" } ] },
+    { "key": "topics", "type": "boolean", "label": "Show tags under each title", "default": true }
+  ]
+}

@@ -1,0 +1,21 @@
+{%- assign co_name = site.data.home.name | strip | default: site.title -%}
+{%- assign co_is_home = false -%}
+{%- if page.url == "/" or page.url == "/index.html" %}{% assign co_is_home = true %}{% endif -%}
+<header class="ink-header co-header{% if co_is_home %} co-header--home{% endif %}">
+  <div class="co-bar">
+    {%- unless co_is_home %}
+    <a class="co-sitename" href="{{ '/' | relative_url }}">{{ co_name }}</a>
+    {%- endunless %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="co-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- if item.url == "/" %}{% continue %}{% endif %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="co-nav-empty" role="status">Your menu will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

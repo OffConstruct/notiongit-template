@@ -1,0 +1,67 @@
+{%- assign home = site.data.home -%}
+{%- assign co_owner = home.name | strip -%}
+{%- assign co_ready = false -%}
+{%- if home -%}
+  {%- if co_owner != "" or site.posts.size > 0 %}{% assign co_ready = true %}{% endif -%}
+{%- endif -%}
+{%- assign co_name = co_owner | default: site.title -%}
+<div class="ink-home co-home">
+  <section class="co-head" aria-labelledby="co-name">
+    <div class="co-ring">
+      {% include ink/motion.html %}
+    </div>
+    <h1 class="co-name" id="co-name">{{ co_name }}</h1>
+    {%- assign co_tagline = home.tagline | strip -%}
+    {%- if co_ready and co_tagline != "" %}
+    <p class="co-tagline">{{ co_tagline }}</p>
+    {%- endif %}
+  </section>
+
+  {%- if co_ready %}
+  <div class="co-col">
+    {%- assign co_bio = home.bio | strip | markdownify | strip -%}
+    {%- assign co_parts = co_bio | split: "<h2" -%}
+    {%- assign co_lead = co_parts | first | strip -%}
+    {%- if co_bio != "" and co_lead != "" %}
+    <div class="co-prose co-lead">
+      {{ co_lead }}
+    </div>
+    {%- endif %}
+
+    {%- if site.posts.size > 0 %}
+    {%- assign co_blog = site.pages | where: "layout", "blog" | first -%}
+    {%- assign co_blog_url = "/blog/" -%}
+    {%- if co_blog %}{% assign co_blog_url = co_blog.url %}{% endif %}
+    <section class="co-log" aria-labelledby="co-log-title">
+      <h2 class="co-heading" id="co-log-title"><span class="ink-variant" data-variant="log_heading:log">Observing log</span><span class="ink-variant" data-variant="log_heading:notes">Notes</span><span class="ink-variant" data-variant="log_heading:writing">Recent writing</span></h2>
+      <ol class="co-entries">
+        {%- for post in site.posts limit: 8 %}
+        {% include themes/corona/_row.html post=post %}
+        {%- endfor %}
+      </ol>
+      {%- if site.posts.size > 8 %}
+      <p class="co-more"><a href="{{ co_blog_url | relative_url }}">All {{ site.posts.size }} entries</a></p>
+      {%- endif %}
+    </section>
+    {%- endif %}
+
+    {%- for part in co_parts offset: 1 %}
+    {%- assign co_part = part | strip %}
+    {%- if co_part == "" %}{% continue %}{% endif %}
+    <section class="co-prose co-about">
+      <h2{{ part }}
+    </section>
+    {%- endfor %}
+  </div>
+  {%- else %}
+  <div class="co-col">
+    {% include empty-state.html
+      variant="home-empty-state"
+      kicker="Setup in progress"
+      title="Your site is almost ready"
+      copy="Your Notion content will appear here after the first sync completes."
+      note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+    %}
+  </div>
+  {%- endif %}
+</div>
