@@ -1,0 +1,12 @@
+{%- comment -%} One centered listing for Recordings: title, then the excerpt in italic. include.post {%- endcomment -%}
+{%- assign rec_p = include.post -%}
+<li class="rec-work">
+  <a class="rec-work-link" href="{{ rec_p.url | relative_url }}">
+    <span class="rec-work-title">{{ rec_p.title }}</span>
+    <time class="rec-work-date" datetime="{{ rec_p.date | date_to_xmlschema }}">{{ rec_p.date | date: "%B %Y" }}</time>
+  </a>
+  {%- assign rec_ex = rec_p.excerpt | strip_html | strip -%}
+  {%- if rec_ex != "" %}
+  <p class="rec-work-note">{{ rec_ex | truncate: 160 }}</p>
+  {%- endif %}
+</li>

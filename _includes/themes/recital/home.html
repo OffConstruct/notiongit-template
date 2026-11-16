@@ -1,0 +1,90 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home rec-home">
+  {%- if home and home.name != blank %}
+  <section class="rec-hero" aria-labelledby="rec-name">
+    {% include ink/motion.html %}
+    <div class="rec-hero-in">
+      <h1 class="rec-name" id="rec-name">{{ home.name }}</h1>
+      {%- if home.tagline != blank %}
+      <p class="rec-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+      <hr class="rec-rule" aria-hidden="true">
+    </div>
+  </section>
+
+  {%- comment -%} Posts tagged live split at build time: upcoming dates (through the day itself) soonest first, else the latest past dates newest first. The split is as fresh as the last build (every sync rebuilds). {%- endcomment -%}
+  {%- assign rec_live = site.tags.live | sort: "date" -%}
+  {%- assign rec_now_s = site.time | date: "%s" | plus: 0 -%}
+  {%- assign rec_next = "" | split: "" -%}
+  {%- assign rec_past = "" | split: "" -%}
+  {%- for p in rec_live -%}
+    {%- assign rec_end_s = p.date | date: "%s" | plus: 86400 -%}
+    {%- if rec_end_s > rec_now_s -%}{%- assign rec_next = rec_next | push: p -%}{%- else -%}{%- assign rec_past = rec_past | push: p -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if rec_next.size > 0 -%}
+    {%- assign rec_prog = rec_next -%}{%- assign rec_prog_head = "Program" -%}{%- assign rec_prog_n = 8 -%}
+  {%- else -%}
+    {%- assign rec_prog = rec_past | reverse -%}{%- assign rec_prog_head = "Recent concerts" -%}{%- assign rec_prog_n = 5 -%}
+  {%- endif -%}
+  {%- if rec_live.size > 0 %}
+  <section class="rec-shell rec-section rec-program" aria-labelledby="rec-program-title">
+    <h2 class="rec-head" id="rec-program-title">{{ rec_prog_head }}</h2>
+    <ol class="rec-entries">
+      {%- for post in rec_prog limit: rec_prog_n %}
+      {% include themes/recital/_entry.html post=post %}
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endif %}
+
+  {%- assign rec_feat = site.posts | where: "featured", true -%}
+  {%- assign rec_shown = 0 -%}
+  {%- if site.posts.size > 0 %}
+  <section class="rec-shell rec-section rec-recordings" aria-labelledby="rec-rec-title">
+    <h2 class="rec-head" id="rec-rec-title">{% if rec_live.size > 0 %}Recordings and notes{% else %}Recordings{% endif %}</h2>
+    <ul class="rec-works">
+      {%- for post in rec_feat limit: 2 %}
+      {% include themes/recital/_work.html post=post %}
+      {%- assign rec_shown = rec_shown | plus: 1 %}
+      {%- endfor %}
+      {%- for post in site.posts %}
+      {%- if rec_shown >= 6 %}{% break %}{% endif %}
+      {%- if post.featured %}{% continue %}{% endif %}
+      {%- if post.tags contains "live" %}{% continue %}{% endif %}
+      {% include themes/recital/_work.html post=post %}
+      {%- assign rec_shown = rec_shown | plus: 1 %}
+      {%- endfor %}
+    </ul>
+    <p class="rec-more"><a href="{{ '/blog/' | relative_url }}">Every post, newest first</a></p>
+  </section>
+  {%- endif %}
+
+  {%- if home.bio != blank %}
+  <section class="rec-shell rec-section rec-about" aria-labelledby="rec-about-title">
+    <h2 class="rec-head" id="rec-about-title">About</h2>
+    <div class="rec-prose rec-bio">{{ home.bio | markdownify }}</div>
+  </section>
+  {%- endif %}
+
+  {%- if home.social_links.size > 0 %}
+  <section class="rec-shell rec-section rec-links-wrap" aria-label="Contact and links">
+    <ul class="rec-links">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="rec-shell rec-empty">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="Setting up"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

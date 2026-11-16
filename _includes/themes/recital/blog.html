@@ -1,0 +1,29 @@
+<div class="ink-post-list rec-shell rec-listing">
+  <header class="rec-page-head">
+    <h1 class="rec-page-title">{{ page.title | default: "Posts" }}</h1>
+    {%- if page.description %}
+    <p class="rec-lede">{{ page.description }}</p>
+    {%- endif %}
+    <hr class="rec-rule" aria-hidden="true">
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign rec_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" -%}
+  {%- for y in rec_years %}
+  <section class="rec-year" aria-labelledby="rec-y-{{ y.name }}">
+    <h2 class="rec-head rec-year-head" id="rec-y-{{ y.name }}">{{ y.name }}</h2>
+    <ol class="rec-entries">
+      {%- for post in y.items %}
+      {% include themes/recital/_entry.html post=post date="%B %-d" %}
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

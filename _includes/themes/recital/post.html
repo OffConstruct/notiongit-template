@@ -1,0 +1,27 @@
+<article class="ink-post rec-shell rec-post">
+  <header class="rec-page-head">
+    <p class="rec-post-date"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></p>
+    <h1 class="rec-page-title">{{ page.title }}</h1>
+    {%- if page.tags.size > 0 %}
+    <ul class="rec-tag-list" aria-label="Tags">
+      {%- for tag in page.tags %}
+      <li><a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    <hr class="rec-rule" aria-hidden="true">
+  </header>
+  {%- if page.cover_image %}
+  <figure class="rec-cover"><img src="{{ page.cover_image }}" alt="" decoding="async"></figure>
+  {%- endif %}
+  <div class="rec-prose rec-body">
+    {{ content }}
+  </div>
+  <footer class="rec-post-foot">
+    {%- if page.canonical_url %}
+    {%- assign rec_host = page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." %}
+    <p>First published on <a href="{{ page.canonical_url }}">{{ rec_host }}</a></p>
+    {%- endif %}
+    <p><a href="{{ '/blog/' | relative_url }}">Back to every post</a></p>
+  </footer>
+</article>

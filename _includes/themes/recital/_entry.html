@@ -1,0 +1,14 @@
+{%- comment -%} One program entry: the title, a dotted leader, the date, then the venue line. include.post, include.date (a date format). {%- endcomment -%}
+{%- assign rec_p = include.post -%}
+{%- assign rec_fmt = include.date | default: "%B %-d, %Y" -%}
+<li class="rec-entry">
+  <a class="rec-entry-link" href="{{ rec_p.url | relative_url }}">
+    <span class="rec-entry-title">{{ rec_p.title }}</span>
+    <span class="rec-leader" aria-hidden="true"></span>
+    <time class="rec-entry-date" datetime="{{ rec_p.date | date_to_xmlschema }}">{{ rec_p.date | date: rec_fmt }}</time>
+  </a>
+  {%- assign rec_ex = rec_p.excerpt | strip_html | strip -%}
+  {%- if rec_ex != "" %}
+  <p class="rec-entry-note">{{ rec_ex | truncate: 140 }}</p>
+  {%- endif %}
+</li>

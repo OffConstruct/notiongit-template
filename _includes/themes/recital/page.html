@@ -1,0 +1,12 @@
+<div class="ink-page rec-shell rec-page">
+  <header class="rec-page-head">
+    <h1 class="rec-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="rec-lede">{{ page.description }}</p>
+    {%- endif %}
+    <hr class="rec-rule" aria-hidden="true">
+  </header>
+  <div class="rec-prose rec-body">
+    {{ content }}
+  </div>
+</div>

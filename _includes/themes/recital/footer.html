@@ -1,0 +1,21 @@
+{%- assign rec_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<footer class="ink-footer rec-footer">
+  <div class="rec-shell rec-foot">
+    <hr class="rec-rule" aria-hidden="true">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ rec_name }}</p>
+    <ul class="rec-foot-links">
+      {%- comment -%} The home links row may already offer the feed. {%- endcomment -%}
+      {%- assign rec_has_feed = false -%}
+      {%- if page.layout == "home" -%}
+        {%- for link in site.data.home.social_links -%}
+          {%- assign rec_ln = link.name | downcase -%}
+          {%- if rec_ln contains "rss" or link.url contains "feed.xml" -%}{%- assign rec_has_feed = true -%}{%- endif -%}
+        {%- endfor -%}
+      {%- endif %}
+      {%- unless rec_has_feed %}
+      <li><a href="{{ '/feed.xml' | relative_url }}">RSS feed</a></li>
+      {%- endunless %}
+      <li><a href="https://inkdrafts.com">Made with InkDrafts</a></li>
+    </ul>
+  </div>
+</footer>

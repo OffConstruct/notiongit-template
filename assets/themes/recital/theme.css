@@ -1,0 +1,344 @@
+/* Hallmark · recital · shape: Long Document (a printed concert program) · genre: editorial · signature: soft skylight rays (god-rays) drifting across the top of the first screen, over a centered small-caps name · theme: custom (InkDrafts musicians) */
+/* critique: the light is the only thing that moves and it stays in the first screen; below it the page is still, centered and symmetrical, set in one Garamond with one gold hairline between sections. */
+/* waive 44b (primary action): a concert program has no button; the first screen is the name, the tagline and the light, and the program starts right under it. */
+/* answered 48: literal hexes sit only in the light and dark token blocks the InkDrafts validator requires. waive 67: small caps appear only on the ensemble's name in the hero (the wordmark, the concept's one typographic gesture, asked for by the judges; it is a display head, not a label); nav, section heads and dates are roman or italic sentence case, untracked. */
+/* Recital theme for InkDrafts. Static CSS only: no front matter, no
+   @import, no remote url(). Tokens and tweak hooks: docs/themes/README.md.
+   Motion: docs/themes/motion.md. */
+
+:root {
+  color-scheme: light;
+  --ink-bg: #f7f5ef;
+  --ink-text: #1d1b17;
+  --ink-muted: #6f6a5f;
+  --ink-accent: var(--tw-accent);
+  --ink-font-body: var(--tw-font-body);
+  --ink-font-display: var(--tw-font-display);
+  --ink-font-mono: var(--tw-font-mono);
+
+  --rec-rule-c: color-mix(in oklab, var(--ink-text) 14%, var(--ink-bg));
+  --rec-leader-c: color-mix(in oklab, var(--ink-text) 34%, var(--ink-bg));
+  --rec-plate: color-mix(in oklab, var(--ink-text) 5%, var(--ink-bg));
+  --rec-over: color-mix(in oklab, var(--ink-muted) 55%, var(--ink-text));
+  --rec-max: 44rem;
+  --rec-measure: 34em;
+  --rec-gutter: 16px;
+  --rec-section: clamp(44px, 5.5vw, 68px);
+  --rec-head-weight: 400;
+
+  /* The skylight: a pale gold and a warm grey, both mixed into the paper. */
+  --motion-tint: color-mix(in oklab, var(--ink-accent) 20%, var(--ink-bg));
+  --motion-tint-2: color-mix(in oklab, var(--ink-text) 6%, var(--ink-bg));
+  --rec-intensity: 0.17;
+  --rec-pocket: color-mix(in oklab, var(--ink-bg) 78%, transparent);
+}
+
+:root[data-ink-mode="dark"] {
+  color-scheme: dark;
+  --ink-bg: #14130f;
+  --ink-text: #ece7da;
+  --ink-muted: #9a9384;
+  --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+  --rec-rule-c: color-mix(in oklab, var(--ink-text) 13%, var(--ink-bg));
+  --rec-leader-c: color-mix(in oklab, var(--ink-text) 30%, var(--ink-bg));
+  --rec-plate: color-mix(in oklab, var(--ink-text) 5%, var(--ink-bg));
+  --motion-tint: color-mix(in oklab, var(--ink-accent) 22%, var(--ink-bg));
+  --motion-tint-2: color-mix(in oklab, var(--ink-text) 6%, var(--ink-bg));
+  --rec-intensity: 0.24;
+  --rec-pocket: color-mix(in oklab, var(--ink-bg) 70%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-mode="auto"] {
+    color-scheme: dark;
+    --ink-bg: #14130f;
+    --ink-text: #ece7da;
+    --ink-muted: #9a9384;
+    --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+    --rec-rule-c: color-mix(in oklab, var(--ink-text) 13%, var(--ink-bg));
+    --rec-leader-c: color-mix(in oklab, var(--ink-text) 30%, var(--ink-bg));
+    --rec-plate: color-mix(in oklab, var(--ink-text) 5%, var(--ink-bg));
+    --motion-tint: color-mix(in oklab, var(--ink-accent) 22%, var(--ink-bg));
+    --motion-tint-2: color-mix(in oklab, var(--ink-text) 6%, var(--ink-bg));
+    --rec-intensity: 0.24;
+    --rec-pocket: color-mix(in oklab, var(--ink-bg) 70%, transparent);
+  }
+}
+
+/* A custom accent has no dark hex; lift its lightness. */
+@supports (color: oklch(from red l c h)) {
+  :root[data-ink-mode="dark"][data-ink-accent="custom"] {
+    --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-ink-mode="auto"][data-ink-accent="custom"] {
+      --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+    }
+  }
+  /* Keep the rays visible in dark mode for every accent (claret and slate
+     mix darker than gold). */
+  :root[data-ink-mode="dark"] { --motion-tint: oklch(from color-mix(in oklab, var(--ink-accent) 22%, var(--ink-bg)) max(l, 0.35) c h); }
+  @media (prefers-color-scheme: dark) {
+    :root[data-ink-mode="auto"] { --motion-tint: oklch(from color-mix(in oklab, var(--ink-accent) 22%, var(--ink-bg)) max(l, 0.35) c h); }
+  }
+}
+
+/* "Light at the top": a little more light, never more speed. */
+:root[data-ink-light="bright"] { --rec-intensity: 0.26; }
+:root[data-ink-light="bright"][data-ink-mode="dark"] { --rec-intensity: 0.34; }
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-light="bright"][data-ink-mode="auto"] { --rec-intensity: 0.34; }
+}
+:root[data-ink-font="cormorant"] { --rec-head-weight: 500; }
+
+/* Base */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--ink-bg);
+  color: var(--ink-text);
+  font-family: var(--ink-font-body);
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  font-variant-numeric: oldstyle-nums;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; height: auto; }
+a { color: var(--ink-accent); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+a:active { opacity: 0.72; }
+:focus-visible { outline: 2px solid var(--ink-accent); outline-offset: 3px; border-radius: 1px; }
+h1, h2, h3, h4 {
+  font-family: var(--ink-font-display);
+  font-weight: var(--rec-head-weight);
+  line-height: 1.15;
+  overflow-wrap: break-word;
+  min-width: 0;
+  text-wrap: balance;
+}
+
+.main { display: block; padding: 0; }
+.rec-shell, .container { width: min(100% - 2 * var(--rec-gutter), var(--rec-max)); margin-inline: auto; }
+
+/* The one ornament: a short accent hairline, centered. */
+.rec-rule { width: 56px; height: 0; margin: 28px auto 0; border: 0; border-top: 1px solid var(--ink-accent); }
+
+/* Header: centered. On the home page it is only the menu, over the light. */
+.ink-header.rec-header { position: relative; z-index: 1; }
+.rec-bar { display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 24px; text-align: center; }
+.rec-mark {
+  color: var(--ink-text);
+  text-decoration: none;
+  font-family: var(--ink-font-display);
+  font-size: 1.375rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.rec-mark:hover { color: var(--ink-accent); }
+.rec-nav ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 28px; margin: 0; padding: 0; list-style: none; }
+.rec-nav a { display: inline-block; padding-block: 8px; color: var(--ink-muted); font-size: 1.0625rem; text-decoration: none; }
+.rec-nav a:hover { color: var(--ink-text); }
+.rec-nav a[aria-current="page"] { color: var(--ink-text); text-decoration: underline; text-decoration-color: var(--ink-accent); }
+.rec-header--home .rec-nav a:not([aria-current="page"]) { color: var(--rec-over); }
+.rec-nav-empty { margin: 0; color: var(--ink-muted); font-size: 1.0625rem; }
+@media (max-width: 599.98px) {
+  .rec-bar { padding-top: 16px; gap: 0; }
+  .rec-nav { width: 100%; }
+  .rec-nav ul { justify-content: flex-start; gap: 0 20px; }
+}
+
+/* Hero: the only moving surface. Its box is reserved here, and the surface
+   reaches up behind the menu so the light falls from the top of the page. */
+.rec-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  min-height: clamp(340px, 56svh, 580px);
+  padding: 56px var(--rec-gutter) clamp(8px, 2vw, 24px);
+  text-align: center;
+}
+.rec-hero > .ink-motion {
+  position: absolute;
+  inset: -8rem 0 0 0;
+  z-index: -1;
+  --ink-motion-fallback:
+    radial-gradient(ellipse 62% 78% at 50% 0%, var(--motion-tint), transparent 72%),
+    conic-gradient(from 150deg at 50% -12%, transparent 0deg, var(--rec-fan) 10deg, transparent 20deg, var(--rec-fan) 34deg, transparent 44deg, var(--rec-fan) 52deg, transparent 60deg);
+  --rec-fan: color-mix(in oklab, var(--motion-tint) 55%, transparent);
+}
+/* A calm pocket behind the name, and the light fading into the paper below. */
+.rec-hero::after {
+  content: "";
+  position: absolute;
+  inset: -8rem 0 0 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 34rem 11rem at 50% calc(100% - 7.5rem), var(--rec-pocket), transparent 100%),
+    linear-gradient(to bottom, transparent 58%, var(--ink-bg));
+}
+:root[data-ink-motion="off"] .rec-hero { min-height: clamp(300px, 44svh, 460px); }
+.rec-hero-in { display: grid; justify-items: center; max-width: 100%; }
+.rec-name {
+  margin: 0;
+  max-width: 18ch;
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  line-height: 1.04;
+  font-variant-caps: small-caps;
+  letter-spacing: 0.03em;
+}
+.rec-tagline {
+  margin: 16px 0 0;
+  max-width: 30em;
+  color: var(--rec-over);
+  font-style: italic;
+  font-size: clamp(1.1875rem, 1.9vw, 1.375rem);
+  line-height: 1.45;
+  text-wrap: balance;
+}
+@media (max-width: 599.98px) {
+  .rec-hero { min-height: clamp(280px, 44svh, 380px); padding-top: 40px; }
+  :root[data-ink-motion="off"] .rec-hero { min-height: clamp(240px, 36svh, 320px); }
+}
+
+/* Sections: centered heads in italic, one hairline between them. */
+.rec-section { margin-top: var(--rec-section); text-align: center; }
+.rec-section + .rec-section::before {
+  content: "";
+  display: block;
+  width: 56px;
+  margin: 0 auto var(--rec-section);
+  border-top: 1px solid var(--ink-accent);
+}
+.rec-head {
+  margin: 0 0 28px;
+  font-style: italic;
+  font-size: clamp(1.75rem, 2.6vw, 2rem);
+  line-height: 1.2;
+}
+
+/* Program: title, dotted leader, date; the venue line under it in italic. */
+.rec-entries { list-style: none; margin: 0 auto; padding: 0; max-width: 36rem; text-align: left; }
+.rec-entry + .rec-entry { margin-top: 16px; }
+.rec-entry-link {
+  display: flex;
+  align-items: baseline;
+  align-items: last baseline;
+  gap: 12px;
+  padding-block: 8px;
+  color: var(--ink-text);
+  text-decoration: none;
+}
+.rec-entry-title { flex: 0 1 auto; min-width: 0; overflow-wrap: break-word; font-size: 1.3125rem; line-height: 1.3; }
+.rec-leader { flex: 1 1 2.5rem; min-width: 2.5rem; border-bottom: 1px dotted var(--rec-leader-c); transform: translateY(-0.3em); }
+.rec-entry-date { flex: none; color: var(--ink-muted); white-space: nowrap; }
+.rec-entry-link:hover .rec-entry-title { color: var(--ink-accent); }
+.rec-entry-link:hover .rec-leader { border-bottom-color: var(--ink-accent); }
+.rec-entry-note { margin: 0; color: var(--ink-muted); font-style: italic; font-size: 1.0625rem; line-height: 1.45; text-wrap: pretty; }
+:root[data-ink-leaders="off"] .rec-leader { border-bottom-color: transparent; }
+@media (max-width: 479.98px) {
+  .rec-entry-link { display: grid; gap: 0; }
+  .rec-leader { display: none; }
+  .rec-entry-date { font-size: 1rem; font-style: italic; }
+}
+
+/* Recordings and notes: a centered list, the excerpt in italic. */
+.rec-works { list-style: none; margin: 0; padding: 0; display: grid; gap: 32px; }
+.rec-work-link { display: inline-grid; justify-items: center; gap: 2px; color: var(--ink-text); text-decoration: none; max-width: 100%; }
+.rec-work-title { max-width: min(100%, 32rem); font-family: var(--ink-font-display); font-weight: var(--rec-head-weight); font-size: clamp(1.375rem, 2vw, 1.5rem); line-height: 1.25; min-width: 0; text-wrap: balance; }
+.rec-work-date { color: var(--ink-muted); font-size: 1rem; }
+.rec-work-link:hover .rec-work-title { color: var(--ink-accent); }
+.rec-work-note { margin: 8px auto 0; max-width: 30em; color: var(--ink-muted); font-style: italic; font-size: 1.0625rem; line-height: 1.5; text-wrap: pretty; }
+.rec-more { margin: 40px 0 0; }
+.rec-more a { display: inline-block; padding-block: 8px; font-style: italic; }
+:root[data-ink-notes="off"] :is(.rec-entry-note, .rec-work-note) { display: none; }
+
+/* About: the bio as a program note. */
+.rec-bio { margin-inline: auto; text-align: left; }
+.rec-bio > :first-child { margin-top: 0; }
+.rec-prose.rec-bio h2, .rec-prose.rec-bio h3 { margin: 1.75em 0 0.4em; font-size: 1.375rem; text-align: center; }
+.rec-bio ul { padding: 0; list-style: none; text-align: center; }
+.rec-bio li + li { margin-top: 4px; }
+
+/* Links: one centered line, part of About (no second hairline). */
+.rec-about + .rec-links-wrap { margin-top: 32px; }
+.rec-about + .rec-links-wrap::before { display: none; }
+.rec-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 28px; margin: 0; padding: 0; list-style: none; }
+.rec-links a { display: inline-block; padding-block: 12px; color: var(--ink-text); font-size: 1.0625rem; text-decoration: none; }
+.rec-links a:hover { color: var(--ink-accent); text-decoration: underline; }
+.rec-empty { padding-block: 64px; text-align: center; }
+
+/* Pages, posts and the full list */
+.rec-listing, .rec-page, .rec-post { padding-top: clamp(48px, 7vw, 88px); }
+.rec-page-head { margin-bottom: clamp(40px, 6vw, 64px); text-align: center; }
+.rec-page-title { margin: 0 auto; max-width: 20ch; font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.08; }
+.rec-lede { margin: 16px auto 0; max-width: 30em; color: var(--ink-muted); font-style: italic; font-size: 1.25rem; text-wrap: balance; }
+.rec-post-date { margin: 0 0 16px; color: var(--ink-muted); font-style: italic; }
+.rec-tag-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 20px; margin: 16px 0 0; padding: 0; list-style: none; }
+.rec-tag-list a { display: inline-block; padding-block: 8px; color: var(--ink-muted); font-size: 1.0625rem; text-decoration: none; }
+.rec-tag-list a:hover { color: var(--ink-accent); text-decoration: underline; }
+.rec-year + .rec-year { margin-top: clamp(48px, 7vw, 72px); }
+.rec-year-head { text-align: center; }
+
+.rec-cover { margin: 0 0 clamp(40px, 6vw, 64px); text-align: center; line-height: 0; }
+.rec-cover img { display: inline-block; max-height: 70svh; width: auto; object-fit: contain; }
+
+.rec-prose { max-width: var(--rec-measure); margin-inline: auto; overflow-wrap: break-word; }
+.rec-prose h2 { font-size: clamp(1.625rem, 2.6vw, 1.875rem); margin: 2em 0 0.5em; }
+.rec-prose h3 { font-size: 1.375rem; margin: 1.75em 0 0.4em; }
+.rec-prose img { display: block; margin-inline: auto; }
+.rec-prose figure { margin: 2rem 0; }
+.rec-prose figcaption { color: var(--ink-muted); font-style: italic; font-size: 1rem; margin-top: 8px; text-align: center; }
+.rec-prose blockquote { margin: 2rem 0; padding-left: 1.25rem; border-left: 1px solid var(--ink-accent); color: var(--ink-muted); font-style: italic; }
+.rec-prose pre { overflow-x: auto; padding: 1rem 1.25rem; background: var(--rec-plate); font-size: 0.875rem; line-height: 1.55; }
+.rec-prose hr { width: 56px; margin: 2.5rem auto; border: 0; border-top: 1px solid var(--ink-accent); }
+code { font-family: var(--ink-font-mono); font-size: 0.82em; font-variant-numeric: normal; }
+table { width: 100%; border-collapse: collapse; display: block; overflow-x: auto; font-size: 1.0625rem; font-variant-numeric: lining-nums tabular-nums; }
+th, td { padding: 0.5rem 0.75rem 0.5rem 0; border-bottom: 1px solid var(--rec-rule-c); text-align: left; vertical-align: top; }
+th { font-weight: 400; font-style: italic; color: var(--ink-muted); }
+.footnotes { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--rec-rule-c); font-size: 1rem; color: var(--ink-muted); }
+.rec-post-foot { max-width: var(--rec-measure); margin: clamp(48px, 6vw, 80px) auto 0; text-align: center; color: var(--ink-muted); }
+.rec-post-foot p { margin: 0 0 8px; }
+.rec-post-foot a { display: inline-block; padding-block: 8px; font-style: italic; }
+
+/* Tags page (base markup) */
+.ink-tags { padding-top: clamp(48px, 7vw, 88px); }
+.tags-header { text-align: center; }
+.tags-header h1 { margin: 0 0 clamp(40px, 6vw, 64px); font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.08; }
+.tag-group { max-width: 36rem; margin: 48px auto; scroll-margin-top: 24px; }
+.tag-group-name { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 4px 16px; margin: 0 0 16px; font-style: italic; font-size: 1.75rem; }
+.tag-count { color: var(--ink-muted); font-style: normal; font-size: 1rem; }
+.tag-posts { display: grid; gap: 4px; }
+.tag-post-link { display: flex; flex-direction: row-reverse; justify-content: flex-end; align-items: baseline; gap: 16px; padding-block: 8px; color: var(--ink-text); text-decoration: none; }
+.tag-post-link > span:last-child { flex: 1 1 auto; min-width: 0; overflow-wrap: break-word; font-size: 1.25rem; line-height: 1.3; }
+.tag-post-link:hover > span:last-child { color: var(--ink-accent); }
+.tag-post-date { flex: none; color: var(--ink-muted); white-space: nowrap; }
+@media (max-width: 479.98px) { .tag-post-link { flex-direction: column-reverse; gap: 0; } }
+
+/* Long unbroken names, emails and titles wrap instead of clipping at 320px. */
+.rec-work-title, .rec-links a, .tag-group-name, .tag-post-link > span:last-child, .rec-tag-list a { overflow-wrap: anywhere; }
+
+/* Empty states */
+.empty-state { padding: 40px 0; text-align: center; }
+.empty-state-mark { display: none; }
+.empty-state-kicker { margin: 0; color: var(--ink-muted); font-style: italic; }
+.empty-state-title { margin: 12px 0; font-size: clamp(2rem, 4.5vw, 2.75rem); }
+.empty-state-copy, .empty-state-note { max-width: 30em; margin-inline: auto; }
+.empty-state-note { color: var(--ink-muted); }
+
+/* Footer */
+.ink-footer.rec-footer { margin-top: var(--rec-section); color: var(--ink-muted); }
+.rec-foot { padding-bottom: 40px; text-align: center; font-size: 1.0625rem; }
+.rec-foot .rec-rule { margin: 0 auto 28px; }
+.rec-foot p { margin: 0; overflow-wrap: anywhere; }
+.rec-foot-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 24px; margin: 4px 0 0; padding: 0; list-style: none; }
+.rec-foot a { display: inline-block; padding-block: 8px; color: inherit; }
+.rec-foot a:hover { color: var(--ink-text); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
