@@ -1,0 +1,99 @@
+{%- assign th_home = site.data.home -%}
+<div class="ink-home th-main th-wrap">
+  {%- if th_home and th_home.name != blank %}
+  {%- assign th_bio = th_home.bio | markdownify -%}
+  {%- assign th_parts = th_bio | split: "<h2" -%}
+  {%- assign th_lead = th_parts[0] | strip -%}
+  {%- if th_lead != blank or th_home.social_links.size > 0 %}
+  <div class="th-intro">
+    {%- if th_lead != blank %}
+    <div class="th-lead">{{ th_lead }}</div>
+    {%- endif %}
+    {%- if th_home.social_links.size > 0 %}
+    <ul class="th-intro-links" aria-label="Links">
+      {%- for link in th_home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </div>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  {% include themes/thread/_topics.html %}
+  {%- if th_names.size > 0 %}
+  <section class="th-threads" aria-labelledby="th-threads-h">
+    <h2 class="th-section" id="th-threads-h">Threads</h2>
+    <div class="th-grid">
+      {%- for name in th_names limit: 6 %}
+      {%- assign th_posts = site.tags[name] -%}
+      {%- assign th_slug = name | slugify -%}
+      <article class="th-topic" aria-labelledby="th-topic-{{ th_slug }}">
+        <header class="th-topic-head">
+          <h3 id="th-topic-{{ th_slug }}">{{ name }}</h3>
+          <span class="th-topic-latest">Last added <time datetime="{{ th_posts[0].date | date_to_xmlschema }}">{{ th_posts[0].date | date: "%b %Y" }}</time></span>
+        </header>
+        <ul class="th-rows">
+          {%- for post in th_posts limit: 5 %}
+          {%- assign th_href = post.url | relative_url -%}
+          {%- if post.canonical_url -%}{%- assign th_href = post.canonical_url -%}{%- endif %}
+          <li class="th-row"><a href="{{ th_href }}"><span class="th-row-title">{{ post.title }}</span></a></li>
+          {%- endfor %}
+        </ul>
+        <p class="th-topic-foot"><a href="{{ '/tags/' | relative_url }}#{{ th_slug }}">See all {{ th_posts.size }} posts<span class="th-sr"> in {{ name }}</span></a></p>
+      </article>
+      {%- endfor %}
+    </div>
+  </section>
+  {%- endif %}
+
+  {%- assign th_loose = site.posts | where_exp: "p", "p.tags.size == 0" %}
+  <div class="th-lower{% if th_loose.size == 0 %} th-lower--solo{% endif %}">
+    <section class="th-all" aria-labelledby="th-all-h">
+      <h2 class="th-section" id="th-all-h">All writing</h2>
+      {%- assign th_recent = site.posts | slice: 0, 5 %}
+      {% include themes/thread/_years.html posts=th_recent prefix="home-" level=3 %}
+      {%- if site.posts.size > 5 %}
+      <p class="th-more"><a href="{{ '/blog/' | relative_url }}">See all {{ site.posts.size }} posts</a></p>
+      {%- endif %}
+    </section>
+    {%- if th_loose.size > 0 %}
+    <section class="th-loose" aria-labelledby="th-loose-h">
+      <h2 class="th-section" id="th-loose-h">Loose ends</h2>
+      <p class="th-note">Posts without a tag yet.</p>
+      <ul class="th-rows">
+        {%- for post in th_loose limit: 8 %}
+        {% include themes/thread/_row.html post=post year=true %}
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endif %}
+  </div>
+  {%- endif %}
+
+  {%- if th_parts.size > 1 %}
+  <div class="th-about">
+    {%- for part in th_parts offset: 1 %}
+    <section class="th-about-part">{{ part | prepend: "<h2" }}</section>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Your writing"
+    title="Your posts will appear here"
+    copy="Published posts show up automatically after your first sync. Add tags in Notion and each tag gets its own column."
+  %}
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="Setup in progress"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

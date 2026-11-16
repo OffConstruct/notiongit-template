@@ -1,0 +1,18 @@
+<div class="ink-post-list th-main th-wrap">
+  <header class="th-page-head">
+    <h1 class="th-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if site.posts.size > 0 %}
+    <p class="th-page-dek">{{ site.posts.size }} posts, newest first. <a href="{{ '/tags/' | relative_url }}">Browse by topic</a></p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Your writing"
+    title="Your posts will appear here"
+    copy="Published posts show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {% include themes/thread/_years.html posts=site.posts prefix="blog-" tags=true level=2 %}
+  {%- endif %}
+</div>

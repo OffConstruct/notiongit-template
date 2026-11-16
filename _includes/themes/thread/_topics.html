@@ -1,0 +1,11 @@
+{%- comment -%} Ordered list of tag names used by 2 or more posts, most used first (ties alphabetical). Sets th_names. {%- endcomment -%}
+{%- assign th_tags = site.tags | sort -%}
+{%- assign th_max = 0 -%}
+{%- for t in th_tags -%}{%- if t[1].size > th_max -%}{%- assign th_max = t[1].size -%}{%- endif -%}{%- endfor -%}
+{%- assign th_order = "" -%}
+{%- if th_max > 1 -%}
+{%- for n in (2..th_max) reversed -%}
+{%- for t in th_tags -%}{%- if t[1].size == n -%}{%- assign th_order = th_order | append: t[0] | append: "|" -%}{%- endif -%}{%- endfor -%}
+{%- endfor -%}
+{%- endif -%}
+{%- assign th_names = th_order | split: "|" -%}

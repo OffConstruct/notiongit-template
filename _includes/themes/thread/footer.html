@@ -1,0 +1,15 @@
+{%- assign th_home = site.data.home -%}
+<footer class="ink-footer th-footer">
+  <div class="th-wrap th-foot">
+    <p class="th-colophon">&copy; {{ 'now' | date: '%Y' }} {{ th_home.name | default: site.author.name | default: site.title }}</p>
+    {%- comment -%} The home page already lists these links in its intro. {%- endcomment -%}
+    {%- assign th_intro = false -%}{%- if page.layout == "home" and th_home.name != blank -%}{%- assign th_intro = true -%}{%- endif %}
+    {%- if th_intro == false and th_home.social_links and th_home.social_links.size > 0 %}
+    <ul class="th-links" aria-label="Links">
+      {%- for link in th_home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </div>
+</footer>

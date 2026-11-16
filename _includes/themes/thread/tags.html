@@ -1,0 +1,30 @@
+<div class="ink-tags th-main th-wrap">
+  <header class="th-page-head">
+    <h1 class="th-page-title">Topics</h1>
+  </header>
+  {%- assign th_tags = site.tags | sort %}
+  {%- if th_tags.size == 0 %}
+  {% include empty-state.html
+    kicker="Your topics"
+    title="Your topics will appear here"
+    copy="Tags from your published posts are collected here automatically."
+  %}
+  {%- else %}
+  <div class="th-grid th-grid--all">
+    {%- for tag in th_tags %}
+    {%- assign th_slug = tag[0] | slugify %}
+    <section class="th-topic" id="{{ th_slug }}" aria-labelledby="th-tag-{{ th_slug }}">
+      <header class="th-topic-head">
+        <h2 id="th-tag-{{ th_slug }}">{{ tag[0] }}</h2>
+        <span class="th-topic-latest">{{ tag[1].size }} {% if tag[1].size == 1 %}post{% else %}posts{% endif %}</span>
+      </header>
+      <ul class="th-rows">
+        {%- for post in tag[1] %}
+        {% include themes/thread/_row.html post=post year=true %}
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+</div>

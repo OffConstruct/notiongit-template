@@ -1,0 +1,13 @@
+<div class="ink-page th-main th-wrap">
+  <article class="th-doc">
+    <header class="th-doc-head">
+      <h1 class="th-doc-title">{{ page.title }}</h1>
+      {%- if page.description %}
+      <p class="th-doc-dek">{{ page.description }}</p>
+      {%- endif %}
+    </header>
+    <div class="th-prose page-content">
+      {{ content }}
+    </div>
+  </article>
+</div>

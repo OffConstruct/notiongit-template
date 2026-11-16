@@ -1,0 +1,30 @@
+{%- assign th_home = site.data.home -%}
+{%- assign th_brand = th_home.name | default: site.author.name | default: site.title -%}
+<header class="ink-header th-mast{% if page.layout == 'home' %} th-mast--home{% endif %}">
+  {%- comment -%} With the strip on the home page only, inner pages skip the surface (no shader download), except in previews, where the tweak can switch back. {%- endcomment -%}
+  {%- unless page.layout != "home" and ink_attrs contains 'data-ink-strip="home"' and site.inkdrafts_preview != true %}
+  {% include ink/motion.html %}
+  {%- endunless %}
+  <div class="th-wrap th-mast-inner">
+    {%- if page.layout == "home" and th_home.name != blank %}
+    <div class="th-id">
+      <h1 class="th-name">{{ th_home.name }}</h1>
+      {%- if th_home.tagline != blank %}
+      <p class="th-tagline">{{ th_home.tagline }}</p>
+      {%- endif %}
+    </div>
+    {%- else %}
+    <a class="th-brand" href="{{ '/' | relative_url }}">{{ th_brand }}</a>
+    {%- endif %}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="th-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="th-nav-empty" role="status">Your menu will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

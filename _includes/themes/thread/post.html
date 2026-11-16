@@ -1,0 +1,53 @@
+<div class="ink-post th-main th-wrap">
+  <article class="th-doc post">
+    <header class="th-doc-head">
+      <p class="th-doc-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        {%- if page.tags.size > 0 %}
+        <span class="th-doc-tags">
+          {%- for tag in page.tags %}
+          <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+          {%- endfor %}
+        </span>
+        {%- endif %}
+      </p>
+      <h1 class="th-doc-title">{{ page.title }}</h1>
+      {%- if page.excerpt %}
+      {%- assign th_ex = page.excerpt | strip_html | strip -%}
+      {%- assign th_first = content | split: "</p>" | first | strip_html | strip -%}
+      {%- if th_ex != th_first and th_ex != blank %}
+      <p class="th-doc-dek">{{ th_ex }}</p>
+      {%- endif %}
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <img class="th-cover" src="{{ page.cover_image }}" alt="">
+    {%- endif %}
+    <div class="th-prose post-content">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="th-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+  </article>
+  {%- assign th_tag = page.tags | first %}
+  {%- if th_tag %}
+  {%- assign th_others = site.tags[th_tag] | where_exp: "p", "p.url != page.url" %}
+  {%- endif %}
+  <footer class="th-doc-foot">
+    {%- if th_others and th_others.size > 0 %}
+    <section class="th-topic th-topic--next" aria-labelledby="th-next-h">
+      <header class="th-topic-head">
+        <h2 id="th-next-h">More in {{ th_tag }}</h2>
+        <span class="th-topic-latest">{{ site.tags[th_tag].size }} posts</span>
+      </header>
+      <ul class="th-rows">
+        {%- for post in th_others limit: 3 %}
+        {% include themes/thread/_row.html post=post year=true %}
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endif %}
+    <p class="th-more"><a href="{{ '/blog/' | relative_url }}">All writing</a></p>
+  </footer>
+</div>

@@ -1,0 +1,14 @@
+{%- assign th_years = include.posts | group_by_exp: "p", "p.date | date: '%Y'" -%}
+<div class="th-years">
+  {%- for y in th_years %}
+  <section class="th-year" aria-labelledby="th-year-{{ include.prefix }}{{ y.name }}">
+    {%- assign th_h = include.level | default: 3 %}
+    <h{{ th_h }} class="th-year-name" id="th-year-{{ include.prefix }}{{ y.name }}">{{ y.name }}</h{{ th_h }}>
+    <ul class="th-rows">
+      {%- for post in y.items %}
+      {% include themes/thread/_row.html post=post tags=include.tags %}
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endfor %}
+</div>
