@@ -1,0 +1,30 @@
+{%- assign lm_home = site.data.home -%}
+{%- assign lm_name = lm_home.name | default: site.author.name | default: site.title -%}
+<header class="ink-header lm-header">
+  <div class="lm-wrap lm-bar">
+    <div class="lm-id">
+      {%- if page.layout == "home" and lm_home.name != blank %}
+      <h1 class="lm-name"><a href="{{ '/' | relative_url }}" aria-current="page">{{ lm_name }}</a></h1>
+      {%- if lm_home.tagline != blank %}
+      <p class="lm-tagline">{{ lm_home.tagline }}</p>
+      {%- endif %}
+      {%- else %}
+      <p class="lm-name"><a href="{{ '/' | relative_url }}">{{ lm_name }}</a></p>
+      {%- endif %}
+    </div>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="lm-nav" aria-label="Main navigation">
+      <ul>
+        {%- for item in site.data.nav %}
+        {%- assign item_url = item.url | relative_url %}
+        {%- assign lm_here = false %}
+        {%- if item.url == "/" %}{% if page.layout == "home" %}{% assign lm_here = true %}{% endif %}{% elsif page.url == item_url or page.url contains item.url %}{% assign lm_here = true %}{% endif %}
+        <li><a href="{{ item_url }}"{% if lm_here %} aria-current="page"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- else %}
+    <p class="lm-nav-empty" role="status">Your menu will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

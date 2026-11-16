@@ -1,0 +1,22 @@
+{%- assign lm_post = include.post -%}
+{%- assign lm_tag = lm_post.tags | first -%}
+{%- assign lm_year = lm_post.date | date: "%Y" -%}
+{%- if lm_post.cover_image %}
+<li class="lm-plate">
+  <a class="lm-plate-link" href="{{ lm_post.url | relative_url }}">
+    <span class="lm-frame"><img src="{{ lm_post.cover_image }}" alt=""{% if include.lazy > 1 %} loading="lazy"{% endif %} decoding="async"></span>
+    <span class="lm-cap"><span class="lm-cap-title">{{ lm_post.title }}</span><span class="lm-cap-meta">{% if lm_tag %}, {{ lm_tag }}{% endif %}, <time datetime="{{ lm_post.date | date_to_xmlschema }}">{{ lm_year }}</time></span></span>
+  </a>
+</li>
+{%- else %}
+{%- assign lm_excerpt = lm_post.excerpt | strip_html | strip | truncatewords: 30 -%}
+<li class="lm-plate lm-plate--note">
+  <a class="lm-plate-link" href="{{ lm_post.url | relative_url }}">
+    <span class="lm-note-title">{{ lm_post.title }}</span>
+    {%- if lm_excerpt != "" %}
+    <span class="lm-note-text">{{ lm_excerpt }}</span>
+    {%- endif %}
+    <span class="lm-cap-meta lm-note-meta">{% if lm_tag %}{{ lm_tag }}, {% endif %}<time datetime="{{ lm_post.date | date_to_xmlschema }}">{{ lm_year }}</time></span>
+  </a>
+</li>
+{%- endif %}

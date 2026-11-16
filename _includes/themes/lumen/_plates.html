@@ -1,0 +1,15 @@
+{%- assign lm_list = include.posts -%}
+{%- capture lm_a %}{% for post in lm_list %}{% assign lm_odd = forloop.index0 | modulo: 2 %}{% if lm_odd == 0 %}{% include themes/lumen/_plate.html post=post lazy=forloop.index0 %}{% endif %}{% endfor %}{% endcapture -%}
+{%- capture lm_b %}{% for post in lm_list %}{% assign lm_odd = forloop.index0 | modulo: 2 %}{% if lm_odd == 1 %}{% include themes/lumen/_plate.html post=post lazy=forloop.index0 %}{% endif %}{% endfor %}{% endcapture -%}
+{%- comment %} Two renderings of the same list: a pair of columns for wide
+screens, and one column in reading order for phones and the one-column
+setting. CSS shows one and removes the other with display: none. {% endcomment %}
+<div class="lm-plates lm-plates--pair{% if lm_list.size == 1 %} lm-plates--one{% endif %}">
+  <ul class="lm-col lm-col--a">{{ lm_a }}</ul>
+  {%- if lm_list.size > 1 %}
+  <ul class="lm-col lm-col--b">{{ lm_b }}</ul>
+  {%- endif %}
+</div>
+<ul class="lm-plates lm-plates--list">
+  {%- for post in lm_list %}{% include themes/lumen/_plate.html post=post lazy=forloop.index0 %}{% endfor %}
+</ul>

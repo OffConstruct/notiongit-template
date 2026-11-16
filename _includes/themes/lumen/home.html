@@ -1,0 +1,65 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home lm-home lm-wrap">
+  {%- if home and home.name != blank %}
+  {%- comment %} Topics with the most posts first, then by name: each key is
+  "99995~name" (100000 minus the post count), so a plain sort orders them. {% endcomment -%}
+  {%- capture lm_keys %}{% for t in site.tags %}{{ 100000 | minus: t[1].size }}~{{ t[0] }}|~|{% endfor %}{% endcapture -%}
+  {%- assign lm_tags = lm_keys | split: "|~|" | sort -%}
+  {%- if lm_tags.size > 0 %}
+  <nav class="lm-topics" aria-label="Topics">
+    <ul>
+      {%- for k in lm_tags limit: 8 %}
+      {%- assign lm_tag = k | slice: 6, k.size %}
+      <li><a href="{{ '/tags/' | relative_url }}#{{ lm_tag | slugify }}">{{ lm_tag }}</a></li>
+      {%- endfor %}
+      <li class="lm-topics-all"><a href="{{ '/tags/' | relative_url }}">All tags</a></li>
+    </ul>
+  </nav>
+  {%- endif %}
+
+  {%- assign lm_latest = site.posts | slice: 0, 8 -%}
+  {%- if lm_latest.size > 0 %}
+  <section class="lm-work" aria-label="Latest work">
+    {% include themes/lumen/_plates.html posts=lm_latest %}
+    {%- if site.posts.size > 8 %}
+    <p class="lm-more"><a href="{{ '/blog/' | relative_url }}">See all {{ site.posts.size }} posts</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
+  {%- assign lm_mail = "" -%}
+  {%- for link in home.social_links %}{% assign lm_pre = link.url | slice: 0, 7 %}{% if lm_pre == "mailto:" %}{% assign lm_mail = link.url %}{% break %}{% endif %}{% endfor -%}
+  {%- if home.bio != blank or home.social_links.size > 0 %}
+  <section class="lm-about" aria-labelledby="lm-about-title">
+    <h2 class="lm-label" id="lm-about-title">About</h2>
+    <div class="lm-about-body">
+      {%- if home.bio != blank %}
+      <div class="lm-prose lm-bio">{{ home.bio | markdownify | replace: "<h2", "<h3" | replace: "</h2>", "</h3>" }}</div>
+      {%- endif %}
+      {%- if lm_mail != "" %}
+      <p class="lm-mail"><a href="{{ lm_mail }}">{{ lm_mail | remove_first: "mailto:" | split: "?" | first }}</a></p>
+      {%- endif %}
+      {%- if home.social_links.size > 0 %}
+      <ul class="lm-links" aria-label="Links">
+        {%- for link in home.social_links %}
+        {%- if link.url == lm_mail %}{% continue %}{% endif %}
+        <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="lm-empty">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

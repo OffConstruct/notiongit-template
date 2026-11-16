@@ -1,0 +1,7 @@
+{%- assign lm_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<footer class="ink-footer lm-footer">
+  <div class="lm-wrap lm-footer-inner">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ lm_name }}</p>
+    <p class="lm-footer-links"><a href="{{ '/feed.xml' | relative_url }}">RSS feed</a> <a href="https://inkdrafts.com">Made with InkDrafts</a></p>
+  </div>
+</footer>

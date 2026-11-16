@@ -1,0 +1,11 @@
+<div class="ink-page lm-page lm-wrap">
+  <header class="lm-page-head">
+    <h1 class="lm-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="lm-page-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="lm-prose lm-body">
+    {{ content }}
+  </div>
+</div>

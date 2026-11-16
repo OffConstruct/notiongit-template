@@ -1,0 +1,487 @@
+/* Lumen theme for InkDrafts. Static CSS only: no front matter, no @import,
+   no remote url(). Tokens and tweak hooks: docs/themes/README.md.
+   One idea moves: faint shafts of daylight (god-rays) falling from one high
+   corner across the plaster-colored page, behind the photographs.
+   Photos and captions sit on the plain background. Contract:
+   docs/themes/motion.md. */
+
+:root {
+  color-scheme: light;
+  --ink-bg: #f2efe9;
+  --ink-text: #1c1b19;
+  --ink-muted: #6a665e;
+  --ink-accent: var(--tw-accent);
+  --ink-font-body: var(--tw-font-body);
+  --ink-font-display: var(--tw-font-display);
+  --ink-font-mono: var(--tw-font-mono);
+
+  --lm-rule: color-mix(in oklab, var(--ink-text) 16%, var(--ink-bg));
+  --lm-well: color-mix(in oklab, var(--ink-text) 6%, var(--ink-bg));
+  --lm-note: color-mix(in oklab, var(--ink-accent) 7%, var(--ink-bg));
+  /* Muted text on the tinted note plate, nudged toward the text color so it
+     keeps AA contrast whatever the accent. */
+  --lm-note-muted: color-mix(in oklab, var(--ink-muted) 80%, var(--ink-text));
+  --lm-max: 1240px;
+  --lm-gutter: clamp(20px, 5vw, 64px);
+  --lm-section: clamp(56px, 8vw, 104px);
+  --lm-col-gap: clamp(40px, 8vw, 128px);
+  --lm-plate-gap: clamp(64px, 7vw, 96px);
+
+  /* Motion: warm window light mixed into the plaster, and a trace of the
+     accent in the rays. */
+  --motion-light: color-mix(in oklab, #fff4dc 34%, var(--ink-bg));
+  --motion-ray: color-mix(in oklab, var(--ink-accent) 8%, var(--ink-bg));
+  --motion-x: -0.6;
+  --lm-light-at: 0% 0%;
+  --ink-motion-opacity: 0.9;
+}
+
+:root[data-ink-mode="dark"] {
+  color-scheme: dark;
+  --ink-bg: #141413;
+  --ink-text: #ece8e0;
+  --ink-muted: #9b968c;
+  --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+  --lm-note: color-mix(in oklab, var(--ink-accent) 9%, var(--ink-bg));
+  /* Cool moonlight, a little stronger: dark backgrounds swallow faint light. */
+  --motion-light: color-mix(in oklab, #d4dcff 15%, var(--ink-bg));
+  --motion-ray: color-mix(in oklab, var(--ink-accent) 9%, var(--ink-bg));
+  /* The still pool stays below the brightest shader frame, so the page
+     without motion matches the moving one. */
+  --lm-pool: color-mix(in oklab, #d4dcff 8%, var(--ink-bg));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-mode="auto"] {
+    color-scheme: dark;
+    --ink-bg: #141413;
+    --ink-text: #ece8e0;
+    --ink-muted: #9b968c;
+    --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+    --lm-note: color-mix(in oklab, var(--ink-accent) 9%, var(--ink-bg));
+    --motion-light: color-mix(in oklab, #d4dcff 15%, var(--ink-bg));
+    --motion-ray: color-mix(in oklab, var(--ink-accent) 9%, var(--ink-bg));
+    --lm-pool: color-mix(in oklab, #d4dcff 8%, var(--ink-bg));
+  }
+}
+
+/* A custom accent has no dark hex; lift its lightness where supported. */
+@supports (color: oklch(from red l c h)) {
+  :root[data-ink-mode="dark"][data-ink-accent="custom"] {
+    --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-ink-mode="auto"][data-ink-accent="custom"] {
+      --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+    }
+  }
+}
+
+:root[data-ink-light="right"] {
+  --motion-x: 0.6;
+  --lm-light-at: 100% 0%;
+}
+
+/* ---------- Base ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--ink-bg);
+  color: var(--ink-text);
+  font-family: var(--ink-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img { max-width: 100%; height: auto; }
+
+a {
+  color: inherit;
+  text-decoration-color: color-mix(in oklab, var(--ink-accent) 75%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+a:hover { color: var(--ink-accent); text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--ink-accent); outline-offset: 3px; border-radius: 1px; }
+
+h1, h2, h3, h4 { font-family: var(--ink-font-display); font-weight: 500; line-height: 1.2; text-wrap: balance; }
+
+.lm-wrap,
+.container {
+  width: min(100% - 2 * var(--lm-gutter), var(--lm-max));
+  margin-inline: auto;
+}
+.main { display: block; padding-bottom: var(--lm-section); }
+
+/* ---------- The daylight surface ----------
+   The engine mounts it as the first child of <body>. It is held to the top
+   of the page (absolute, so it scrolls away with the intro and the engine
+   pauses it once it is out of view) and fades out toward the bottom, so the
+   lists below sit on still paper. Without JavaScript or WebGL, and with
+   motion off, the fallback is one still pool of light in the same corner. */
+.ink-motion--backdrop {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: min(100svh, 900px);
+  -webkit-mask-image: linear-gradient(#000 45%, transparent);
+  mask-image: linear-gradient(#000 45%, transparent);
+  --ink-motion-fallback: radial-gradient(90% 70% at var(--lm-light-at), var(--lm-pool, var(--motion-light)), transparent 62%);
+}
+.ink-body:not(.ink-body--home) .ink-motion--backdrop { height: min(60svh, 560px); }
+
+/* ---------- Header ---------- */
+
+.lm-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 40px;
+  padding-block: 32px 0;
+}
+.lm-name {
+  margin: 0;
+  font-family: var(--ink-font-display);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  overflow-wrap: anywhere;
+}
+.lm-name a { text-decoration: none; }
+.lm-name a:hover { color: var(--ink-text); }
+.lm-tagline {
+  max-width: 34em;
+  margin: 4px 0 0;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.lm-nav ul { display: flex; flex-wrap: wrap; gap: 0 28px; margin: 0; padding: 0; list-style: none; }
+.lm-nav a {
+  display: inline-block;
+  padding-block: 6px;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+.lm-nav a:hover { color: var(--ink-text); }
+.lm-nav a[aria-current="page"] {
+  color: var(--ink-text);
+  text-decoration: underline;
+  text-decoration-color: var(--ink-accent);
+  text-underline-offset: 0.4em;
+}
+.lm-nav-empty { margin: 0; color: var(--ink-muted); font-size: 0.9375rem; }
+
+/* ---------- Home: topics ---------- */
+
+.lm-topics { margin: clamp(56px, 9vw, 104px) 0 clamp(40px, 5vw, 64px); }
+.lm-topics ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.lm-topics a {
+  display: inline-block;
+  padding-block: 6px;
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+.lm-topics a:hover { color: var(--ink-text); text-decoration: underline; text-decoration-color: var(--ink-accent); }
+.lm-topics-all a { text-decoration: underline; text-decoration-color: var(--ink-accent); text-underline-offset: 0.22em; }
+
+/* ---------- Plates ----------
+   Each photo is shown whole at its own shape. The caption takes the
+   photo's width: width 0 keeps it from widening the plate, min-width
+   stretches it back to the photo's edge. */
+
+.lm-plates { margin: 0; padding: 0; list-style: none; }
+.lm-plates ul { margin: 0; padding: 0; list-style: none; }
+
+.lm-plates--pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: var(--lm-col-gap);
+  align-items: start;
+}
+.lm-col { display: flex; flex-direction: column; align-items: flex-start; gap: var(--lm-plate-gap); }
+:root:not([data-ink-layout="level"]) .lm-col--b { padding-top: clamp(48px, 18vh, 200px); }
+.lm-plates--one { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+
+/* A quiet rhythm of widths: some plates are set narrower, and on the right
+   column they hang from the outer edge. */
+.lm-col--a > .lm-plate:nth-child(3n+2) { width: 78%; }
+.lm-col--b { align-items: flex-end; }
+.lm-col--b > .lm-plate:nth-child(odd) { width: 78%; }
+.lm-plate { width: 100%; }
+
+.lm-plates--list { display: none; }
+
+/* The floor width and the frame's minimum block keep a plate whose photo is
+   missing or still loading from collapsing to nothing. */
+.lm-plate-link { display: inline-block; min-width: min(100%, 18rem); max-width: 100%; text-decoration: none; vertical-align: top; }
+.lm-col--b .lm-plate { text-align: right; }
+.lm-col--b .lm-plate-link { text-align: left; }
+.lm-frame { display: block; min-height: 6rem; background: var(--lm-well); }
+.lm-frame img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 78svh;
+}
+.lm-cap {
+  display: block;
+  width: 0;
+  min-width: 100%;
+  padding-top: 14px;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+.lm-cap-title { color: var(--ink-text); }
+
+.lm-plate-link:hover .lm-cap-title { text-decoration: underline; text-decoration-color: var(--ink-accent); text-underline-offset: 0.22em; }
+.lm-plate-link:focus-visible { outline-offset: 6px; }
+:root[data-ink-captions="title"] .lm-cap-meta { display: none; }
+
+/* A post without a photo: a short tinted plate with its title and opening
+   lines, never an empty frame. */
+.lm-plate--note .lm-plate-link {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: clamp(24px, 3vw, 36px);
+  background: var(--lm-note);
+}
+/* In the two columns a note is set at the narrow plate width, so its edge
+   lines up with the photos that hang from the same side. */
+.lm-col > .lm-plate--note { width: 78%; }
+.lm-note-title {
+  font-family: var(--ink-font-display);
+  font-size: clamp(1.375rem, 2vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.lm-plate--note .lm-plate-link:hover .lm-note-title { text-decoration: underline; text-decoration-color: var(--ink-accent); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+.lm-note-text { max-width: 34em; color: var(--lm-note-muted); font-size: 1rem; line-height: 1.55; }
+.lm-note-meta { color: var(--lm-note-muted); font-size: 0.9375rem; }
+:root[data-ink-captions="title"] .lm-note-meta { display: none; }
+
+/* One wide column (a setting, and every phone). */
+:root[data-ink-layout="single"] .lm-plates--pair { display: none; }
+:root[data-ink-layout="single"] .lm-plates--list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--lm-plate-gap);
+  max-width: 880px;
+}
+
+.lm-more { margin: var(--lm-plate-gap) 0 0; }
+.lm-more a { display: inline-block; padding-block: 8px; text-decoration: underline; text-decoration-color: var(--ink-accent); }
+
+/* ---------- Home: about ---------- */
+
+.lm-about {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  column-gap: var(--lm-col-gap);
+  margin-top: var(--lm-section);
+  padding-top: 16px;
+  border-top: 1px solid var(--lm-rule);
+}
+.lm-label {
+  margin: 0 0 24px;
+  color: var(--ink-muted);
+  font-family: var(--ink-font-body);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.lm-about-body { max-width: 36em; }
+.lm-bio > :first-child { margin-top: 0; }
+.lm-prose.lm-bio h3 { margin: 1.8em 0 0.4em; font-size: 0.9375rem; font-weight: 500; color: var(--ink-muted); font-family: var(--ink-font-body); }
+.lm-prose.lm-bio ul { padding-left: 0; list-style: none; }
+.lm-mail { margin: 32px 0 0; font-size: 1.125rem; }
+.lm-mail a { display: inline-block; padding-block: 6px; text-decoration-color: var(--ink-accent); overflow-wrap: anywhere; }
+.lm-links { display: flex; flex-wrap: wrap; gap: 0 24px; margin: 8px 0 0; padding: 0; list-style: none; }
+.lm-links a { display: inline-block; padding-block: 8px; color: var(--ink-muted); text-decoration: none; }
+.lm-links a:hover { color: var(--ink-text); text-decoration: underline; text-decoration-color: var(--ink-accent); }
+
+/* ---------- Page heads (blog, post, page) ---------- */
+
+.lm-page-head { padding-top: clamp(56px, 9vw, 104px); padding-bottom: clamp(32px, 4vw, 56px); }
+.lm-page-title {
+  max-width: 20ch;
+  margin: 0;
+  font-size: clamp(2rem, 4.4vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+}
+.lm-page-lede { max-width: 36em; margin: 16px 0 0; color: var(--ink-muted); font-size: 1.0625rem; }
+.lm-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 20px;
+  margin: 20px 0 0;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+.lm-meta + .lm-meta { margin-top: 4px; }
+.lm-meta a { display: inline-block; padding-block: 4px; color: var(--ink-muted); }
+.lm-meta a:hover { color: var(--ink-text); }
+.lm-meta time { padding-block: 4px; }
+
+/* ---------- Post and page body ---------- */
+
+.lm-cover { margin: 0 0 clamp(40px, 6vw, 72px); }
+.lm-cover img { display: block; width: auto; max-width: 100%; max-height: 84svh; background: var(--lm-well); }
+
+.lm-body { max-width: 38em; font-size: 1.125rem; line-height: 1.7; }
+.lm-prose { overflow-wrap: break-word; }
+.lm-prose > :first-child { margin-top: 0; }
+.lm-prose h2 { font-size: 1.5rem; letter-spacing: -0.015em; margin: 2em 0 0.6em; }
+.lm-prose h3 { font-size: 1.1875rem; margin: 1.8em 0 0.5em; }
+.lm-prose p, .lm-prose ul, .lm-prose ol { margin: 0 0 1.1em; }
+.lm-prose li + li { margin-top: 0.3em; }
+/* Chrome sets list numbers in tabular figures, which spaces this face's period wide. */
+.lm-prose li::marker { font-variant-numeric: normal; }
+.lm-prose img { display: block; margin-block: 2em; background: var(--lm-well); }
+.lm-prose figure { margin: 2em 0; }
+.lm-prose figcaption { margin-top: 10px; color: var(--ink-muted); font-size: 0.9375rem; }
+.lm-prose blockquote {
+  margin: 1.8em 0;
+  padding-left: 1.2em;
+  border-left: 1px solid var(--ink-accent);
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+.lm-prose pre {
+  overflow-x: auto;
+  margin: 1.6em 0;
+  padding: 16px 20px;
+  background: var(--lm-well);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.lm-prose pre code { padding: 0; background: none; font-size: 1em; }
+code { font-family: var(--ink-font-mono); font-size: 0.88em; }
+:not(pre) > code { padding: 0.1em 0.3em; background: var(--lm-well); border-radius: 2px; }
+.lm-prose table { width: 100%; margin: 1.6em 0; border-collapse: collapse; font-size: 1rem; }
+.lm-prose th, .lm-prose td { padding: 12px 16px 12px 0; border-bottom: 1px solid var(--lm-rule); text-align: left; vertical-align: top; overflow-wrap: break-word; }
+.lm-prose th { font-weight: 500; }
+.lm-prose hr { margin-block: 2.4em; border: 0; border-top: 1px solid var(--lm-rule); }
+sup, sub { line-height: 0; }
+.footnotes { margin-top: 3em; color: var(--ink-muted); font-size: 0.9375rem; }
+
+.lm-post-foot { margin-top: var(--lm-section); padding-top: 16px; border-top: 1px solid var(--lm-rule); }
+.lm-post-foot a { display: inline-block; padding-block: 8px; text-decoration: none; }
+.lm-post-foot a:hover { text-decoration: underline; }
+
+/* Rouge highlighting, kept quiet. */
+.highlight .c, .highlight .c1, .highlight .cm { color: var(--ink-muted); font-style: italic; }
+/* Code sits on the darker well, so keywords lean toward the text color. */
+.highlight .k, .highlight .kd, .highlight .kn { color: color-mix(in oklab, var(--ink-accent) 70%, var(--ink-text)); }
+.highlight .s, .highlight .s1, .highlight .s2 { color: color-mix(in oklab, var(--ink-accent) 45%, var(--ink-text)); }
+
+/* ---------- Footer ---------- */
+
+.lm-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 32px;
+  padding-block: 24px 40px;
+  border-top: 1px solid var(--lm-rule);
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+.lm-footer-inner p { margin: 0; }
+.lm-footer-links { display: flex; flex-wrap: wrap; gap: 0 24px; }
+.lm-footer a { display: inline-block; padding-block: 6px; text-decoration: none; }
+.lm-footer a:hover { color: var(--ink-text); text-decoration: underline; }
+
+/* ---------- Tags page (base markup) ---------- */
+
+.ink-tags.container { padding-top: clamp(56px, 9vw, 104px); }
+.tags-header h1 {
+  margin: 0 0 clamp(32px, 4vw, 56px);
+  font-size: clamp(2rem, 4.4vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+.tag-group { max-width: 52rem; margin-bottom: 40px; padding-top: 14px; border-top: 1px solid var(--lm-rule); scroll-margin-top: 24px; }
+.tag-group-name { display: flex; gap: 16px; align-items: baseline; margin: 0 0 8px; font-size: 1rem; font-weight: 500; }
+.tag-count { color: var(--ink-muted); font-family: var(--ink-font-body); font-size: 0.9375rem; }
+.tag-posts { display: grid; }
+.tag-post-link { display: flex; gap: 20px; padding-block: 8px; text-decoration: none; }
+.tag-post-link > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.tag-post-link:hover span:last-child { text-decoration: underline; text-decoration-color: var(--ink-accent); }
+.tag-post-date { min-width: 7.5em; color: var(--ink-muted); }
+
+/* ---------- Empty states (before the first sync) ---------- */
+
+.lm-empty, .empty-state { padding-block: clamp(48px, 10vw, 120px); }
+.lm-empty .empty-state { padding-block: 0; }
+.empty-state-mark { display: none; }
+.empty-state-kicker { margin: 0 0 8px; color: var(--ink-muted); font-size: 0.9375rem; letter-spacing: 0; text-transform: none; }
+.empty-state-title { margin: 0 0 16px; font-size: clamp(1.75rem, 4vw, 3rem); font-weight: 400; letter-spacing: -0.025em; line-height: 1.1; }
+.empty-state-copy { max-width: 32em; margin: 0 0 8px; }
+.empty-state-note { max-width: 32em; margin: 0; color: var(--ink-muted); }
+
+/* ---------- Tablets and phones ---------- */
+
+@media (max-width: 900px) {
+  .lm-about { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 720px) {
+  .lm-bar { flex-direction: column; align-items: stretch; gap: 12px; padding-top: 20px; }
+  .lm-plates--pair { display: none; }
+  .lm-plates--list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 56px;
+  }
+  .lm-frame img { max-height: none; }
+  .lm-topics { margin: 48px 0 36px; }
+  .lm-topics ul { gap: 8px 20px; }
+  .tag-post-link { flex-direction: column; gap: 0; }
+  .lm-prose table { font-size: 0.9375rem; }
+  .lm-prose th, .lm-prose td { padding-right: 12px; }
+}
+
+/* Narrow phones: a tighter menu so the last item peeks in at the edge and
+   shows the row scrolls. */
+@media (max-width: 380px) {
+  .lm-nav ul { column-gap: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
