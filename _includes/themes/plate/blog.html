@@ -1,0 +1,22 @@
+<div class="ink-post-list pl-shell pl-index">
+  <header class="pl-page-head">
+    <h1 class="pl-page-title">{{ page.title | default: "Work" }}</h1>
+    {%- if site.posts.size > 0 %}<p class="pl-head-note">{{ site.posts.size }} {% if site.posts.size == 1 %}piece{% else %}pieces{% endif %}, newest first</p>{% endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="From Notion"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign pl_total = site.posts.size %}
+  <ul class="pl-grid">
+    {%- for post in site.posts %}
+    {%- assign pl_n = pl_total | minus: forloop.index0 %}{% assign pl_lazy = false %}{% if forloop.index > 4 %}{% assign pl_lazy = true %}{% endif %}
+    {% include themes/plate/_card.html post=post n=pl_n lazy=pl_lazy %}
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+</div>

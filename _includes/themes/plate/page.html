@@ -1,0 +1,11 @@
+<div class="ink-page pl-shell">
+  <article class="pl-article">
+    <header class="pl-post-head">
+      <h1 class="pl-post-title">{{ page.title }}</h1>
+      {%- if page.description %}<p class="pl-dek">{{ page.description }}</p>{% endif %}
+    </header>
+    <div class="pl-prose page-content">
+      {{ content }}
+    </div>
+  </article>
+</div>

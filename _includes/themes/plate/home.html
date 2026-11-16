@@ -1,0 +1,70 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home pl-home">
+  {%- if home and home.name != blank %}
+  {%- assign pl_len = home.name | size -%}
+  {%- if pl_len <= 12 %}{% assign pl_fit = "s" %}{% elsif pl_len <= 20 %}{% assign pl_fit = "m" %}{% else %}{% assign pl_fit = "l" %}{% endif %}
+  <section class="pl-top pl-shell" aria-labelledby="pl-name">
+    <div class="pl-intro">
+      <h1 class="pl-name pl-name--{{ pl_fit }}" id="pl-name">{{ home.name }}</h1>
+      {%- if home.tagline != blank %}
+      <p class="pl-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+      {%- if home.social_links.size > 0 %}
+      <ul class="pl-links" aria-label="Links">
+        {%- for link in home.social_links %}
+        <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+    <figure class="pl-proof">
+      <div class="pl-sheet">
+        {%- comment -%} Hidden proof on a real site: no surface, so no shader download or WebGL. Previews keep it so the customizer can switch back. {%- endcomment -%}
+        {%- unless ink_attrs contains 'data-ink-proof="hidden"' and site.inkdrafts_preview != true %}
+        {% include ink/motion.html %}
+        {%- endunless %}
+      </div>
+      <figcaption class="pl-caption"><span>Test proof</span><span>One ink</span></figcaption>
+    </figure>
+  </section>
+
+  {%- assign pl_total = site.posts.size %}
+  <section class="pl-list pl-shell" aria-labelledby="pl-work">
+    <div class="pl-head">
+      <h2 class="pl-head-title" id="pl-work">Work</h2>
+      {%- if pl_total > 0 %}<span class="pl-head-note">Newest first</span>{% endif %}
+    </div>
+    {%- if pl_total > 0 %}
+    <ul class="pl-grid">
+      {%- for post in site.posts limit: 8 %}
+      {%- assign pl_n = pl_total | minus: forloop.index0 %}{% assign pl_lazy = false %}{% if forloop.index > 4 %}{% assign pl_lazy = true %}{% endif %}
+      {% include themes/plate/_card.html post=post n=pl_n lazy=pl_lazy %}
+      {%- endfor %}
+    </ul>
+    <p class="pl-all"><a href="{{ '/blog/' | relative_url }}">All work{% if pl_total > 8 %}, {{ pl_total }} pieces{% endif %}</a></p>
+    {%- else %}
+    <p class="pl-none">New work will be listed here, newest first, once you publish your first post in Notion.</p>
+    {%- endif %}
+  </section>
+
+  {%- if home.bio != blank %}
+  <section class="pl-studio pl-shell" aria-labelledby="pl-studio-title">
+    <div class="pl-studio-inner">
+      <h2 class="pl-head-title" id="pl-studio-title">Studio</h2>
+      <div class="pl-prose pl-bio">{{ home.bio | markdownify | replace: '<h3', '<h4' | replace: '</h3>', '</h4>' | replace: '<h2', '<h3' | replace: '</h2>', '</h3>' }}</div>
+    </div>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="pl-shell">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="Setup in progress"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>
