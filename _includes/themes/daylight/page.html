@@ -1,0 +1,11 @@
+<div class="ink-page dl-page dl-shell">
+  <header class="dl-page-head">
+    <h1 class="dl-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="dl-page-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="dl-prose dl-body">
+    {{ content }}
+  </div>
+</div>

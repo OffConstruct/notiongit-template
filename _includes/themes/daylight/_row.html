@@ -1,0 +1,6 @@
+{%- assign dl_post = include.post -%}
+<li class="dl-row">
+  <time class="dl-row-year" datetime="{{ dl_post.date | date_to_xmlschema }}">{{ dl_post.date | date: "%Y" }}</time>
+  <a class="dl-row-title" href="{{ dl_post.url | relative_url }}">{{ dl_post.title }}</a>
+  <span class="dl-row-tags">{% if dl_post.tags.size > 0 %}{{ dl_post.tags | join: ", " }}{% endif %}</span>
+</li>

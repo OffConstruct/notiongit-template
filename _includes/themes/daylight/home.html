@@ -1,0 +1,107 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home dl-home">
+  {%- if home and home.name and home.name != "" %}
+  {%- assign dl_bio = home.bio | markdownify -%}
+  {%- assign dl_parts = dl_bio | split: "<h2" -%}
+  {%- if home.tagline != blank %}{% assign dl_lede = home.tagline %}{% else %}{% assign dl_lede = home.name %}{% endif -%}
+  {%- assign dl_len = dl_lede | size -%}
+  {%- if dl_len <= 40 %}{% assign dl_fit = "s" %}{% elsif dl_len <= 90 %}{% assign dl_fit = "m" %}{% else %}{% assign dl_fit = "l" %}{% endif %}
+
+  <section class="dl-intro dl-shell" aria-labelledby="dl-lede">
+    <h1 class="dl-lede dl-lede--{{ dl_fit }}" id="dl-lede">{{ dl_lede }}</h1>
+    {%- if home.bio != blank or home.social_links.size > 0 %}
+    <div class="dl-intro-cols">
+      {%- if home.bio != blank and dl_parts[0] != blank %}
+      <div class="dl-intro-bio dl-prose">{{ dl_parts[0] }}</div>
+      {%- endif %}
+      {%- if home.social_links.size > 0 %}
+      <ul class="dl-intro-links" aria-label="Links">
+        {%- for link in home.social_links %}
+        <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+    {%- endif %}
+  </section>
+
+  {%- assign dl_sheets = site.posts | where: "featured", true -%}
+  {%- if dl_sheets.size == 0 %}{% assign dl_sheets = site.posts | where_exp: "p", "p.cover_image" %}{% endif -%}
+  {%- assign dl_sheets = dl_sheets | slice: 0, 4 -%}
+  {%- capture dl_sheet_urls %}{% for p in dl_sheets %}|{{ p.url }}|{% endfor %}{% endcapture -%}
+
+  {%- if dl_sheets.size > 0 %}
+  <section class="dl-section dl-shell" aria-labelledby="dl-work-title">
+    <h2 class="dl-label" id="dl-work-title">Selected projects</h2>
+    <ol class="dl-sheets">
+      {%- for post in dl_sheets %}
+      <li class="dl-sheet">
+        <a href="{{ post.url | relative_url }}" aria-labelledby="dl-sheet-{{ forloop.index }}">
+          {%- if post.cover_image %}
+          <span class="dl-wall"><img src="{{ post.cover_image }}" alt="" {% if forloop.index > 1 %}loading="lazy" {% endif %}decoding="async"></span>
+          {%- else %}
+          <span class="dl-wall dl-wall--placard" aria-hidden="true"><span class="dl-placard">{% if post.tags.size > 0 %}{{ post.tags | first }}<br>{% endif %}{{ post.date | date: "%Y" }}</span></span>
+          {%- endif %}
+          <span class="dl-cap">
+            <span class="dl-cap-n" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+            <span class="dl-cap-title" id="dl-sheet-{{ forloop.index }}">{{ post.title }}</span>
+            <span class="dl-cap-tags">{% if post.tags.size > 0 %}{{ post.tags | join: ", " }}<br>{% endif %}<time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y" }}</time></span>
+            {%- if post.excerpt != blank %}
+            <span class="dl-cap-text">{{ post.excerpt | strip_html | strip | truncatewords: 32 }}</span>
+            {%- endif %}
+          </span>
+        </a>
+      </li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endif %}
+
+  {%- assign dl_count = 0 -%}
+  {%- capture dl_rows -%}
+  {%- for post in site.posts -%}
+    {%- capture dl_key %}|{{ post.url }}|{% endcapture -%}
+    {%- if dl_sheet_urls contains dl_key %}{% continue %}{% endif -%}
+    {%- if dl_count >= 8 %}{% break %}{% endif %}
+    {% include themes/daylight/_row.html post=post %}
+    {%- assign dl_count = dl_count | plus: 1 -%}
+  {%- endfor -%}
+  {%- endcapture -%}
+
+  {%- if dl_count > 0 %}
+  <section class="dl-section dl-shell" aria-labelledby="dl-index-title">
+    <h2 class="dl-label" id="dl-index-title">{% if dl_sheets.size > 0 %}Other posts{% else %}Posts{% endif %}</h2>
+    <ul class="dl-rows">
+      {{ dl_rows }}
+    </ul>
+    {%- assign dl_shown = dl_count | plus: dl_sheets.size -%}
+    {%- if site.posts.size > dl_shown %}
+    <p class="dl-more"><a href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} posts</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
+  {%- if dl_parts.size > 1 %}
+  <section class="dl-section dl-shell" aria-labelledby="dl-about-title">
+    <h2 class="dl-hidden" id="dl-about-title">About</h2>
+    <div class="dl-about">
+      {%- for part in dl_parts offset: 1 %}
+      {%- assign dl_part = part | prepend: "<h3" | replace: "</h2>", "</h3>" %}
+      <div class="dl-about-part dl-prose">{{ dl_part }}</div>
+      {%- endfor %}
+    </div>
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="dl-shell dl-empty">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="Setup in progress"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

@@ -1,0 +1,528 @@
+/* Daylight theme for InkDrafts. Static CSS only: no front matter, no
+   @import, no remote url(). Tokens and tweak hooks: docs/themes/README.md.
+   One idea moves: faint sunlight (god-rays) falls into the room from the
+   top-right and fades out before the projects. Everything else is still.
+   Motion contract: docs/themes/motion.md. */
+
+:root {
+  color-scheme: light;
+  --ink-bg: #f2eee7;
+  --ink-text: #24211d;
+  --ink-muted: #6b6358;
+  --ink-accent: var(--tw-accent);
+  --ink-font-body: var(--tw-font-body);
+  --ink-font-display: var(--tw-font-display);
+  --ink-font-mono: var(--tw-font-mono);
+
+  --dl-rule: color-mix(in oklab, var(--ink-text) 16%, var(--ink-bg));
+  --dl-wall: color-mix(in oklab, var(--ink-text) 6%, var(--ink-bg));
+  --dl-soft: color-mix(in oklab, var(--ink-text) 86%, var(--ink-bg));
+  --dl-gutter: clamp(16px, 4vw, 48px);
+  --dl-max: 1240px;
+  --dl-gap: 24px;
+  --dl-section: clamp(56px, 8vw, 104px);
+  /* The shadow a picture casts on the wall: always darker than the wall. */
+  --dl-shade: var(--ink-text);
+
+  /* Motion: sunlight on plaster. The shader adds the tint over the bg, so
+     the rays read as light falling into the room, not as shadow. */
+  --dl-sun: #e9c98f;
+  --motion-tint: color-mix(in oklab, var(--dl-sun) 42%, var(--ink-bg));
+  --motion-intensity: 0.3;
+  --ink-motion-opacity: 0.75;
+  /* Shown with Motion off, or without JavaScript or WebGL. */
+  --dl-glow: color-mix(in oklab, var(--dl-sun) 30%, transparent);
+}
+
+:root[data-ink-light="cool"] { --dl-sun: #c3d3e6; }
+
+:root[data-ink-mode="dark"] {
+  color-scheme: dark;
+  --ink-bg: #151412;
+  --ink-text: #ece7de;
+  --ink-muted: #aca397;
+  --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+  /* In dark mode the sun becomes moonlight: a blue-grey tint. */
+  --dl-sun: #b3bccb;
+  --motion-tint: color-mix(in oklab, var(--dl-sun) 40%, var(--ink-bg));
+  --motion-intensity: 0.4;
+  --ink-motion-opacity: 1;
+  --dl-glow: color-mix(in oklab, var(--dl-sun) 14%, transparent);
+  --dl-shade: #000;
+}
+:root[data-ink-mode="dark"][data-ink-light="cool"] { --dl-sun: #98b2d4; }
+
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-mode="auto"] {
+    color-scheme: dark;
+    --ink-bg: #151412;
+    --ink-text: #ece7de;
+    --ink-muted: #aca397;
+    --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+    --dl-sun: #b3bccb;
+    --motion-tint: color-mix(in oklab, var(--dl-sun) 40%, var(--ink-bg));
+    --motion-intensity: 0.4;
+    --ink-motion-opacity: 1;
+    --dl-glow: color-mix(in oklab, var(--dl-sun) 14%, transparent);
+    --dl-shade: #000;
+  }
+  :root[data-ink-mode="auto"][data-ink-light="cool"] { --dl-sun: #98b2d4; }
+}
+
+/* A custom accent has no dark hex: darken it on light plaster and lift it
+   on dark, where supported, so links and focus rings stay readable. */
+@supports (color: oklch(from red l c h)) {
+  :root:not([data-ink-mode="dark"])[data-ink-accent="custom"] {
+    --ink-accent: oklch(from var(--tw-accent) min(l, 0.55) c h);
+  }
+  :root[data-ink-mode="dark"][data-ink-accent="custom"] {
+    --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-ink-mode="auto"][data-ink-accent="custom"] {
+      --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+    }
+  }
+}
+
+/* ---------- Base ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--ink-bg);
+  color: var(--ink-text);
+  font-family: var(--ink-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img { max-width: 100%; height: auto; }
+
+a {
+  color: inherit;
+  text-decoration-color: color-mix(in oklab, var(--ink-text) 30%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+a:hover { color: var(--ink-accent); text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--ink-accent); outline-offset: 3px; border-radius: 1px; }
+
+h1, h2, h3, h4 { font-family: var(--ink-font-display); font-weight: 400; line-height: 1.1; text-wrap: balance; overflow-wrap: break-word; }
+
+.dl-shell,
+.container {
+  width: min(100% - 2 * var(--dl-gutter), var(--dl-max));
+  margin-inline: auto;
+}
+.main { display: block; padding-bottom: var(--dl-section); }
+.main .container { width: min(100% - 2 * var(--dl-gutter), var(--dl-max)); }
+
+/* ---------- The light ----------
+   The engine mounts the backdrop as the first child of <body>. It is held
+   to the top of the page (absolute, so it scrolls away with the intro)
+   and masked to the top-right corner, so the projects and every list below
+   sit on still plaster. */
+.ink-motion--backdrop {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: min(100svh, 860px);
+  -webkit-mask-image: radial-gradient(120% 100% at 100% 0%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(120% 100% at 100% 0%, #000 30%, transparent 78%);
+  --ink-motion-fallback: radial-gradient(70% 60% at 100% 0%, var(--dl-glow), transparent 70%);
+}
+.ink-body:not(.ink-body--home) .ink-motion--backdrop { height: min(60svh, 520px); }
+
+/* ---------- Header ---------- */
+
+.dl-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 32px;
+  padding-block: 20px;
+  border-bottom: 1px solid var(--dl-rule);
+}
+.dl-mark { font-weight: 500; font-size: 1rem; text-decoration: none; padding-block: 8px; }
+.dl-mark:hover { color: var(--ink-text); }
+.dl-nav ul { display: flex; flex-wrap: wrap; gap: 4px 28px; margin: 0; padding: 0; list-style: none; }
+.dl-nav a {
+  display: inline-block;
+  padding-block: 8px;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+.dl-nav a:hover,
+.dl-nav a[aria-current="page"] { color: var(--ink-text); }
+.dl-nav a[aria-current="page"] { text-decoration: underline; text-decoration-color: var(--ink-accent); text-underline-offset: 0.4em; }
+.dl-nav-empty { margin: 0; color: var(--ink-muted); font-size: 0.9375rem; }
+
+/* ---------- Home: intro ---------- */
+
+.dl-grid,
+.dl-intro,
+.dl-intro-cols {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--dl-gap);
+}
+.dl-intro { padding-block: clamp(40px, 6vw, 80px) clamp(44px, 5vw, 64px); }
+.dl-lede {
+  grid-column: 1 / span 8;
+  margin: 0 0 clamp(28px, 3.5vw, 44px);
+  letter-spacing: -0.01em;
+  line-height: 1.04;
+}
+/* Sized by length, so a long tagline stays within about three lines. */
+.dl-lede--s { font-size: clamp(2.75rem, 7vw, 6rem); }
+.dl-lede--m { font-size: clamp(2.25rem, 5vw, 4.25rem); }
+.dl-lede--l { font-size: clamp(2rem, 3.6vw, 3.125rem); line-height: 1.08; }
+:root[data-ink-font="cormorant"] .dl-lede { letter-spacing: -0.015em; }
+
+.dl-intro-cols { grid-column: 1 / -1; row-gap: 20px; }
+.dl-intro-bio { grid-column: 1 / span 5; color: var(--dl-soft); }
+.dl-intro-bio > :first-child { margin-top: 0; }
+.dl-intro-bio > :last-child { margin-bottom: 0; }
+.dl-intro-links {
+  grid-column: 7 / span 3;
+  align-self: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+}
+.dl-intro-links a { display: inline-block; padding-block: 4px; }
+
+/* ---------- Sections ---------- */
+
+.dl-section {
+  padding-top: 16px;
+  margin-top: var(--dl-section);
+  border-top: 1px solid var(--dl-rule);
+}
+.dl-intro + .dl-section { margin-top: 0; }
+.dl-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.dl-label {
+  margin: 0 0 20px;
+  color: var(--ink-muted);
+  font-family: var(--ink-font-body);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* ---------- Project sheets ---------- */
+
+.dl-sheets { margin: 0; padding: 0; list-style: none; }
+.dl-sheet + .dl-sheet { margin-top: clamp(64px, 8vw, 104px); }
+.dl-sheet > a { display: block; text-decoration: none; scroll-margin-block: 16px; }
+.dl-sheet > a:hover { color: inherit; }
+.dl-sheet > a:focus-visible { outline-offset: 6px; }
+
+/* The wall: the work hangs whole on a slightly darker plaster panel. */
+.dl-wall {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  aspect-ratio: 3 / 2;
+  max-height: 70svh;
+  width: 100%;
+  overflow: hidden;
+  background: var(--dl-wall);
+}
+.dl-wall img {
+  display: block;
+  width: auto;
+  height: 84%;
+  max-width: 88%;
+  object-fit: contain;
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--dl-shade) 16%, transparent), 0 12px 32px -18px color-mix(in oklab, var(--dl-shade) 30%, transparent);
+}
+:root[data-ink-pictures="full"] .dl-wall img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  box-shadow: none;
+}
+
+/* A project without a picture: a placard on the wall. */
+.dl-placard {
+  font-family: var(--ink-font-display);
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.05;
+  text-align: center;
+}
+
+.dl-cap {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--dl-gap);
+  row-gap: 8px;
+  align-items: baseline;
+  padding-top: 20px;
+}
+.dl-cap-n { grid-column: 1 / span 1; color: var(--ink-muted); font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+.dl-cap-title {
+  grid-column: 2 / span 5;
+  font-family: var(--ink-font-display);
+  font-size: clamp(1.625rem, 2.4vw, 2rem);
+  line-height: 1.15;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.dl-cap-tags { grid-column: 7 / span 2; color: var(--ink-muted); font-size: 0.9375rem; line-height: 1.5; }
+.dl-cap-text { grid-column: 9 / span 4; color: var(--dl-soft); font-size: 0.9375rem; line-height: 1.55; }
+.dl-sheet > a:hover .dl-cap-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; text-decoration-color: var(--ink-accent); }
+
+:root[data-ink-numbers="off"] .dl-cap-n { display: none; }
+:root[data-ink-numbers="off"] .dl-cap-title { grid-column: 1 / span 6; }
+
+/* ---------- Index rows (home and the blog page) ---------- */
+
+.dl-rows { margin: 0; padding: 0; list-style: none; }
+.dl-row,
+.dl-index-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: baseline;
+  column-gap: var(--dl-gap);
+}
+.dl-row > :first-child,
+.dl-index-head > :first-child { grid-column: 1 / span 1; }
+.dl-row-title,
+.dl-index-head > :nth-child(2) { grid-column: 2 / span 5; }
+.dl-row-tags,
+.dl-index-head > :nth-child(3) { grid-column: 7 / -1; }
+.dl-row { padding-block: 12px; border-top: 1px solid var(--dl-rule); }
+.dl-row:first-child { border-top: 0; }
+.dl-row-year,
+.dl-row-tags { color: var(--ink-muted); font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+.dl-row-title { text-decoration: none; line-height: 1.45; padding-block: 2px; }
+.dl-row-title:hover { text-decoration: underline; }
+.dl-index-head {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--dl-rule);
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+.dl-listing .dl-row:first-child { border-top: 0; }
+.dl-more { margin: 20px 0 0; padding-left: calc((100% + var(--dl-gap)) / 12); }
+.dl-more a { text-decoration-color: var(--ink-accent); }
+
+/* ---------- About (the rest of the bio) ---------- */
+
+.dl-about {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 32px var(--dl-gap);
+  max-width: 56rem;
+}
+.dl-about-part > :first-child { margin-top: 0; }
+.dl-about-part h3 { font-size: 1.625rem; margin: 0 0 12px; }
+.dl-about ul { margin-left: 0; padding: 0; list-style: none; }
+.dl-about-part > :last-child { margin-bottom: 0; }
+
+/* ---------- Page heads (blog, post, page) ---------- */
+
+.dl-page-head { padding-top: clamp(56px, 9vw, 112px); padding-bottom: clamp(32px, 4vw, 48px); }
+.dl-page-title {
+  margin: 0;
+  max-width: 18ch;
+  font-size: clamp(2.5rem, 6vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+.dl-post-title { max-width: 20ch; font-size: clamp(2.25rem, 5vw, 4.25rem); }
+.dl-page-lede { max-width: 34em; margin: 20px 0 0; color: var(--ink-muted); font-size: 1.125rem; }
+.dl-listing .dl-page-head { padding-bottom: clamp(40px, 5vw, 64px); }
+.dl-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin: 20px 0 0;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+.dl-meta a { color: var(--ink-text); }
+
+/* ---------- Post and page body ---------- */
+
+.dl-post-wall { margin-bottom: clamp(40px, 6vw, 80px); }
+
+.dl-body { max-width: 38em; font-size: 1.125rem; line-height: 1.7; }
+.dl-page .dl-body,
+.dl-post .dl-body { margin-left: calc((100% + var(--dl-gap)) / 12 * 2); }
+.dl-body > :first-child { margin-top: 0; }
+
+.dl-prose { overflow-wrap: break-word; }
+.dl-prose h2 { font-size: 2rem; margin: 1.6em 0 0.5em; }
+.dl-prose h3 { font-size: 1.5rem; margin: 1.6em 0 0.4em; }
+.dl-prose p, .dl-prose ul, .dl-prose ol { margin: 0 0 1.1em; }
+.dl-prose li + li { margin-top: 0.3em; }
+.dl-prose img { display: block; margin-block: 2em; }
+.dl-prose figure { margin: 2em 0; }
+.dl-prose figcaption { color: var(--ink-muted); font-size: 0.9375rem; margin-top: 8px; }
+.dl-prose blockquote {
+  margin: 1.8em 0;
+  padding: 0;
+  font-family: var(--ink-font-display);
+  font-size: 1.75rem;
+  line-height: 1.3;
+}
+.dl-prose pre {
+  overflow-x: auto;
+  margin: 1.6em 0;
+  padding: 16px 20px;
+  background: var(--dl-wall);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.dl-prose pre code { background: none; padding: 0; font-size: 1em; }
+code { font-family: var(--ink-font-mono); font-size: 0.88em; }
+:not(pre) > code { padding: 0.1em 0.3em; background: var(--dl-wall); border-radius: 2px; }
+.dl-prose table { width: 100%; border-collapse: collapse; font-size: 1rem; margin: 1.6em 0; }
+.dl-prose th, .dl-prose td { overflow-wrap: anywhere; padding: 12px 16px 12px 0; border-bottom: 1px solid var(--dl-rule); text-align: left; vertical-align: top; }
+.dl-prose th { font-weight: 500; overflow-wrap: normal; }
+.dl-prose hr { border: 0; border-top: 1px solid var(--dl-rule); margin-block: 2.4em; }
+sup, sub { line-height: 0; }
+.footnotes { margin-top: 3em; color: var(--ink-muted); font-size: 0.9375rem; }
+.footnotes a { color: var(--ink-text); }
+
+.dl-post-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 32px;
+  margin-top: var(--dl-section);
+  padding-top: 16px;
+  border-top: 1px solid var(--dl-rule);
+}
+.dl-tags { display: flex; flex-wrap: wrap; gap: 0 20px; margin: 0; padding: 0; list-style: none; font-size: 0.9375rem; }
+.dl-tags a { display: inline-block; padding-block: 8px; color: var(--ink-muted); }
+.dl-tags a:hover { color: var(--ink-accent); }
+.dl-back { display: inline-block; padding-block: 8px; text-decoration: none; }
+.dl-back:hover { text-decoration: underline; }
+
+/* Rouge highlighting, kept quiet. */
+.highlight .c, .highlight .c1, .highlight .cm { color: var(--ink-muted); font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kn { color: var(--ink-accent); }
+.highlight .s, .highlight .s1, .highlight .s2 { color: color-mix(in oklab, var(--ink-accent) 55%, var(--ink-text)); }
+
+/* ---------- Footer ---------- */
+
+.dl-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 32px;
+  padding-block: 24px 40px;
+  border-top: 1px solid var(--dl-rule);
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+.dl-footer-inner p { margin: 0; }
+.dl-footer-links { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.dl-footer a { display: inline-block; padding-block: 4px; text-decoration: none; }
+.dl-footer a:hover { color: var(--ink-text); text-decoration: underline; }
+
+/* ---------- Tags page (base markup) ---------- */
+
+.ink-tags.container { padding-top: clamp(56px, 9vw, 112px); }
+.tags-header h1 {
+  margin: 0 0 clamp(32px, 5vw, 56px);
+  font-size: clamp(2.5rem, 6vw, 4.75rem);
+  line-height: 1.02;
+}
+.tag-group { max-width: 56rem; padding-top: 16px; margin-bottom: 40px; border-top: 1px solid var(--dl-rule); scroll-margin-top: 24px; }
+.tag-group-name { display: flex; gap: 16px; align-items: baseline; margin: 0 0 8px; font-size: 1.75rem; text-transform: capitalize; }
+.tag-count { color: var(--ink-muted); font-family: var(--ink-font-body); font-size: 0.9375rem; }
+.tag-posts { display: grid; }
+.tag-post-link { display: flex; gap: 20px; padding-block: 8px; text-decoration: none; }
+.tag-post-link > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.tag-post-link:hover span:last-child { text-decoration: underline; }
+.tag-post-date { color: var(--ink-muted); min-width: 7.5em; font-variant-numeric: tabular-nums; }
+
+/* ---------- Empty states (before the first sync) ---------- */
+
+.dl-empty, .empty-state { padding-block: clamp(48px, 10vw, 120px); }
+.dl-empty .empty-state { padding-block: 0; }
+.empty-state-mark { display: none; }
+.empty-state-kicker { margin: 0 0 8px; color: var(--ink-muted); font-size: 0.9375rem; letter-spacing: 0; text-transform: none; }
+.empty-state-title { margin: 0 0 16px; font-size: clamp(2.25rem, 5vw, 3.75rem); line-height: 1.04; }
+.empty-state-copy { max-width: 32em; margin: 0 0 8px; }
+.empty-state-note { max-width: 32em; margin: 0; color: var(--ink-muted); }
+
+/* ---------- Tablets and phones ---------- */
+
+@media (max-width: 900px) {
+  .dl-lede { grid-column: 1 / -1; }
+  .dl-intro-bio { grid-column: 1 / span 8; }
+  .dl-intro-links { grid-column: 9 / -1; }
+  .dl-row > :first-child,
+  .dl-index-head > :first-child { grid-column: 1 / span 2; }
+  .dl-row-title,
+  .dl-index-head > :nth-child(2) { grid-column: 3 / span 6; }
+  .dl-row-tags,
+  .dl-index-head > :nth-child(3) { grid-column: 9 / -1; }
+  .dl-more { padding-left: calc((100% + var(--dl-gap)) / 12 * 2); }
+  .dl-cap-n { grid-column: 1 / span 1; }
+  .dl-cap-title { grid-column: 2 / span 7; }
+  .dl-cap-tags { grid-column: 9 / -1; }
+  .dl-cap-text { grid-column: 2 / span 8; }
+  :root[data-ink-numbers="off"] .dl-cap-title { grid-column: 1 / span 8; }
+  :root[data-ink-numbers="off"] .dl-cap-text { grid-column: 1 / span 9; }
+  .dl-page .dl-body,
+  .dl-post .dl-body { margin-left: 0; }
+}
+
+@media (max-width: 640px) {
+  .dl-bar { padding-block: 12px; }
+  .dl-intro { padding-block: 40px 48px; }
+  .dl-intro-bio,
+  .dl-intro-links { grid-column: 1 / -1; }
+  .dl-wall { aspect-ratio: 4 / 5; }
+  .dl-wall img { height: auto; max-height: 84%; }
+  :root[data-ink-pictures="full"] .dl-wall img { max-height: none; }
+  .dl-cap { row-gap: 4px; }
+  .dl-cap-n { grid-column: 1 / span 2; }
+  .dl-cap-title,
+  .dl-cap-tags,
+  .dl-cap-text,
+  :root[data-ink-numbers="off"] .dl-cap-title,
+  :root[data-ink-numbers="off"] .dl-cap-text { grid-column: 3 / -1; }
+  :root[data-ink-numbers="off"] .dl-cap-title,
+  :root[data-ink-numbers="off"] .dl-cap-tags,
+  :root[data-ink-numbers="off"] .dl-cap-text { grid-column: 1 / -1; }
+  .dl-row { grid-template-columns: 3.5rem minmax(0, 1fr); row-gap: 2px; }
+  .dl-row > :first-child { grid-column: 1; }
+  .dl-row-title,
+  .dl-row-tags { grid-column: 2; }
+  .dl-index-head { display: none; }
+  .dl-more { padding-left: 0; }
+  .dl-prose th, .dl-prose td { padding-right: 12px; }
+  .tag-post-link { flex-direction: column; gap: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

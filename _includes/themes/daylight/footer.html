@@ -1,0 +1,7 @@
+{%- assign dl_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<footer class="ink-footer dl-footer">
+  <div class="dl-shell dl-footer-inner">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ dl_name }}</p>
+    <p class="dl-footer-links"><a href="{{ '/feed.xml' | relative_url }}">RSS feed</a> <a href="https://inkdrafts.com">Made with InkDrafts</a></p>
+  </div>
+</footer>

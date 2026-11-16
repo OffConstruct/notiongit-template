@@ -1,0 +1,29 @@
+<article class="ink-post dl-post dl-shell">
+  <header class="dl-page-head dl-post-head">
+    <h1 class="dl-page-title dl-post-title">{{ page.title }}</h1>
+    <p class="dl-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+      <span>{{ content | number_of_words | divided_by: 230 | plus: 1 }} min read</span>
+      {%- if page.canonical_url %}
+      {%- assign dl_host = page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." %}
+      <span>First published on <a href="{{ page.canonical_url }}">{{ dl_host }}</a></span>
+      {%- endif %}
+    </p>
+  </header>
+  {%- if page.cover_image %}
+  <figure class="dl-wall dl-post-wall"><img src="{{ page.cover_image }}" alt="" decoding="async"></figure>
+  {%- endif %}
+  <div class="dl-prose dl-body">
+    {{ content }}
+  </div>
+  <footer class="dl-post-foot">
+    {%- if page.tags.size > 0 %}
+    <ul class="dl-tags" aria-label="Tags">
+      {%- for tag in page.tags %}
+      <li><a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    <a class="dl-back" href="{{ '/blog/' | relative_url }}">Back to all posts</a>
+  </footer>
+</article>

@@ -1,0 +1,90 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "daylight",
+  "name": "Daylight",
+  "version": "1.0.0",
+  "summary": "For interior and exhibition designers: your tagline in large type, then each project as a big picture with a caption.",
+  "description": "For interior, spatial, set and exhibition designers. The home page opens with your tagline in large serif type while faint sunlight falls in from one corner. Each featured project gets a full-width picture with its number, title, place and a short note, and your other posts follow in a table by year.",
+  "categories": ["designers"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "instrument",
+      "label": "Instrument Serif and Instrument Sans",
+      "google": "family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500",
+      "stacks": {
+        "body": "\"Instrument Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Instrument Serif\", \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "cormorant",
+      "label": "Cormorant Garamond and Inter Tight",
+      "google": "family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500",
+      "stacks": {
+        "body": "\"Inter Tight\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Cormorant Garamond\", \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f2eee7", "text": "#24211d", "muted": "#6b6358" },
+    "dark": { "bg": "#151412", "text": "#ece7de", "muted": "#aca397" }
+  },
+  "motion": {
+    "shader": "god-rays",
+    "placement": "backdrop",
+    "speed": 0.2,
+    "frame": 8000,
+    "colors": {
+      "colorBack": "--ink-bg",
+      "colorBloom": "--ink-bg",
+      "colors": ["--motion-tint"]
+    },
+    "params": {
+      "density": 0.25,
+      "spotty": 0.2,
+      "midIntensity": 0.25,
+      "midSize": 0.3,
+      "intensity": "--motion-intensity",
+      "bloom": 0.3,
+      "offsetX": 0.6,
+      "offsetY": -0.7
+    }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "ochre", "custom": true,
+      "presets": [
+        { "value": "ochre", "label": "Ochre", "light": "#8c5a1e", "dark": "#d9a466" },
+        { "value": "terracotta", "label": "Terracotta", "light": "#a2482c", "dark": "#e59a7c" },
+        { "value": "slate", "label": "Slate blue", "light": "#3f5d78", "dark": "#a3bdd4" },
+        { "value": "olive", "label": "Olive", "light": "#5c6630", "dark": "#b9c27f" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "instrument" },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "light", "type": "select", "label": "Light in the room", "default": "warm",
+      "options": [
+        { "value": "warm", "label": "Warm sun" },
+        { "value": "cool", "label": "Cool north light" } ] },
+    { "key": "pictures", "type": "select", "label": "Project pictures", "default": "wall",
+      "options": [
+        { "value": "wall", "label": "Show the whole picture" },
+        { "value": "full", "label": "Crop to fill the frame" } ] },
+    { "key": "numbers", "type": "boolean", "label": "Number the projects", "default": true }
+  ]
+}

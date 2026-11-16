@@ -1,0 +1,23 @@
+<div class="ink-post-list dl-listing dl-shell">
+  <header class="dl-page-head">
+    <h1 class="dl-page-title">{{ page.title | default: "Writing" }}</h1>
+    {%- if page.description %}
+    <p class="dl-page-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <div class="dl-index-head" aria-hidden="true"><span>Year</span><span>Title</span><span>Tags</span></div>
+  <ul class="dl-rows">
+    {%- for post in site.posts %}
+    {% include themes/daylight/_row.html post=post %}
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+</div>
