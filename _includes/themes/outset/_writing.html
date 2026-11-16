@@ -1,0 +1,9 @@
+{%- if include.posts.size > 0 %}
+<ul class="ot-list">
+  {%- for post in include.posts limit: 5 %}
+  {%- assign href = post.url | relative_url -%}
+  {%- if post.canonical_url %}{% assign href = post.canonical_url %}{% endif %}
+  <li><time class="ot-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time><a href="{{ href }}">{{ post.title }}</a></li>
+  {%- endfor %}
+</ul>
+{%- endif %}

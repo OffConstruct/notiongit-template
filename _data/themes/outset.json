@@ -1,0 +1,68 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "outset",
+  "name": "Outset",
+  "version": "1.0.0",
+  "summary": "For solo founders: one line on what you are building, then a short intro, your featured posts and your latest writing.",
+  "description": "For a founder or indie maker with one product. The home page opens with your tagline in large type and, under it, a wide band with a slow, soft sunrise glow. Below it sit three short columns: the first paragraph of your bio, your featured posts and your latest posts. The rest of your story and your links come last.",
+  "categories": ["entrepreneurs"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "geist",
+      "label": "Geist and Geist Mono",
+      "google": "family=Geist:wght@400;500;600&family=Geist+Mono:wght@400",
+      "stacks": {
+        "body": "Geist, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "Geist, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "\"Geist Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f7f7f4", "text": "#101114", "muted": "#5c5f67" },
+    "dark": { "bg": "#0e0f11", "text": "#f2f2ef", "muted": "#9a9ea6" }
+  },
+  "motion": {
+    "shader": "mesh-gradient",
+    "placement": "slot",
+    "speed": 0.18,
+    "frame": 24000,
+    "colors": {
+      "colors": ["--motion-cool", "--ink-bg", "--motion-tint", "--motion-warm", "--motion-cool"]
+    },
+    "params": { "distortion": 0.3, "swirl": 0.05, "grainMixer": 0, "scale": 1.2 }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "sunrise", "custom": true,
+      "presets": [
+        { "value": "sunrise", "label": "Sunrise orange", "light": "#b24c17", "dark": "#f09060" },
+        { "value": "rose", "label": "Dusk rose", "light": "#b03a5e", "dark": "#f08ca8" },
+        { "value": "sky", "label": "Morning blue", "light": "#2d5f9a", "dark": "#8db6ec" },
+        { "value": "sage", "label": "Sage green", "light": "#3a6a48", "dark": "#8fc79f" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "banner", "type": "select", "label": "Banner height", "default": "short",
+      "options": [
+        { "value": "short", "label": "Short" },
+        { "value": "tall", "label": "Tall" } ] },
+    { "key": "headline", "type": "select", "label": "Headline size", "default": "large",
+      "options": [
+        { "value": "large", "label": "Large" },
+        { "value": "medium", "label": "Medium" } ] },
+    { "key": "featured", "type": "boolean", "label": "Show featured posts on the home page", "default": true }
+  ]
+}

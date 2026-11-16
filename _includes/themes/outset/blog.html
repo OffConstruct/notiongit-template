@@ -1,0 +1,39 @@
+<div class="ink-post-list ot-shell ot-index">
+  <h1 class="ot-title">{{ page.title | default: "Writing" }}</h1>
+  {%- if page.description and page.description != "" %}
+  <p class="ot-dek">{{ page.description }}</p>
+  {%- endif %}
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign ot_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for year in ot_years %}
+  <section class="ot-year" aria-labelledby="ot-year-{{ year.name }}">
+    <h2 class="ot-label" id="ot-year-{{ year.name }}">{{ year.name }}</h2>
+    <ul class="ot-rows">
+      {%- for post in year.items %}
+      {%- assign href = post.url | relative_url -%}
+      {%- if post.canonical_url %}{% assign href = post.canonical_url %}{% endif %}
+      <li class="ot-row">
+        <time class="ot-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%m-%d" }}</time>
+        <div class="ot-row-main">
+          <a class="ot-row-title" href="{{ href }}">{{ post.title }}</a>
+          {%- if post.excerpt %}
+          <p class="ot-row-excerpt">{{ post.excerpt | strip_html | strip | truncate: 160 }}</p>
+          {%- endif %}
+        </div>
+        {%- if post.tags.size > 0 %}
+        <span class="ot-row-tag ot-tag">{{ post.tags | first }}</span>
+        {%- endif %}
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

@@ -1,0 +1,287 @@
+/* Hallmark · theme: Outset · genre: founder home · hero: one line over a dawn band · motion: mesh-gradient in one band · v2.1.0 */
+/* Critique: a headline on a gradient card is a familiar hero, so the line sits on the plain page and the glow gets its own low band under it, pinned right like a horizon. */
+/* Outset theme for InkDrafts. Static CSS only: no front matter, no @import,
+   no remote url(). Tokens and tweak hooks: docs/themes/README.md. Motion:
+   docs/themes/motion.md. Spacing follows a 4px scale. */
+
+:root {
+  color-scheme: light;
+  --ink-bg: #f7f7f4;
+  --ink-text: #101114;
+  --ink-muted: #5c5f67;
+  --ink-accent: var(--tw-accent);
+  --ink-font-body: var(--tw-font-body);
+  --ink-font-display: var(--tw-font-display);
+  --ink-font-mono: var(--tw-font-mono);
+  --ink-rule: color-mix(in oklab, var(--ink-text) 12%, var(--ink-bg));
+  --ot-code-bg: color-mix(in oklab, var(--ink-text) 5%, var(--ink-bg));
+
+  /* The glow uses the bright (dark-mode) accent in both modes, mixed toward
+     the page, so the band stays soft even when the text accent is deep. */
+  --ot-glow: var(--tw-accent-dark, var(--tw-accent));
+  --ot-sky: #c9d3df;
+  --motion-cool: color-mix(in oklab, var(--ot-sky) 45%, var(--ink-bg));
+  --motion-tint: color-mix(in oklab, var(--ot-glow) 30%, var(--ink-bg));
+  --motion-warm: color-mix(in oklab, var(--ot-glow) 40%, var(--ink-bg));
+
+  --ot-shell: 1120px;
+  --ot-radius: 12px;
+  --ot-line-size: clamp(2.25rem, 1.2rem + 3.6vw, 4rem);
+  --ot-line-long: clamp(1.5rem, 1rem + 2.4vw, 2.75rem);
+}
+
+:root[data-ink-mode="dark"] {
+  color-scheme: dark;
+  --ink-bg: #0e0f11;
+  --ink-text: #f2f2ef;
+  --ink-muted: #9a9ea6;
+  --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+  --ot-sky: #3a4458;
+  --ot-dusk: #c8607e;
+  --motion-cool: color-mix(in oklab, var(--ot-sky) 55%, var(--ink-bg));
+  --motion-tint: color-mix(in oklab, color-mix(in oklab, var(--ot-glow) 45%, var(--ot-dusk)) 34%, var(--ink-bg));
+  --motion-warm: color-mix(in oklab, color-mix(in oklab, var(--ot-glow) 75%, var(--ot-dusk)) 50%, var(--ink-bg));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-ink-mode="auto"] {
+    color-scheme: dark;
+    --ink-bg: #0e0f11;
+    --ink-text: #f2f2ef;
+    --ink-muted: #9a9ea6;
+    --ink-accent: var(--tw-accent-dark, var(--tw-accent));
+    --ot-sky: #3a4458;
+    --ot-dusk: #c8607e;
+    --motion-cool: color-mix(in oklab, var(--ot-sky) 55%, var(--ink-bg));
+    --motion-tint: color-mix(in oklab, color-mix(in oklab, var(--ot-glow) 45%, var(--ot-dusk)) 34%, var(--ink-bg));
+    --motion-warm: color-mix(in oklab, color-mix(in oklab, var(--ot-glow) 75%, var(--ot-dusk)) 50%, var(--ink-bg));
+  }
+}
+
+/* The dusk rose warms only the orange preset; other accents keep their own hue. */
+:root:not([data-ink-accent="sunrise"]) { --ot-dusk: var(--ot-glow); }
+
+/* A custom accent has no dark hex; lift its lightness where supported. */
+@supports (color: oklch(from red l c h)) {
+  :root[data-ink-mode="dark"][data-ink-accent="custom"] {
+    --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-ink-mode="auto"][data-ink-accent="custom"] {
+      --ink-accent: oklch(from var(--tw-accent) max(l, 0.74) c h);
+    }
+  }
+  :root[data-ink-accent="custom"] {
+    --ot-glow: oklch(from var(--tw-accent) max(l, 0.74) c h);
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--ink-bg);
+  color: var(--ink-text);
+  font-family: var(--ink-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; height: auto; }
+
+a { color: inherit; text-decoration-color: var(--ink-rule); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { color: var(--ink-accent); text-decoration-color: currentColor; }
+a:active { color: color-mix(in oklab, var(--ink-accent) 72%, var(--ink-text)); text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--ink-accent); outline-offset: 3px; border-radius: 2px; }
+
+h1, h2, h3, h4 { font-family: var(--ink-font-display); font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; overflow-wrap: break-word; min-width: 0; }
+
+.ot-shell { width: min(100% - 48px, var(--ot-shell)); margin-inline: auto; }
+.main { padding-block: 0 96px; }
+
+/* Header */
+.ot-header-inner { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 32px; padding-block: 28px 24px; font-size: 0.9375rem; }
+.ot-brand { font-weight: 600; text-decoration: none; letter-spacing: -0.01em; }
+.ot-brand:hover { color: var(--ink-text); }
+.ot-nav ul { display: flex; flex-wrap: wrap; gap: 4px 24px; margin: 0; padding: 0; list-style: none; }
+.ot-nav a { color: var(--ink-muted); text-decoration: none; }
+.ot-nav a:hover, .ot-nav a[aria-current="page"] { color: var(--ink-text); }
+.ot-nav a[aria-current="page"] { text-decoration: underline; text-decoration-color: var(--ink-accent); text-underline-offset: 0.35em; }
+.ot-nav-empty { margin: 0; color: var(--ink-muted); }
+
+/* Footer */
+.ot-footer { color: var(--ink-muted); font-size: 0.9375rem; }
+.ot-footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-block: 24px 40px; border-top: 1px solid var(--ink-rule); }
+.ot-footer p { margin: 0; }
+
+/* Shared small parts */
+.ot-label { margin: 0 0 16px; font-family: var(--ink-font-body); font-size: 0.9375rem; font-weight: 500; letter-spacing: 0; line-height: 1.4; color: var(--ink-muted); }
+.ot-date { font-family: var(--ink-font-mono); font-size: 0.875rem; color: var(--ink-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ot-tag { color: var(--ink-muted); font-size: 0.9375rem; overflow-wrap: anywhere; }
+sup, sub { line-height: 0; }
+.ot-list, .ot-links, .ot-rows, .ot-tags { margin: 0; padding: 0; list-style: none; }
+.ot-prose > :first-child { margin-top: 0; }
+.ot-prose > :last-child { margin-bottom: 0; }
+.ot-prose p { margin: 0 0 16px; }
+
+/* Home: the line on the plain page, then the band under it */
+.ot-home { padding-top: 8px; }
+.ot-intro { padding-top: clamp(48px, 8vw, 96px); }
+.ot-band {
+  position: relative;
+  aspect-ratio: 16 / 2.5;
+  margin-top: clamp(32px, 4vw, 48px);
+  border-radius: var(--ot-radius);
+  overflow: hidden;
+}
+html[data-ink-banner="tall"] .ot-band { aspect-ratio: 16 / 4; }
+.ot-band > .ink-motion {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  --ink-motion-fallback:
+    radial-gradient(120% 140% at 92% 110%, var(--motion-warm) 0%, var(--motion-tint) 38%, transparent 72%),
+    linear-gradient(180deg, var(--motion-cool), var(--ink-bg));
+}
+.ot-line {
+  margin: 0;
+  max-width: 20ch;
+  font-size: var(--ot-line-size);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.ot-intro--long .ot-line { max-width: 24ch; font-size: var(--ot-line-long); line-height: 1.1; letter-spacing: -0.025em; }
+.ot-intro--longer .ot-line { max-width: 30ch; font-size: clamp(1.5rem, 1rem + 1.6vw, 2.125rem); }
+html[data-ink-headline="medium"] .ot-line { font-size: clamp(1.75rem, 1.1rem + 2.2vw, 2.75rem); line-height: 1.1; letter-spacing: -0.025em; }
+html[data-ink-headline="medium"] .ot-intro--long .ot-line,
+html[data-ink-headline="medium"] .ot-intro--longer .ot-line { font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.125rem); }
+
+/* Home: three short lists */
+.ot-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px;
+  padding-block: 56px 64px;
+  border-bottom: 1px solid var(--ink-rule);
+}
+html[data-ink-featured="off"] .ot-featured { display: none; }
+/* Writing skips featured posts only while the Featured column shows. */
+html:not([data-ink-featured="off"]) [data-variant="featured:off"],
+html[data-ink-featured="off"] [data-variant="featured:on"] { display: none; }
+/* Writing takes the space a missing list leaves, so About stays on the grid. */
+.ot-now + .ot-writing,
+html[data-ink-featured="off"] .ot-now + .ot-featured + .ot-writing { grid-column: span 2; }
+.ot-writing:first-child { grid-column: 1 / -1; }
+html[data-ink-featured="off"] .ot-featured:first-child + .ot-writing { grid-column: 1 / -1; }
+.ot-now .ot-prose { max-width: 36ch; }
+.ot-list li { padding-block: 8px; border-top: 1px solid var(--ink-rule); }
+.ot-list li:first-child { padding-top: 0; border-top: 0; }
+.ot-list a { text-decoration: none; }
+.ot-featured a { display: block; font-weight: 500; }
+.ot-writing li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: baseline; }
+.ot-more { margin: 16px 0 0; font-size: 0.9375rem; }
+.ot-more a { color: var(--ink-muted); text-decoration: underline; text-decoration-color: var(--ink-rule); }
+.ot-more a:hover { color: var(--ink-accent); }
+
+/* Home: about */
+.ot-about { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; padding-top: 56px; }
+.ot-about-body { grid-column: span 2; max-width: 64ch; }
+.ot-about .ot-prose > :first-child { margin-top: 0; }
+.ot-about .ot-prose h2, .ot-about .ot-prose h3 { margin: 32px 0 8px; font-size: 0.9375rem; font-weight: 500; letter-spacing: 0; line-height: 1.4; }
+.ot-about .ot-prose ul { margin: 0 0 16px; padding-left: 20px; }
+.ot-about .ot-prose a, .ot-body a { text-decoration-color: color-mix(in oklab, var(--ink-accent) 60%, var(--ink-bg)); }
+.ot-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 24px; font-size: 0.9375rem; }
+.ot-links a { color: var(--ink-muted); text-decoration: underline; text-decoration-color: var(--ink-rule); }
+.ot-links a:hover { color: var(--ink-accent); text-decoration-color: currentColor; }
+a:active { color: color-mix(in oklab, var(--ink-accent) 72%, var(--ink-text)); text-decoration-thickness: 2px; }
+
+/* Blog list */
+.ot-index { max-width: 720px; padding-top: 48px; }
+.ot-title { margin: 0 0 16px; font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem); font-weight: 500; line-height: 1.08; letter-spacing: -0.03em; text-wrap: balance; }
+.ot-dek { margin: 0 0 24px; max-width: 44ch; color: var(--ink-muted); font-size: 1.1875rem; line-height: 1.5; }
+.ot-year { display: grid; grid-template-columns: 5em minmax(0, 1fr); gap: 0 24px; padding-top: 32px; }
+.ot-year .ot-label { padding-top: 16px; font-family: var(--ink-font-mono); font-size: 0.875rem; }
+.ot-row { display: grid; grid-template-columns: 4em minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding-block: 16px; border-top: 1px solid var(--ink-rule); }
+.ot-row-title { font-weight: 500; text-decoration: none; }
+.ot-row-excerpt { margin: 4px 0 0; color: var(--ink-muted); font-size: 0.9375rem; line-height: 1.5; }
+
+/* Post and page */
+.ot-article { max-width: 720px; padding-top: 48px; }
+.ot-post-head { margin-bottom: 32px; }
+.ot-post-meta { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: baseline; margin: 0 0 16px; }
+.ot-post-meta .ot-date { font-family: var(--ink-font-body); font-size: 0.9375rem; }
+.ot-cover { display: block; width: 100%; max-height: 480px; object-fit: cover; margin: 0 0 40px; border-radius: var(--ot-radius); }
+.ot-body { overflow-wrap: break-word; }
+.ot-body h2 { margin: 48px 0 12px; font-size: 1.5rem; text-wrap: balance; }
+.ot-body h3 { margin: 32px 0 8px; font-size: 1.1875rem; text-wrap: balance; }
+.ot-body ul, .ot-body ol { padding-left: 24px; margin: 0 0 16px; }
+.ot-body li + li { margin-top: 4px; }
+.ot-body img { display: block; margin: 32px auto; border-radius: 8px; }
+.ot-body figure { margin: 32px 0; }
+.ot-body figcaption { margin-top: 8px; color: var(--ink-muted); font-size: 0.9375rem; }
+.ot-body pre, .ot-body .highlight { overflow-x: auto; margin: 24px 0; padding: 16px 20px; border-radius: 8px; background: var(--ot-code-bg); font-size: 0.875rem; line-height: 1.55; }
+.ot-body .highlight pre { margin: 0; padding: 0; background: none; }
+code { font-family: var(--ink-font-mono); font-size: 0.9em; }
+.ot-body :not(pre) > code { padding: 2px 4px; border-radius: 4px; background: var(--ot-code-bg); }
+blockquote { margin: 24px 0; padding-left: 20px; border-left: 2px solid var(--ink-accent); color: var(--ink-muted); }
+table { display: block; overflow-x: auto; width: 100%; margin: 24px 0; border-collapse: collapse; font-size: 0.9375rem; }
+th, td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--ink-rule); text-align: left; vertical-align: top; }
+th { font-weight: 600; }
+hr { margin-block: 40px; border: 0; border-top: 1px solid var(--ink-rule); }
+.footnotes { margin-top: 48px; color: var(--ink-muted); font-size: 0.9375rem; }
+.ot-canonical { margin-top: 32px; color: var(--ink-muted); font-size: 0.9375rem; }
+.ot-post-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--ink-rule); font-size: 0.9375rem; }
+.ot-post-foot a { color: var(--ink-muted); }
+.ot-post-foot a:hover { color: var(--ink-accent); }
+.ot-tags { display: flex; flex-wrap: wrap; gap: 4px 16px; min-width: 0; }
+.ot-tags a { overflow-wrap: anywhere; }
+
+/* Tags page (base markup) */
+.ink-tags { width: min(100% - 48px, 880px); margin-inline: auto; padding-top: 48px; }
+.tags-header h1 { margin: 0 0 16px; font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem); font-weight: 500; letter-spacing: -0.03em; }
+.tag-group { padding-top: 32px; }
+.tag-group-name { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; margin: 0 0 8px; font-size: 1.1875rem; overflow-wrap: anywhere; }
+.tag-group-name > * { min-width: 0; overflow-wrap: anywhere; }
+.tag-count { color: var(--ink-muted); font-size: 0.9375rem; font-weight: 400; }
+.tag-posts { display: grid; }
+.tag-post-link { display: grid; grid-template-columns: 8.5em minmax(0, 1fr); gap: 16px; padding-block: 8px; border-top: 1px solid var(--ink-rule); text-decoration: none; }
+.tag-post-date { font-family: var(--ink-font-mono); font-size: 0.875rem; color: var(--ink-muted); }
+
+/* Empty states (shown before the first sync) */
+.empty-state { max-width: 40ch; padding-block: 64px; }
+.empty-state-mark { display: none; }
+.empty-state-kicker { margin: 0 0 8px; color: var(--ink-muted); font-size: 0.9375rem; text-transform: none; }
+.empty-state-title { margin: 0 0 12px; font-size: clamp(1.75rem, 1.2rem + 2vw, 2.5rem); font-weight: 500; letter-spacing: -0.025em; }
+.empty-state-copy { margin: 0 0 8px; }
+.empty-state-note { color: var(--ink-muted); font-size: 0.9375rem; }
+
+/* Tablets and phones */
+@media (max-width: 860px) {
+  .ot-cols { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 48px; }
+  .ot-cols > .ot-col { grid-column: auto; }
+  .ot-about { grid-template-columns: minmax(0, 1fr); gap: 0; padding-top: 48px; }
+  .ot-about-body { grid-column: auto; }
+}
+@media (max-width: 640px) {
+  .ot-shell, .ink-tags { width: min(100% - 32px, var(--ot-shell)); }
+  .ot-header-inner { padding-block: 20px 16px; }
+  .ot-intro { padding-top: 40px; }
+  .ot-band { aspect-ratio: 16 / 5; }
+  html[data-ink-banner="tall"] .ot-band { aspect-ratio: 16 / 8; }
+  .ot-writing li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .ot-year { grid-template-columns: minmax(0, 1fr); }
+  .ot-year .ot-label { padding-top: 0; }
+  .ot-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .ot-row .ot-row-tag { order: 3; }
+  .tag-post-link { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

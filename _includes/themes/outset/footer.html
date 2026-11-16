@@ -1,0 +1,7 @@
+{%- assign ot_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<footer class="ink-footer ot-footer">
+  <div class="ot-shell ot-footer-inner">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ ot_name }}</p>
+    <p><a href="{{ '/feed.xml' | relative_url }}">RSS feed</a></p>
+  </div>
+</footer>
