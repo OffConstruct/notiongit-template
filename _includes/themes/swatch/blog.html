@@ -1,0 +1,28 @@
+<div class="ink-post-list sw-shell sw-index-page">
+  <header class="sw-page-head">
+    <h1 class="sw-title">{{ page.title | default: "Notes" }}</h1>
+    {%- if page.description and page.description != "" %}
+    <p class="sw-dek">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Notion posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {%- assign sw_years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" %}
+  {%- for year in sw_years %}
+  <section class="sw-year" aria-labelledby="sw-year-{{ year.name }}">
+    <h2 class="sw-label sw-year-label" id="sw-year-{{ year.name }}">{{ year.name }}</h2>
+    <ul class="sw-note-list">
+      {%- for post in year.items %}
+      {% include themes/swatch/_note.html post=post format="%m-%d" %}
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endfor %}
+  {%- endif %}
+</div>

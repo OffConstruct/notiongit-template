@@ -1,0 +1,86 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home sw-home sw-shell">
+  {%- if home and home.name and home.name != "" %}
+  {%- assign sw_len = home.name | strip | size -%}
+  {%- assign sw_fit = "short" -%}
+  {%- if sw_len > 18 %}{% assign sw_fit = "long" %}{% elsif sw_len > 12 %}{% assign sw_fit = "mid" %}{% endif -%}
+  {%- assign sw_bio = home.bio | strip | markdownify | strip -%}
+  {%- assign sw_parts = sw_bio | split: "<h2" -%}
+  {%- assign sw_lead = sw_parts | first | strip -%}
+  {%- assign sw_rest = sw_bio | remove_first: sw_lead | strip -%}
+  {%- assign sw_acc = ink_theme.tweaks | where: "key", "accent" | first -%}
+  {%- assign sw_custom = site.inkdrafts.tweaks.accent | downcase -%}
+  {%- assign sw_custom_first = sw_custom | slice: 0 -%}
+
+  <section class="sw-head" aria-labelledby="sw-name">
+    <h1 class="sw-name sw-name--{{ sw_fit }}" id="sw-name">{{ home.name }}</h1>
+    <div class="sw-sample">
+      <div class="sw-chip">{% include ink/motion.html %}</div>
+      <p class="sw-color"><span class="sw-key">Color</span><span class="sw-hexes">
+        {%- for p in sw_acc.presets -%}
+        <span class="sw-hex sw-hex--{{ p.value }}"><span class="sw-hex-l">{{ p.light | upcase }}</span><span class="sw-hex-d">{{ p.dark | upcase }}</span></span>
+        {%- endfor -%}
+        <span class="sw-hex sw-hex--custom">{% if sw_custom.size == 7 and sw_custom_first == "#" %}{{ sw_custom | upcase }}{% else %}Custom{% endif %}</span>
+      </span></p>
+      {%- comment %} The tagline shows only when the bio has no lead, so the first screen never says it twice. {% endcomment -%}
+      {%- if home.tagline and home.tagline != "" and sw_lead == "" %}
+      <p class="sw-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+    </div>
+    {%- if sw_lead != "" %}
+    <div class="sw-lead">{{ sw_lead }}</div>
+    {%- endif %}
+  </section>
+
+  {%- if site.posts.size > 0 %}
+  {%- assign sw_featured = site.posts | where: "featured", true -%}
+  {%- if sw_featured.size > 0 %}
+  {%- assign sw_big = sw_featured -%}
+  {%- assign sw_others = site.posts | where_exp: "p", "p.featured != true" -%}
+  {%- assign sw_big_title = "Selected work" -%}
+  {%- else %}
+  {%- assign sw_big = site.posts | slice: 0, 3 -%}
+  {%- assign sw_others = site.posts | slice: 3, site.posts.size -%}
+  {%- assign sw_big_title = "Latest" -%}
+  {%- endif %}
+  <div class="sw-index">
+    <section class="sw-work" aria-labelledby="sw-work-title">
+      <h2 class="sw-label" id="sw-work-title">{{ sw_big_title }}</h2>
+      <ol class="sw-rows">
+        {%- for post in sw_big limit: 8 %}
+        {% include themes/swatch/_row.html post=post n=forloop.index %}
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- if sw_others.size > 0 %}
+    <section class="sw-notes" aria-labelledby="sw-notes-title">
+      <h2 class="sw-label" id="sw-notes-title">Notes</h2>
+      <ul class="sw-note-list">
+        {%- for post in sw_others limit: 8 %}
+        {% include themes/swatch/_note.html post=post %}
+        {%- endfor %}
+      </ul>
+      {%- if site.posts.size > 8 %}
+      <p class="sw-more"><a href="{{ '/blog/' | relative_url }}">All {{ site.posts.size }} posts</a></p>
+      {%- endif %}
+    </section>
+    {%- endif %}
+  </div>
+  {%- endif %}
+
+  {%- if sw_rest != "" %}
+  <section class="sw-about" aria-label="About">
+    {{ sw_rest }}
+  </section>
+  {%- endif %}
+  {%- else %}
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="Setup in progress"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  {%- endif %}
+</div>

@@ -1,0 +1,5 @@
+{%- assign post = include.post -%}
+{%- assign fmt = include.format | default: "%Y-%m-%d" -%}
+{%- assign href = post.url | relative_url -%}
+{%- if post.canonical_url %}{% assign href = post.canonical_url %}{% endif -%}
+<li><a class="sw-note" href="{{ href }}"><time class="sw-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: fmt }}</time><span class="sw-note-title">{{ post.title }}</span>{% if post.tags.size > 0 %}<span class="sw-tags">{{ post.tags | join: ", " }}</span>{% endif %}</a></li>

@@ -1,0 +1,34 @@
+<div class="ink-post sw-shell">
+  <article class="post sw-article">
+    <header class="sw-post-head">
+      <p class="sw-meta"><time class="sw-date" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time></p>
+      <h1 class="sw-title">{{ page.title }}</h1>
+      {%- if page.excerpt and page.excerpt != "" %}
+      {%- assign sw_ex = page.excerpt | strip_html | strip -%}
+      {%- assign sw_first = content | split: "</p>" | first | strip_html | strip -%}
+      {%- if sw_ex != sw_first %}
+      <p class="sw-dek">{{ sw_ex }}</p>
+      {%- endif %}
+      {%- endif %}
+    </header>
+    {%- if page.cover_image %}
+    <img class="sw-cover" src="{{ page.cover_image }}" alt="">
+    {%- endif %}
+    <div class="post-content sw-body">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="sw-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="sw-post-foot">
+      <a href="{{ '/blog/' | relative_url }}">All posts</a>
+      {%- if page.tags.size > 0 %}
+      <ul class="sw-tag-links" aria-label="Topics">
+        {%- for tag in page.tags %}
+        <li><a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </footer>
+  </article>
+</div>

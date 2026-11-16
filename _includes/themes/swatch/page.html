@@ -1,0 +1,13 @@
+<div class="ink-page sw-shell">
+  <article class="sw-article">
+    <header class="sw-post-head">
+      <h1 class="sw-title">{{ page.title }}</h1>
+      {%- if page.description and page.description != "" %}
+      <p class="sw-dek">{{ page.description }}</p>
+      {%- endif %}
+    </header>
+    <div class="page-content sw-body">
+      {{ content }}
+    </div>
+  </article>
+</div>

@@ -1,0 +1,18 @@
+{%- assign sw_name = site.data.home.name | default: site.author.name | default: site.title -%}
+{%- assign sw_links = site.data.home.social_links -%}
+<footer class="ink-footer sw-footer">
+  <div class="sw-shell sw-footer-inner">
+  <div class="sw-footer-row">
+    <p class="sw-copy">&copy; {{ 'now' | date: '%Y' }} {{ sw_name }}</p>
+    <ul class="sw-links" aria-label="Elsewhere">
+      {%- if sw_links and sw_links.size > 0 %}
+      {%- for link in sw_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+      {%- else %}
+      <li><a href="{{ '/feed.xml' | relative_url }}">RSS feed</a></li>
+      {%- endif %}
+    </ul>
+  </div>
+  </div>
+</footer>

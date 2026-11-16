@@ -1,0 +1,5 @@
+{%- assign post = include.post -%}
+{%- assign href = post.url | relative_url -%}
+{%- if post.canonical_url %}{% assign href = post.canonical_url %}{% endif -%}
+{%- assign n = include.n -%}
+<li><a class="sw-row" href="{{ href }}"><span class="sw-n">{% if n < 10 %}0{% endif %}{{ n }}</span><span class="sw-row-title">{{ post.title }}</span>{% if post.tags.size > 0 %}<span class="sw-tags">{{ post.tags | join: ", " }}</span>{% endif %}{% if post.cover_image %}<img class="sw-peek" src="{{ post.cover_image }}" alt="" loading="lazy">{% endif %}</a></li>
