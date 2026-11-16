@@ -1,0 +1,81 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "mosaic",
+  "name": "Mosaic",
+  "version": "1.0.0",
+  "summary": "For creative coders and digital artists: your name beside a slowly shifting cell pattern, then a grid of your work.",
+  "description": "A calm home for people who make things with code. Your name, tagline and links sit beside one panel of thin lines that drift slowly, like cracked glaze. Below it, your posts fill a grid of picture tiles separated by fine lines; posts without a picture show their title instead. For creative coders, generative artists and front-end developers.",
+  "categories": ["developers"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "schibsted",
+      "label": "Schibsted Grotesk and DM Mono",
+      "google": "family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500",
+      "stacks": {
+        "body": "\"Schibsted Grotesk\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Schibsted Grotesk\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "\"DM Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "space",
+      "label": "Space Grotesk and JetBrains Mono",
+      "google": "family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500",
+      "stacks": {
+        "body": "\"Space Grotesk\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Space Grotesk\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f2efe8", "text": "#151413", "muted": "#6b675f" },
+    "dark": { "bg": "#141312", "text": "#ece8df", "muted": "#8f897e" }
+  },
+  "motion": {
+    "shader": "voronoi",
+    "placement": "slot",
+    "speed": 0.035,
+    "frame": 4000,
+    "colors": {
+      "colors": ["--motion-tint-soft", "--motion-tint"],
+      "colorGap": "--motion-wall",
+      "colorGlow": "--motion-tint-soft"
+    },
+    "params": { "distortion": 0.25, "gap": 0.006, "glow": 0, "stepsPerColor": 1, "scale": 1.4 }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "vermilion", "custom": true,
+      "presets": [
+        { "value": "vermilion", "label": "Vermilion", "light": "#b8361f", "dark": "#ff6a4d" },
+        { "value": "cobalt", "label": "Cobalt", "light": "#2b55b8", "dark": "#8fb0ff" },
+        { "value": "moss", "label": "Moss", "light": "#3f6b3a", "dark": "#8fc08a" },
+        { "value": "graphite", "label": "Graphite", "light": "#4a4743", "dark": "#c9c3b8" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "schibsted" },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "walls", "type": "select", "label": "Color of the pattern lines", "default": "accent",
+      "options": [
+        { "value": "accent", "label": "Accent color" },
+        { "value": "ink", "label": "Text color" } ] },
+    { "key": "covers", "type": "select", "label": "Picture shape", "default": "square",
+      "options": [
+        { "value": "square", "label": "Square" },
+        { "value": "landscape", "label": "Landscape" } ] },
+    { "key": "featured_wide", "type": "boolean", "label": "Make the newest post wider", "default": true }
+  ]
+}

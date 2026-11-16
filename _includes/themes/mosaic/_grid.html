@@ -1,0 +1,31 @@
+{%- comment -%} The hairline grid of posts. include.posts, include.limit, include.excerpts, include.level (h2 or h3). {%- endcomment -%}
+{%- assign hl = include.level | default: "h3" -%}
+<ul class="mz-grid" role="list">
+  {%- for post in include.posts limit: include.limit %}
+  {%- assign href = post.url | relative_url -%}
+  {%- if post.canonical_url %}{% assign href = post.canonical_url %}{% endif -%}
+  {%- assign tone = post.date | date: "%j" | modulo: 3 -%}
+  <li class="mz-cell">
+    <a class="mz-cell-link" href="{{ href }}">
+      {%- if post.cover_image %}
+      <div class="mz-cover"><img src="{{ post.cover_image }}" alt="" loading="lazy"></div>
+      {%- else %}
+      <div class="mz-cover mz-cover--text mz-tone-{{ tone }}"><{{ hl }} class="mz-title mz-cover-title">{{ post.title }}</{{ hl }}></div>
+      {%- endif %}
+      <p class="mz-label">
+        {%- if post.tags.size > 0 %}<span class="mz-label-tag">{{ post.tags | first }}</span>{% endif -%}
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+      </p>
+      {%- if post.cover_image %}
+      <{{ hl }} class="mz-title">{{ post.title }}</{{ hl }}>
+      {%- endif %}
+      {%- if include.excerpts and post.excerpt %}
+      {%- assign mz_ex = post.excerpt | strip_html | strip %}
+      {%- if mz_ex != "" %}
+      <p class="mz-excerpt">{{ mz_ex | truncate: 160 }}</p>
+      {%- endif %}
+      {%- endif %}
+    </a>
+  </li>
+  {%- endfor %}
+</ul>

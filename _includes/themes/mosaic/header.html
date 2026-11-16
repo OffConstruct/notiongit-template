@@ -1,0 +1,20 @@
+<header class="ink-header mz-header">
+  <div class="mz-wrap mz-header-inner">
+    {%- assign mz_brand = site.data.home.name | default: site.title | strip %}
+    {%- if mz_brand != "" %}
+    <a class="mz-brand" href="{{ '/' | relative_url }}">{{ mz_brand }}</a>
+    {%- endif %}
+    {%- assign mz_blog = site.pages | where: "layout", "blog" | first -%}
+    {%- if mz_blog %}{% assign mz_blog_url = mz_blog.url | relative_url %}{% else %}{% assign mz_blog_url = '/blog/' | relative_url %}{% endif -%}
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="mz-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url and item.url != "/" %} aria-current="page"{% elsif page.layout == "post" and item_url == mz_blog_url %} aria-current="true"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="mz-nav-empty" role="status">Navigation will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

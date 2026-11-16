@@ -1,0 +1,23 @@
+<div class="ink-post-list mz-blog">
+  <header class="mz-wrap mz-page-head">
+    <h1 class="mz-page-title">{{ page.title | default: "Work and notes" }}</h1>
+    {%- if page.description %}
+    <p class="mz-page-dek">{{ page.description }}</p>
+    {%- endif %}
+    {%- if site.posts.size > 0 %}
+    <p class="mz-count">{{ site.posts.size }} post{% if site.posts.size != 1 %}s{% endif %}</p>
+    {%- endif %}
+  </header>
+  <div class="mz-wrap">
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Posts from Notion"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  {% include themes/mosaic/_grid.html posts=site.posts limit=100000 excerpts=true level="h2" %}
+  {%- endif %}
+  </div>
+</div>
