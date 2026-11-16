@@ -1,0 +1,78 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "prelude",
+  "name": "Prelude",
+  "version": "0.1.0",
+  "summary": "For anyone launching a book, course, shop or event: your name inside a slow ember ring, one button and dated updates.",
+  "description": "A single column for building interest before a launch and keeping people posted after it. The home page shows your name inside a ring of slowly smoldering smoke, your tagline as the headline and one button to your newsletter or main link. Below it are your newest featured post, a dated list of updates and a short About from your bio. It needs no photos.",
+  "categories": ["marketing"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "young",
+      "label": "Friendly serif",
+      "google": "family=Young+Serif&family=Figtree:ital,wght@0,400;0,500;0,600;1,400",
+      "stacks": {
+        "body": "Figtree, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Young Serif\", \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, \"SF Mono\", \"Cascadia Mono\", \"Roboto Mono\", Menlo, Consolas, \"DejaVu Sans Mono\", monospace"
+      }
+    },
+    {
+      "value": "bricolage",
+      "label": "Modern",
+      "google": "family=Bricolage+Grotesque:opsz,wght@12..96,400..600&family=Figtree:ital,wght@0,400;0,500;0,600;1,400",
+      "stacks": {
+        "body": "Figtree, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "\"Bricolage Grotesque\", system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "ui-monospace, SFMono-Regular, \"SF Mono\", \"Cascadia Mono\", \"Roboto Mono\", Menlo, Consolas, \"DejaVu Sans Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f3f2ef", "text": "#1f1d1b", "muted": "#66625c" },
+    "dark": { "bg": "#151413", "text": "#efebe5", "muted": "#a39e97" }
+  },
+  "motion": {
+    "shader": "smoke-ring",
+    "placement": "slot",
+    "speed": 0.15,
+    "frame": 4000,
+    "colors": { "colorBack": "--ink-bg", "colors": ["--motion-core", "--motion-tint", "--ink-bg"] },
+    "params": { "radius": 0.62, "thickness": 0.42, "noiseScale": 1.5, "noiseIterations": 6, "innerShape": 1, "scale": 0.86 }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "ember", "custom": true,
+      "presets": [
+        { "value": "ember", "label": "Ember", "light": "#b23a1c", "dark": "#ef8a62" },
+        { "value": "plum", "label": "Smoked plum", "light": "#7a3a63", "dark": "#d39cc0" },
+        { "value": "ink", "label": "Ink blue", "light": "#2c4f8c", "dark": "#93b2e6" },
+        { "value": "moss", "label": "Moss", "light": "#4b6a35", "dark": "#a3c487" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "bricolage" },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "ring", "type": "select", "label": "Ring size", "default": "large",
+      "options": [
+        { "value": "large", "label": "Large" },
+        { "value": "small", "label": "Small" } ] },
+    { "key": "story_heading", "type": "select", "label": "Heading above your newest featured post", "default": "story",
+      "options": [
+        { "value": "story", "label": "The story so far" },
+        { "value": "latest", "label": "Latest" },
+        { "value": "news", "label": "News" } ] },
+    { "key": "text_size", "type": "range", "label": "Text size", "min": 16, "max": 20, "step": 1, "unit": "px", "default": 17 }
+  ]
+}

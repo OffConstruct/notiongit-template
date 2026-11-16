@@ -1,0 +1,14 @@
+{%- assign href = include.post.url | relative_url -%}
+{%- if include.post.canonical_url %}{% assign href = include.post.canonical_url %}{% endif -%}
+<li class="pl-update">
+  <time datetime="{{ include.post.date | date_to_xmlschema }}">{{ include.post.date | date: "%b %-d, %Y" }}</time>
+  <div class="pl-update-body">
+    <a class="pl-update-link" href="{{ href }}">{{ include.post.title }}</a>
+    {%- if include.post.excerpt %}
+    {%- assign pl_ex = include.post.excerpt | strip_html | strip %}
+    {%- if pl_ex != "" %}
+    <p class="pl-update-excerpt">{{ pl_ex | truncate: 140 }}</p>
+    {%- endif %}
+    {%- endif %}
+  </div>
+</li>

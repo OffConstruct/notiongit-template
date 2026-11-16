@@ -1,0 +1,136 @@
+{%- assign home = site.data.home -%}
+{%- assign pl_name = home.name | strip -%}
+{%- assign pl_tagline = home.tagline | strip -%}
+<div class="ink-home pl-home">
+  {%- if home and pl_name != "" %}
+  {%- comment -%} The one button: a newsletter link first, then email, then the first link. {%- endcomment -%}
+  {%- assign pl_cta_url = "" -%}
+  {%- assign pl_cta_label = "" -%}
+  {%- for link in home.social_links -%}
+  {%- assign pl_n = link.name | downcase -%}
+  {%- if pl_cta_url == "" -%}
+  {%- if pl_n contains "newsletter" or pl_n contains "subscribe" or pl_n contains "updates" or pl_n contains "mailing list" or pl_n contains "waitlist" or pl_n contains "substack" -%}
+  {%- assign pl_cta_url = link.url -%}{%- assign pl_cta_label = "Get updates" -%}
+  {%- endif -%}
+  {%- endif -%}
+  {%- endfor -%}
+  {%- if pl_cta_url == "" -%}
+  {%- for link in home.social_links -%}
+  {%- if pl_cta_url == "" and link.url contains "mailto:" -%}
+  {%- assign pl_cta_url = link.url -%}{%- assign pl_cta_label = "Email me" -%}
+  {%- endif -%}
+  {%- endfor -%}
+  {%- endif -%}
+  {%- if pl_cta_url == "" and home.social_links.size > 0 -%}
+  {%- assign pl_cta_url = home.social_links[0].url -%}{%- assign pl_cta_label = home.social_links[0].name -%}
+  {%- endif %}
+  {%- comment -%} Fit the name to the hollow: long names get a smaller size, very long names sit under the ring. {%- endcomment -%}
+  {%- assign pl_word = 0 -%}
+  {%- assign pl_words = pl_name | split: " " -%}
+  {%- for w in pl_words %}{% if w.size > pl_word %}{% assign pl_word = w.size %}{% endif %}{% endfor -%}
+  {%- assign pl_fit = "" -%}
+  {%- if pl_name.size > 28 or pl_word > 14 -%}{%- assign pl_fit = "out" -%}
+  {%- elsif pl_name.size > 16 or pl_word > 9 -%}{%- assign pl_fit = "long" -%}
+  {%- endif -%}
+  {%- if pl_tagline != "" %}{% assign pl_name_tag = "p" %}{% else %}{% assign pl_name_tag = "h1" %}{% endif %}
+  <header class="pl-hero pl-wrap{% if pl_fit != "" %} pl-hero--{{ pl_fit }}{% endif %}">
+    <div class="pl-ring">
+      {% include ink/motion.html %}
+      {%- if pl_fit != "out" %}
+      <{{ pl_name_tag }} class="pl-ring-name">{{ pl_name }}</{{ pl_name_tag }}>
+      {%- endif %}
+    </div>
+    {%- if pl_fit == "out" %}
+    <{{ pl_name_tag }} class="pl-ring-name pl-ring-name--below">{{ pl_name }}</{{ pl_name_tag }}>
+    {%- endif %}
+    {%- if pl_tagline != "" %}
+    <h1 class="pl-headline">{{ pl_tagline }}</h1>
+    {%- endif %}
+    {%- if pl_cta_url != "" %}
+    <p class="pl-cta"><a class="pl-button" href="{{ pl_cta_url }}">{{ pl_cta_label }}</a></p>
+    {%- endif %}
+  </header>
+
+  {%- assign pl_blog = site.pages | where: "layout", "blog" | first -%}
+  {%- assign pl_blog_url = "/blog/" -%}
+  {%- if pl_blog %}{% assign pl_blog_url = pl_blog.url %}{% endif -%}
+  {%- assign pl_updates = "Updates" -%}
+  {%- if pl_blog and pl_blog.title != blank %}{% assign pl_updates = pl_blog.title %}{% endif -%}
+
+  {%- if site.posts.size > 0 %}
+  {%- assign pl_featured = site.posts | where: "featured", true -%}
+  {%- assign pl_story = pl_featured | first -%}
+  {%- unless pl_story %}{% assign pl_story = site.posts | first %}{% endunless -%}
+  {%- assign pl_href = pl_story.url | relative_url -%}
+  {%- if pl_story.canonical_url %}{% assign pl_href = pl_story.canonical_url %}{% endif %}
+  <section class="pl-section pl-wrap" aria-labelledby="pl-story-title">
+    <h2 class="pl-heading" id="pl-story-title"><span class="ink-variant" data-variant="story_heading:story">The story so far</span><span class="ink-variant" data-variant="story_heading:latest">Latest</span><span class="ink-variant" data-variant="story_heading:news">News</span></h2>
+    <a class="pl-story" href="{{ pl_href }}" aria-labelledby="pl-story-name">
+      <time datetime="{{ pl_story.date | date_to_xmlschema }}">{{ pl_story.date | date: "%B %-d, %Y" }}</time>
+      <span class="pl-story-title" id="pl-story-name">{{ pl_story.title }}</span>
+      {%- if pl_story.excerpt %}
+      {%- assign pl_sx = pl_story.excerpt | strip_html | strip %}
+      {%- if pl_sx != "" %}
+      <span class="pl-story-excerpt">{{ pl_sx | truncate: 220 }}</span>
+      {%- endif %}
+      {%- endif %}
+    </a>
+  </section>
+
+  {%- assign pl_rest = 0 -%}
+  {%- for post in site.posts -%}{%- if post.url != pl_story.url %}{% assign pl_rest = pl_rest | plus: 1 %}{% endif -%}{%- endfor %}
+  {%- if pl_rest > 0 %}
+  <section class="pl-section pl-wrap" aria-labelledby="pl-updates-title">
+    <h2 class="pl-heading" id="pl-updates-title">{{ pl_updates }}</h2>
+    <ol class="pl-updates">
+      {%- assign pl_shown = 0 -%}
+      {%- for post in site.posts %}
+      {%- if post.url == pl_story.url or pl_shown >= 6 %}{% continue %}{% endif %}
+      {%- assign pl_shown = pl_shown | plus: 1 %}
+      {% include themes/prelude/_update.html post=post %}
+      {%- endfor %}
+    </ol>
+    {%- if pl_rest > 6 %}
+    <p class="pl-more"><a href="{{ pl_blog_url | relative_url }}">All {{ site.posts.size }} posts</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+  {%- else %}
+  <section class="pl-section pl-wrap" aria-labelledby="pl-updates-title">
+    <h2 class="pl-heading" id="pl-updates-title">{{ pl_updates }}</h2>
+    <p class="pl-soon">First update coming soon.</p>
+  </section>
+  {%- endif %}
+
+  {%- assign pl_bio = home.bio | strip | markdownify | strip -%}
+  {%- if pl_bio != "" %}
+  {%- assign pl_parts = pl_bio | split: "<h2" %}
+  {%- for part in pl_parts %}
+  {%- assign pl_part = part | strip %}
+  {%- if pl_part == "" %}{% continue %}{% endif %}
+  {%- if forloop.first %}
+  <section class="pl-section pl-wrap pl-prose" aria-labelledby="pl-about-title">
+    <h2 class="pl-heading" id="pl-about-title">About</h2>
+    {{ pl_part }}
+  </section>
+  {%- else %}
+  <section class="pl-section pl-wrap pl-prose pl-bio-part">
+    <h2{{ part }}
+  </section>
+  {%- endif %}
+  {%- endfor %}
+  {%- endif %}
+  {%- else %}
+  <div class="pl-hero pl-hero--empty pl-wrap">
+    <div class="pl-ring">{% include ink/motion.html %}</div>
+    {% include empty-state.html
+      variant="home-empty-state"
+      heading="h1"
+      kicker="Setup in progress"
+      title="Your site is almost ready"
+      copy="Your Notion content will appear here after the first sync completes."
+      note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+    %}
+  </div>
+  {%- endif %}
+</div>

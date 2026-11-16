@@ -1,0 +1,22 @@
+<div class="ink-post-list pl-wrap">
+  <header class="pl-page-head">
+    <h1 class="pl-title">{{ page.title | default: "Updates" }}</h1>
+    {%- if page.description and page.description != "" %}
+    <p class="pl-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Updates"
+    title="Your first update will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <ol class="pl-updates">
+    {%- for post in site.posts %}
+    {% include themes/prelude/_update.html post=post %}
+    {%- endfor %}
+  </ol>
+  {%- endif %}
+</div>
