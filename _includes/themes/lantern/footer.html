@@ -1,0 +1,13 @@
+{%- assign home = site.data.home -%}
+<footer class="ink-footer lt-footer">
+  <div class="lt-wrap lt-footer-inner">
+    <p class="lt-copy">&copy; {{ 'now' | date: '%Y' }} {{ home.name | default: site.author.name | default: site.title }}</p>
+    {%- if home.social_links.size > 0 %}
+    <ul class="lt-links" aria-label="Elsewhere">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </div>
+</footer>

@@ -1,0 +1,18 @@
+<div class="ink-post-list lt-wrap lt-list-page">
+  <header class="lt-page-head">
+    <h1 class="lt-title">{{ page.title | default: "Chapters" }}</h1>
+    {%- if page.description and page.description != "" %}
+    <p class="lt-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  <p class="lt-empty">The first chapter is on its way. Published stories will appear here after your first sync.</p>
+  {%- else %}
+  <ol class="lt-rows lt-rows--full" role="list">
+    {%- for post in site.posts %}
+    {%- assign lt_no = site.posts.size | minus: forloop.index0 %}
+    {% include themes/lantern/_row.html post=post no=lt_no excerpt=true %}
+    {%- endfor %}
+  </ol>
+  {%- endif %}
+</div>

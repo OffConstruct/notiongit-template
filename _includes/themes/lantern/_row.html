@@ -1,0 +1,21 @@
+{%- comment -%} One story as a numbered chapter row. include.post, include.no, include.excerpt {%- endcomment -%}
+{%- assign p = include.post -%}
+{%- assign href = p.url | relative_url -%}
+{%- if p.canonical_url %}{% assign href = p.canonical_url %}{% endif -%}
+<li class="lt-row{% if p.featured %} lt-row--featured{% endif %}">
+  <span class="lt-no" aria-hidden="true">No.&nbsp;{{ include.no }}</span>
+  <div class="lt-row-main">
+    <a class="lt-row-title" href="{{ href }}">{{ p.title }}</a>
+    {%- if p.featured %}
+    <span class="lt-featured">Featured</span>
+    {%- endif %}
+    {%- if include.excerpt and p.excerpt %}
+    {%- assign lt_ex = p.excerpt | strip_html | strip %}
+    {%- if lt_ex != "" %}
+    <p class="lt-row-excerpt">{{ lt_ex | truncate: 180 }}</p>
+    {%- endif %}
+    {%- endif %}
+  </div>
+  <time class="lt-date" datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%b %-d, %Y" }}</time>
+  <span class="lt-tags">{% if p.tags and p.tags.size > 0 %}{{ p.tags | join: ", " }}{% endif %}</span>
+</li>

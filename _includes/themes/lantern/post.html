@@ -1,0 +1,45 @@
+{%- assign lt_blog = site.pages | where: "layout", "blog" | first -%}
+{%- assign lt_blog_url = "/blog/" -%}
+{%- if lt_blog %}{% assign lt_blog_url = lt_blog.url %}{% endif -%}
+{%- assign lt_no = "" -%}
+{%- for p in site.posts -%}
+{%- if p.url == page.url %}{% assign lt_no = site.posts.size | minus: forloop.index0 %}{% break %}{% endif -%}
+{%- endfor -%}
+<div class="ink-post lt-wrap lt-narrow">
+  <article class="lt-article">
+    <header class="lt-page-head lt-post-head">
+      {%- if lt_no != "" %}
+      <p class="lt-post-no">No.&nbsp;{{ lt_no }}</p>
+      {%- endif %}
+      <h1 class="lt-title">{{ page.title }}</h1>
+      <p class="lt-meta">
+        <time class="lt-date" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        {%- if page.tags and page.tags.size > 0 %}
+        <span class="lt-meta-tags">
+          {%- for tag in page.tags %}
+          <a class="lt-tag" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+          {%- endfor %}
+        </span>
+        {%- endif %}
+      </p>
+    </header>
+    {%- if page.cover_image %}
+    <img class="lt-cover" src="{{ page.cover_image }}" alt="">
+    {%- endif %}
+    <div class="post-content lt-prose">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="lt-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <nav class="lt-pager" aria-label="More stories">
+      {%- if page.previous %}
+      <a class="lt-pager-prev" href="{{ page.previous.url | relative_url }}"><span class="lt-pager-label">Previous</span> <span class="lt-pager-title">{{ page.previous.title }}</span></a>
+      {%- endif %}
+      {%- if page.next %}
+      <a class="lt-pager-next" href="{{ page.next.url | relative_url }}"><span class="lt-pager-label">Next</span> <span class="lt-pager-title">{{ page.next.title }}</span></a>
+      {%- endif %}
+      <a class="lt-pager-all" href="{{ lt_blog_url | relative_url }}">All stories</a>
+    </nav>
+  </article>
+</div>

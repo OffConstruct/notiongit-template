@@ -1,0 +1,68 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "lantern",
+  "name": "Lantern",
+  "version": "0.1.0",
+  "summary": "For fiction writers and serials: a dark page with a slowly turning moon by your name and stories as chapters.",
+  "description": "For novelists, short story writers and anyone publishing a story in parts. The home page is dark, with your name, tagline and bio beside a small dotted moon that turns very slowly. Below it, your latest stories are listed as numbered chapters with their dates and tags. It also has a light, paper-colored version, and the heading above your stories can say Chapters, Stories or Writing.",
+  "categories": ["writers"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "fraunces",
+      "label": "Fraunces and Crimson Pro",
+      "google": "family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400",
+      "stacks": {
+        "body": "\"Crimson Pro\", \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "display": "Fraunces, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f3f1ec", "text": "#1d1c1a", "muted": "#6a655c" },
+    "dark": { "bg": "#121316", "text": "#e6e2d8", "muted": "#9a968e" }
+  },
+  "motion": {
+    "shader": "dithering",
+    "placement": "slot",
+    "speed": 0.1,
+    "frame": 3000,
+    "colors": { "colorBack": "--ink-bg", "colorFront": "--motion-tint" },
+    "params": { "shape": "sphere", "type": "4x4", "size": "--lt-dot", "scale": 0.85 }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "dark",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "moonlight", "custom": true,
+      "presets": [
+        { "value": "moonlight", "label": "Moonlight", "light": "#3d4a6b", "dark": "#c9b27c" },
+        { "value": "ember", "label": "Ember", "light": "#8f3f24", "dark": "#e09a78" },
+        { "value": "seaglass", "label": "Sea glass", "light": "#2f6158", "dark": "#8fc4b7" },
+        { "value": "heather", "label": "Heather", "light": "#6a4a72", "dark": "#c3a6cc" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "list_heading", "type": "select", "label": "Heading above your stories", "default": "chapters",
+      "options": [
+        { "value": "chapters", "label": "Chapters" },
+        { "value": "stories", "label": "Stories" },
+        { "value": "writing", "label": "Writing" } ] },
+    { "key": "numbers", "type": "boolean", "label": "Number each story", "default": true },
+    { "key": "moon", "type": "select", "label": "Moon size", "default": "large",
+      "options": [
+        { "value": "large", "label": "Large" },
+        { "value": "small", "label": "Small" } ] },
+    { "key": "text_size", "type": "range", "label": "Text size", "min": 17, "max": 23, "step": 1, "unit": "px", "default": 20 }
+  ]
+}

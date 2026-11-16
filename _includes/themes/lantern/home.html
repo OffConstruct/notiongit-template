@@ -1,0 +1,72 @@
+{%- assign home = site.data.home -%}
+{%- assign lt_blog = site.pages | where: "layout", "blog" | first -%}
+{%- assign lt_blog_url = "/blog/" -%}
+{%- if lt_blog %}{% assign lt_blog_url = lt_blog.url %}{% endif -%}
+<div class="ink-home lt-home lt-wrap">
+  {%- assign lt_owner = home.name | strip -%}
+  {%- if home and lt_owner != "" %}
+  {%- assign lt_bio = home.bio | strip | markdownify | strip -%}
+  {%- assign lt_parts = lt_bio | split: "<h2" -%}
+  <section class="lt-hero" aria-labelledby="lt-name">
+    <div class="lt-moon">{% include ink/motion.html %}</div>
+    <h1 class="lt-name" id="lt-name">{{ lt_owner }}</h1>
+    <div class="lt-hero-text">
+      {%- if home.tagline != blank %}
+      <p class="lt-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+      {%- if lt_bio != "" %}
+      {%- assign lt_lead = lt_parts | first | strip %}
+      {%- if lt_lead != "" %}
+      <div class="lt-bio">{{ lt_lead }}</div>
+      {%- endif %}
+      {%- endif %}
+    </div>
+  </section>
+
+  <section class="lt-chapters" aria-labelledby="lt-chapters-title">
+    <h2 class="lt-section-head" id="lt-chapters-title">
+      <span class="lt-section-name">{% include themes/lantern/_heading.html %}</span>
+      {%- if site.posts.size > 0 %}
+      <span class="lt-count">{{ site.posts.size }} {% if site.posts.size == 1 %}story{% else %}stories{% endif %}</span>
+      {%- endif %}
+    </h2>
+    {%- if site.posts.size > 0 %}
+    <ol class="lt-rows" role="list">
+      {%- for post in site.posts limit: 8 %}
+      {%- assign lt_no = site.posts.size | minus: forloop.index0 %}
+      {% include themes/lantern/_row.html post=post no=lt_no %}
+      {%- endfor %}
+    </ol>
+    {%- if site.posts.size > 8 %}
+    <p class="lt-more"><a href="{{ lt_blog_url | relative_url }}">All {{ site.posts.size }} stories</a></p>
+    {%- endif %}
+    {%- else %}
+    <p class="lt-empty">The first chapter is on its way.</p>
+    {%- endif %}
+  </section>
+
+  {%- if lt_parts.size > 1 %}
+  <div class="lt-about">
+    {%- for part in lt_parts offset: 1 %}
+    <section class="lt-about-part lt-prose">
+      <h2{{ part }}
+    </section>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+  {%- else %}
+  <div class="lt-hero lt-hero--empty">
+    <div class="lt-moon">{% include ink/motion.html %}</div>
+    <div class="lt-hero-text">
+    {% include empty-state.html
+      variant="home-empty-state"
+      heading="h1"
+      kicker="Setup in progress"
+      title="Your site is almost ready"
+      copy="Your Notion content will appear here after the first sync completes."
+      note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+    %}
+    </div>
+  </div>
+  {%- endif %}
+</div>

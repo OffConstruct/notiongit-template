@@ -1,0 +1,19 @@
+{%- assign lt_name = site.data.home.name | strip -%}
+{%- if lt_name == "" %}{% assign lt_name = site.title | strip %}{% endif -%}
+{%- if lt_name == "" %}{% assign lt_name = "Home" %}{% endif -%}
+<header class="ink-header lt-header">
+  <div class="lt-wrap lt-header-inner">
+    <a class="lt-sitename" href="{{ '/' | relative_url }}">{{ lt_name }}</a>
+    {%- if site.data.nav and site.data.nav.size > 0 %}
+    <nav class="lt-nav" aria-label="Main navigation">
+      {%- for item in site.data.nav %}
+      {%- if item.url == "/" %}{% continue %}{% endif %}
+      {%- assign item_url = item.url | relative_url %}
+      <a href="{{ item_url }}"{% if page.url == item_url or page.url contains item.url %} aria-current="page"{% endif %}>{{ item.title }}</a>
+      {%- endfor %}
+    </nav>
+    {%- else %}
+    <p class="lt-nav-empty" role="status">Your menu will appear after the first sync.</p>
+    {%- endif %}
+  </div>
+</header>

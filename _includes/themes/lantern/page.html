@@ -1,0 +1,11 @@
+<div class="ink-page lt-wrap lt-narrow">
+  <header class="lt-page-head">
+    <h1 class="lt-title">{{ page.title }}</h1>
+    {%- if page.description and page.description != "" %}
+    <p class="lt-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="page-content lt-prose">
+    {{ content }}
+  </div>
+</div>
