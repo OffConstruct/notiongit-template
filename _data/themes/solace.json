@@ -1,0 +1,78 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "solace",
+  "name": "Solace",
+  "version": "0.1.0",
+  "summary": "For therapists, coaches and wellness practitioners: a calm page with your name over a slow, soft band of color.",
+  "description": "A quiet single column for therapists, counselors, coaches and other private practices. The home page shows your name, one line about your work and an email link above a soft band of color that rises and falls slowly, like a breath, then your bio, your other pages and your latest notes. The heading above your pages can say Services if your bio has no Services section of its own. It needs no photos.",
+  "categories": ["professionals"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "fraunces",
+      "label": "Soft serif",
+      "google": "family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Figtree:wght@400;500;600",
+      "stacks": {
+        "body": "Figtree, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "Fraunces, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "newsreader",
+      "label": "Classic serif",
+      "google": "family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..400&family=Figtree:wght@400;500;600",
+      "stacks": {
+        "body": "Figtree, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "display": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f2efe8", "text": "#2a2724", "muted": "#6c665e" },
+    "dark": { "bg": "#1c1e1b", "text": "#ece8df", "muted": "#a8a397" }
+  },
+  "motion": {
+    "shader": "grain-gradient",
+    "placement": "slot",
+    "speed": 0.12,
+    "frame": 9000,
+    "colors": { "colorBack": "--ink-bg", "colors": ["--ink-bg", "--motion-tint", "--ink-bg"] },
+    "params": { "shape": "wave", "softness": 0.9, "intensity": 0.15, "noise": 0.18, "fit": "cover", "scale": 1 }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "large", "default": "sage", "custom": true,
+      "presets": [
+        { "value": "sage", "label": "Sage", "light": "#75896f", "dark": "#9db394" },
+        { "value": "clay", "label": "Clay", "light": "#a5684f", "dark": "#d9a48c" },
+        { "value": "dusk", "label": "Dusk blue", "light": "#5d7790", "dark": "#9db6cc" },
+        { "value": "heather", "label": "Heather", "light": "#8a6580", "dark": "#c7a2bd" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "fraunces" },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "band", "type": "select", "label": "Band height", "default": "tall",
+      "options": [
+        { "value": "tall", "label": "Tall" },
+        { "value": "short", "label": "Short" } ] },
+    { "key": "pages_heading", "type": "select", "label": "Heading above your pages", "default": "more",
+      "options": [
+        { "value": "more", "label": "More to read" },
+        { "value": "together", "label": "Ways we can work together" },
+        { "value": "services", "label": "Services" } ] },
+    { "key": "text_size", "type": "range", "label": "Text size", "min": 16, "max": 20, "step": 1, "unit": "px", "default": 17 }
+  ]
+}

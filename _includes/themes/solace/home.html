@@ -1,0 +1,95 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home sl-home sl-wrap">
+  {%- if home and home.name != blank %}
+  {%- assign sl_mail = "" -%}
+  {%- for link in home.social_links -%}
+  {%- if sl_mail == "" and link.url contains "mailto:" %}{% assign sl_mail = link.url %}{% endif -%}
+  {%- endfor -%}
+  <header class="sl-hero">
+    <h1 class="sl-name">{{ home.name }}</h1>
+    {%- if home.tagline != blank %}
+    <p class="sl-tagline">{{ home.tagline }}</p>
+    {%- endif %}
+    {%- if sl_mail != "" %}
+    {%- assign sl_addr = sl_mail | remove_first: "mailto:" | split: "?" | first %}
+    <p class="sl-contact"><a href="{{ sl_mail }}">Write to me at {{ sl_addr }}</a></p>
+    {%- endif %}
+    <div class="sl-band">{% include ink/motion.html %}</div>
+  </header>
+
+  {%- assign sl_bio = home.bio | strip | markdownify | strip -%}
+  {%- if sl_bio != "" %}
+  {%- assign sl_parts = sl_bio | split: "<h2" %}
+  {%- for part in sl_parts %}
+  {%- assign sl_part = part | strip %}
+  {%- if sl_part == "" %}{% continue %}{% endif %}
+  {%- if forloop.first %}
+  <section class="sl-section sl-prose sl-lead" aria-label="About">
+    {{ sl_part }}
+  </section>
+  {%- else %}
+  <section class="sl-section sl-prose">
+    <h2{{ part }}
+  </section>
+  {%- endif %}
+  {%- endfor %}
+  {%- endif %}
+
+  {%- assign sl_blog = site.pages | where: "layout", "blog" | first -%}
+  {%- assign sl_blog_url = "/blog/" -%}
+  {%- if sl_blog %}{% assign sl_blog_url = sl_blog.url %}{% endif -%}
+  {%- assign sl_ways = 0 -%}
+  {%- for item in site.data.nav -%}
+  {%- if item.url != "/" and item.url != sl_blog_url %}{% assign sl_ways = sl_ways | plus: 1 %}{% endif -%}
+  {%- endfor %}
+  {%- if sl_ways > 0 %}
+  <section class="sl-section" aria-labelledby="sl-ways-title">
+    <h2 class="sl-heading" id="sl-ways-title"><span class="ink-variant" data-variant="pages_heading:more">More to read</span><span class="ink-variant" data-variant="pages_heading:together">Ways we can work together</span><span class="ink-variant" data-variant="pages_heading:services">Services</span></h2>
+    <ul class="sl-ways">
+      {%- for item in site.data.nav %}
+      {%- if item.url == "/" or item.url == sl_blog_url %}{% continue %}{% endif %}
+      {%- assign sl_page = site.pages | where: "url", item.url | first %}
+      <li>
+        <a href="{{ item.url | relative_url }}">
+          <span class="sl-way-title">{{ item.title }}</span>
+          {%- if sl_page.description and sl_page.description != "" %}
+          <span class="sl-way-note">{{ sl_page.description }}</span>
+          {%- endif %}
+        </a>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endif %}
+
+  {%- if site.posts.size > 0 %}
+  {%- assign sl_notes = "Notes" -%}
+  {%- if sl_blog and sl_blog.title != blank %}{% assign sl_notes = sl_blog.title %}{% endif %}
+  <section class="sl-section" aria-labelledby="sl-notes-title">
+    <h2 class="sl-heading" id="sl-notes-title">{{ sl_notes }}</h2>
+    <ul class="sl-notes">
+      {%- for post in site.posts limit: 5 %}
+      {%- assign href = post.url | relative_url -%}
+      {%- if post.canonical_url %}{% assign href = post.canonical_url %}{% endif %}
+      <li><a href="{{ href }}">{{ post.title }}</a><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %Y" }}</time></li>
+      {%- endfor %}
+    </ul>
+    {%- if site.posts.size > 5 %}
+    <p class="sl-more"><a href="{{ sl_blog_url | relative_url }}">All {{ site.posts.size }} posts</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+  {%- else %}
+  <div class="sl-hero sl-hero--empty">
+    {% include empty-state.html
+      variant="home-empty-state"
+      heading="h1"
+      kicker="Setup in progress"
+      title="Your site is almost ready"
+      copy="Your Notion content will appear here after the first sync completes."
+      note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+    %}
+    <div class="sl-band">{% include ink/motion.html %}</div>
+  </div>
+  {%- endif %}
+</div>

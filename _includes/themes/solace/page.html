@@ -1,0 +1,11 @@
+<div class="ink-page sl-wrap">
+  <header class="sl-page-head">
+    <h1 class="sl-title">{{ page.title }}</h1>
+    {%- if page.description and page.description != "" %}
+    <p class="sl-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="page-content sl-prose">
+    {{ content }}
+  </div>
+</div>

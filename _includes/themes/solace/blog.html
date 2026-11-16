@@ -1,0 +1,33 @@
+<div class="ink-post-list sl-wrap sl-list-page">
+  <header class="sl-page-head">
+    <h1 class="sl-title">{{ page.title | default: "Notes" }}</h1>
+    {%- if page.description and page.description != "" %}
+    <p class="sl-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if site.posts.size == 0 %}
+  {% include empty-state.html
+    kicker="Posts"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <ul class="sl-posts">
+    {%- for post in site.posts %}
+    {%- assign href = post.url | relative_url -%}
+    {%- if post.canonical_url %}{% assign href = post.canonical_url %}{% endif %}
+    <li class="sl-post">
+      <a class="sl-post-link" href="{{ href }}">{{ post.title }}</a>
+      <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
+      {%- if post.excerpt %}
+      {%- assign sl_ex = post.excerpt | strip_html | strip %}
+      {%- if sl_ex != "" %}
+      <p class="sl-post-excerpt">{{ sl_ex | truncate: 180 }}</p>
+      {%- endif %}
+      {%- endif %}
+    </li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+</div>

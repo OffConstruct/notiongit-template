@@ -1,0 +1,28 @@
+{%- assign sl_blog = site.pages | where: "layout", "blog" | first -%}
+{%- assign sl_blog_url = "/blog/" -%}
+{%- if sl_blog %}{% assign sl_blog_url = sl_blog.url %}{% endif -%}
+<div class="ink-post sl-wrap">
+  <article class="sl-article">
+    <header class="sl-page-head">
+      <h1 class="sl-title">{{ page.title }}</h1>
+      <p class="sl-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        {%- for tag in page.tags %}
+        <a class="sl-tag" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+        {%- endfor %}
+      </p>
+    </header>
+    {%- if page.cover_image %}
+    <img class="sl-cover" src="{{ page.cover_image }}" alt="">
+    {%- endif %}
+    <div class="post-content sl-prose">
+      {{ content }}
+    </div>
+    {%- if page.canonical_url %}
+    <p class="sl-canonical">First published at <a href="{{ page.canonical_url }}">{{ page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." }}</a>.</p>
+    {%- endif %}
+    <footer class="sl-post-footer">
+      <a href="{{ sl_blog_url | relative_url }}">Back to all posts</a>
+    </footer>
+  </article>
+</div>
