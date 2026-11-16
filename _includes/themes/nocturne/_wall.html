@@ -1,0 +1,21 @@
+{%- comment -%} The bio as wall text, then the social links. {%- endcomment -%}
+{%- assign home = site.data.home -%}
+{%- if home.bio != blank or home.social_links.size > 0 %}
+<section class="noc-shell noc-section noc-about" aria-labelledby="noc-about-title">
+  <div class="noc-head">
+    <h2 class="noc-label" id="noc-about-title">About</h2>
+  </div>
+  <div class="noc-wall">
+    {%- if home.bio != blank %}
+    <div class="noc-prose noc-bio">{{ home.bio | markdownify }}</div>
+    {%- endif %}
+    {%- if home.social_links.size > 0 %}
+    <ul class="noc-links" aria-label="Links">
+      {%- for link in home.social_links %}
+      <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </div>
+</section>
+{%- endif %}

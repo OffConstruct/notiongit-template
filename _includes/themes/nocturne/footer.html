@@ -1,0 +1,10 @@
+{%- assign noc_name = site.data.home.name | default: site.author.name | default: site.title -%}
+<footer class="ink-footer noc-footer">
+  <div class="noc-shell noc-foot">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ noc_name }}</p>
+    <ul class="noc-foot-links">
+      <li><a href="{{ '/feed.xml' | relative_url }}">RSS feed</a></li>
+      <li><a href="https://inkdrafts.com">Made with InkDrafts</a></li>
+    </ul>
+  </div>
+</footer>

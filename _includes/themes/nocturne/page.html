@@ -1,0 +1,11 @@
+<div class="ink-page noc-shell noc-page">
+  <header class="noc-page-head">
+    <h1 class="noc-page-title">{{ page.title }}</h1>
+    {%- if page.description %}
+    <p class="noc-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  <div class="noc-prose noc-body">
+    {{ content }}
+  </div>
+</div>

@@ -1,0 +1,33 @@
+{%- assign noc_total = site.posts.size -%}
+{%- assign noc_n = 0 -%}
+{%- for p in site.posts %}{% if p.url == page.url %}{% assign noc_n = noc_total | minus: forloop.index0 %}{% break %}{% endif %}{% endfor -%}
+<article class="ink-post noc-shell noc-post">
+  <header class="noc-page-head noc-post-head">
+    <p class="noc-label noc-post-meta">
+      {%- if noc_n > 0 %}<span>No. {% if noc_n < 10 %}0{% endif %}{{ noc_n }}</span>{% endif %}
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+      <span>{{ content | number_of_words | divided_by: 230 | plus: 1 }} min read</span>
+    </p>
+    <h1 class="noc-page-title">{{ page.title }}</h1>
+    {%- if page.tags.size > 0 %}
+    <ul class="noc-tag-list" aria-label="Tags">
+      {%- for tag in page.tags %}
+      <li><a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+  </header>
+  {%- if page.cover_image %}
+  <figure class="noc-plate noc-cover"><img src="{{ page.cover_image }}" alt="" decoding="async"></figure>
+  {%- endif %}
+  <div class="noc-prose noc-body">
+    {{ content }}
+  </div>
+  <footer class="noc-post-foot">
+    {%- if page.canonical_url %}
+    {%- assign noc_host = page.canonical_url | split: "/" | slice: 2, 1 | first | remove: "www." %}
+    <p>First published on <a href="{{ page.canonical_url }}">{{ noc_host }}</a></p>
+    {%- endif %}
+    <p><a href="{{ '/blog/' | relative_url }}">Back to all work</a></p>
+  </footer>
+</article>

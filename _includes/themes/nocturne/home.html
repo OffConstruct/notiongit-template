@@ -1,0 +1,69 @@
+{%- assign home = site.data.home -%}
+<div class="ink-home noc-home">
+  {%- if home and home.name != blank %}
+  <section class="noc-hero" aria-labelledby="noc-name">
+    {% include ink/motion.html %}
+    <div class="noc-shell noc-hero-in">
+      <h1 class="noc-name" id="noc-name">{{ home.name }}</h1>
+      {%- if home.tagline != blank %}
+      <p class="noc-tagline">{{ home.tagline }}</p>
+      {%- endif %}
+    </div>
+  </section>
+
+  {%- assign noc_total = site.posts.size -%}
+  {%- if noc_total > 0 %}
+  {%- assign noc_feat = site.posts | where: "featured", true | where_exp: "p", "p.cover_image" | first -%}
+  <section class="noc-shell noc-section noc-index" aria-labelledby="noc-work-title">
+    <div class="noc-head">
+      <h2 class="noc-label" id="noc-work-title">Work</h2>
+      <p class="noc-label noc-count">{{ noc_total }} {% if noc_total == 1 %}entry{% else %}entries{% endif %}</p>
+    </div>
+    <ul class="noc-list">
+      {%- if noc_feat %}
+      {%- for p in site.posts %}{% if p.url == noc_feat.url %}{% assign noc_fn = noc_total | minus: forloop.index0 %}{% break %}{% endif %}{% endfor %}
+      <li class="noc-feature">
+        <a href="{{ noc_feat.url | relative_url }}">
+          <span class="noc-plate"><img src="{{ noc_feat.cover_image }}" alt="" decoding="async"></span>
+          <span class="noc-cap">
+            <span class="noc-num">{% if noc_fn < 10 %}0{% endif %}{{ noc_fn }}</span>
+            <span class="noc-title">{{ noc_feat.title }}</span>
+            <span class="noc-meta">
+              {%- if noc_feat.tags.size > 0 %}<span class="noc-tags">{% for tag in noc_feat.tags limit: 2 %}<span>{{ tag }}</span>{% unless forloop.last %}, {% endunless %}{% endfor %}</span>{% endif -%}
+              <time datetime="{{ noc_feat.date | date_to_xmlschema }}">{{ noc_feat.date | date: "%Y" }}</time>
+            </span>
+          </span>
+        </a>
+      </li>
+      {%- endif %}
+      {%- assign noc_shown = 0 -%}
+      {%- for post in site.posts %}
+      {%- if noc_feat and post.url == noc_feat.url %}{% continue %}{% endif %}
+      {%- if noc_shown >= 8 %}{% break %}{% endif %}
+      {%- assign noc_n = noc_total | minus: forloop.index0 %}
+      {% include themes/nocturne/_row.html post=post n=noc_n %}
+      {%- assign noc_shown = noc_shown | plus: 1 %}
+      {%- endfor %}
+    </ul>
+    {%- assign noc_listed = noc_shown -%}
+    {%- if noc_feat %}{% assign noc_listed = noc_listed | plus: 1 %}{% endif %}
+    {%- if noc_total > noc_listed %}
+    <p class="noc-more"><a href="{{ '/blog/' | relative_url }}">See all {{ noc_total }} entries</a></p>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
+  {% include themes/nocturne/_wall.html %}
+  {%- else %}
+  <div class="noc-shell noc-empty">
+  {% include empty-state.html
+    variant="home-empty-state"
+    heading="h1"
+    kicker="SETUP IN PROGRESS"
+    title="Your site is almost ready"
+    copy="Your Notion content will appear here after the first sync completes."
+    note="The first build can take a minute or two. Still empty after a few minutes? Run the sync from the repository's Actions tab."
+  %}
+  </div>
+  {%- endif %}
+</div>

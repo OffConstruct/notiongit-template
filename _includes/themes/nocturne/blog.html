@@ -1,0 +1,30 @@
+{%- assign noc_total = site.posts.size -%}
+<div class="ink-post-list noc-shell noc-listing">
+  <header class="noc-page-head">
+    <h1 class="noc-page-title">{{ page.title | default: "Work" }}</h1>
+    {%- if page.description %}
+    <p class="noc-lede">{{ page.description }}</p>
+    {%- endif %}
+  </header>
+  {%- if noc_total == 0 %}
+  {% include empty-state.html
+    kicker="NOTION POSTS"
+    title="Your posts will appear here"
+    copy="Published posts will show up automatically after your first sync completes."
+    note="If nothing appears after a few minutes, run the sync from the Actions tab."
+  %}
+  {%- else %}
+  <section class="noc-index" aria-labelledby="noc-all-title">
+    <div class="noc-head">
+      <h2 class="noc-label" id="noc-all-title">Every entry</h2>
+      <p class="noc-label noc-count">{{ noc_total }} {% if noc_total == 1 %}entry{% else %}entries{% endif %}</p>
+    </div>
+    <ul class="noc-list">
+      {%- for post in site.posts %}
+      {%- assign noc_n = noc_total | minus: forloop.index0 %}
+      {% include themes/nocturne/_row.html post=post n=noc_n %}
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endif %}
+</div>

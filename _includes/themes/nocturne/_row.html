@@ -1,0 +1,16 @@
+{%- comment -%} One numbered row. include.post, include.n (the entry number). {%- endcomment -%}
+{%- assign noc_p = include.post -%}
+{%- assign noc_n = include.n -%}
+<li class="noc-row">
+  <a href="{{ noc_p.url | relative_url }}">
+    <span class="noc-num">{% if noc_n < 10 %}0{% endif %}{{ noc_n }}</span>
+    <span class="noc-title">{{ noc_p.title }}</span>
+    <span class="noc-meta">
+      {%- if noc_p.tags.size > 0 %}<span class="noc-tags">{% for tag in noc_p.tags limit: 2 %}<span>{{ tag }}</span>{% unless forloop.last %}, {% endunless %}{% endfor %}</span>{% endif -%}
+      <time datetime="{{ noc_p.date | date_to_xmlschema }}">{{ noc_p.date | date: "%Y" }}</time>
+    </span>
+    {%- if noc_p.cover_image %}
+    <span class="noc-thumb"><img src="{{ noc_p.cover_image }}" alt="" loading="lazy" decoding="async" width="80" height="52"></span>
+    {%- endif %}
+  </a>
+</li>

@@ -1,0 +1,91 @@
+{
+  "$schema": "../../scripts/themes/theme.schema.json",
+  "schema_version": 1,
+  "id": "nocturne",
+  "name": "Nocturne",
+  "version": "1.0.0",
+  "summary": "For light, video and installation artists: a dark, numbered list of your work under one faint beam of light.",
+  "description": "For light, installation, video and new-media artists, and anyone whose work is shown in dark rooms. The home page opens on black with your name low on the first screen while one faint beam of light drifts in from a corner, like a projector in a gallery. Your featured work follows, shown whole, then every post as a numbered row, then your bio as wall text and your links.",
+  "categories": ["artists"],
+  "audience": [],
+  "author": { "name": "InkDrafts", "url": "https://inkdrafts.com" },
+  "license": "MIT",
+  "slots": ["header", "footer", "home", "blog", "post", "page"],
+  "fonts": [
+    {
+      "value": "instrument",
+      "label": "Instrument Serif",
+      "google": "family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500",
+      "stacks": {
+        "body": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "display": "\"Instrument Serif\", \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "\"IBM Plex Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    },
+    {
+      "value": "newsreader",
+      "label": "Newsreader",
+      "google": "family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500",
+      "stacks": {
+        "body": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "display": "Newsreader, \"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "mono": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, \"Liberation Mono\", monospace"
+      }
+    }
+  ],
+  "palette": {
+    "light": { "bg": "#f3f1ec", "text": "#141416", "muted": "#64635f" },
+    "dark": { "bg": "#0b0b0d", "text": "#e9e6df", "muted": "#8f8c84" }
+  },
+  "motion": {
+    "shader": "god-rays",
+    "placement": "slot",
+    "speed": 0.12,
+    "frame": 6000,
+    "colors": {
+      "colorBack": "--ink-bg",
+      "colorBloom": "--motion-tint",
+      "colors": ["--motion-ray", "--noc-beam"]
+    },
+    "params": {
+      "intensity": "--noc-intensity",
+      "density": 0.12,
+      "spotty": 0.15,
+      "midIntensity": 0.12,
+      "midSize": 0.15,
+      "bloom": "--noc-bloom",
+      "offsetX": "--noc-ray-x",
+      "offsetY": -0.6
+    }
+  },
+  "tweaks": [
+    { "key": "mode", "type": "select", "label": "Color scheme", "default": "dark",
+      "options": [
+        { "value": "auto", "label": "Match system" },
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" } ] },
+    { "key": "accent", "type": "color", "label": "Accent color", "role": "text", "default": "tungsten", "custom": true,
+      "presets": [
+        { "value": "tungsten", "label": "Tungsten", "light": "#8a5d14", "dark": "#d9b26a" },
+        { "value": "cyan", "label": "Projector blue", "light": "#28617a", "dark": "#8cc6dc" },
+        { "value": "neon", "label": "Neon rose", "light": "#a33a5a", "dark": "#ec9bb2" },
+        { "value": "white", "label": "Cold white", "light": "#4a4d55", "dark": "#c9ccd4" } ] },
+    { "key": "webfonts", "type": "boolean", "label": "Use the design's own fonts", "default": true },
+    { "key": "font", "type": "font", "label": "Fonts", "default": "instrument" },
+    { "key": "motion", "type": "select", "label": "Motion", "default": "on",
+      "options": [
+        { "value": "on", "label": "Moving" },
+        { "value": "still", "label": "Still" },
+        { "value": "off", "label": "Off" } ] },
+    { "key": "beam", "type": "select", "label": "Light comes from", "default": "right",
+      "options": [
+        { "value": "right", "label": "Top right" },
+        { "value": "left", "label": "Top left" } ] },
+    { "key": "thumbs", "type": "select", "label": "Small pictures in the list", "default": "always",
+      "options": [
+        { "value": "always", "label": "Always" },
+        { "value": "hover", "label": "Only under the mouse" },
+        { "value": "never", "label": "Never" } ] },
+    { "key": "numbers", "type": "boolean", "label": "Number each entry", "default": true }
+  ]
+}
